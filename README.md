@@ -18,6 +18,13 @@ Start the app with the following command and go to `localhost:5000` in your brow
 flask run
 ```
 
+Available routes:
+
+```
+/wall-e
+/eve
+```
+
 
 
 # Box view
