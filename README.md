@@ -17,3 +17,9 @@ Start the app with the following command and go to `localhost:5000` in your brow
 ```
 flask run
 ```
+
+
+
+# Box view
+
+<div style="width: 640px; height: 480px; margin: 10px; position: relative;"><iframe allowfullscreen frameborder="0" style="width:640px; height:480px" src="https://lucid.app/documents/embeddedchart/d2a688c4-1788-4acb-9a7a-f34758892efd" id="V0BE~SRWpnQP"></iframe></div>
