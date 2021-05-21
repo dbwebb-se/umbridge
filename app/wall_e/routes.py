@@ -13,7 +13,7 @@ def before_request():
     """
     pass
     # här kan vi logga saker
-    # current_app.logger.debug("{} is authenticated".format(current_user))
+    current_app.logger.info("Testar logging")
 
 
 

@@ -1,4 +1,5 @@
 import os
+from logging import Formatter
 from app import create_app
 from app import config
 
