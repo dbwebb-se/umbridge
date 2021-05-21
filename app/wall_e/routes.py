@@ -17,12 +17,10 @@ def before_request():
 
 
 
-@bp.route('/', methods=['GET', 'POST'])
-@bp.route('/index', methods=['GET', 'POST'])
-@login_required 
+@bp.route('/wall-e', methods=['GET', 'POST'])
 def index():
     """
     Route for index page
     """
     # gör saker
-    pass
+    return "hej"
