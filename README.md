@@ -22,6 +22,4 @@ flask run
 
 # Box view
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/dbwebb-se/umbridge/master/docs/img/umbridge.png" alt="Image architecture.">
-</p>
+[Boxes of architecture](https://lucid.app/lucidchart/invitations/accept/inv_dd2666ea-4863-460f-a482-79bedaa204d5?viewport_loc=-221%2C-767%2C3495%2C1687%2C0_0)
