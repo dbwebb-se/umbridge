@@ -3,13 +3,13 @@ Contains routes for main purpose of app
 """
 from flask import redirect, url_for, request, current_app
 from app.eve import bp
-from app.eve.models.correct import DbwebbCli
+from app.eve.models.course_repo import CourseManager
 import os
 
 @bp.before_request
 def before_request():
     """
-    update last_seen for User before handling request
+    Executes before the requests
     """
     pass
     # här kan vi logga saker
@@ -20,17 +20,33 @@ def before_request():
 def index():
     """
     Route for index page
+
+    TODO:
+    1. Database (sqlite) - how does Wall-E data look like?
+      - Handle the assignment object differently - Create a class for it.
+    2. Add a queue system so tests does not overlap?
+    3. Update the database with the new grade and ping Wall-E
+    4. Extra assignments?
+      - Maybe not, it does not affect the grade YET and they can run it locally.
+      - If yes, change how it works in the examiner module.
     """
-    CLI = DbwebbCli({
+
+    CM = CourseManager({
         "course": "python",
         "kmom": "kmom01",
         "acr": "mabn17"
     })
 
-    if not CLI.does_course_repo_exist():
-        CLI.create_and_initiate_dbwebb_course_repo()
+    if not CM.does_course_repo_exist():
+        CM.create_and_initiate_dbwebb_course_repo()
 
-    status = CLI.update_download_and_run_tests()
-    print(f"{CLI} - {status}!")
+    grade = CM.update_download_and_run_tests()
+    log_content = CM.get_content_from_test_log('docker/main.ansi')
 
-    return ""
+    print(f"{CM} - {grade}!")
+
+    return {
+        "assignment": str(CM),
+        "grade": grade,
+        "log": log_content
+    }

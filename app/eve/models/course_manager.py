@@ -4,11 +4,12 @@ Model class for eve.index
 
 import os
 
-base_url = os.path.dirname(__file__) + "/../.."
+root_url = os.path.dirname(__file__) + "/../.."
 
-class DbwebbCli:
-    COURSES_BASE_FOLDER = f"{base_url}/eve/courses"
-    GIT_REPO_BASE_URL = "https://github.com/dbwebb-se"
+class CourseManager:
+    """ Manges test command and courses """
+    _COURSES_BASE_FOLDER = f"{root_url}/eve/courses"
+    _GIT_REPO_BASE_URL = "https://github.com/dbwebb-se"
 
     def __init__(self, assignment):
         """ Initiate the class """
@@ -24,15 +25,9 @@ class DbwebbCli:
 
 
 
-    def get_courses_dir(self):
-        """ Gets the full path for eve/courses"""
-        return DbwebbCli.COURSES_BASE_FOLDER
-
-
-
     def get_course_repo_dir(self):
         """ Gets the full path for the active course repo """
-        return f"{self.get_courses_dir()}/{self._course}"
+        return f"{CourseManager._COURSES_BASE_FOLDER}/{self._course}"
 
 
 
@@ -42,15 +37,24 @@ class DbwebbCli:
 
 
 
+    def run_shell_command_in_course_repo(self, command):
+        """ cd into the course repo and executes shell command """
+        return os.system(f"cd {self.get_course_repo_dir()} && {command}")
+
+
     def create_and_initiate_dbwebb_course_repo(self):
         """
         Clones a new course repo and installs all dependencies
             + init-me
         """
         os.mkdir(self.get_course_repo_dir())
-        os.system(f"git clone {DbwebbCli.GIT_REPO_BASE_URL}/{self._course}.git {self.get_course_repo_dir()}")
-        os.system(f"cd {self.get_course_repo_dir()} && make docker-install")
-        os.system(f"cd {self.get_course_repo_dir()} && dbwebb init-me")
+        os.system(
+            f"git clone {CourseManager._GIT_REPO_BASE_URL}/{self._course}.git "
+            f"{self.get_course_repo_dir()}"
+        )
+
+        self.run_shell_command_in_course_repo("make docker-install")
+        self.run_shell_command_in_course_repo("dbwebb init-me")
 
 
 
@@ -75,11 +79,21 @@ class DbwebbCli:
             256 => exit code 1 => FAILED
         """
         self.reset_kmom()
-        os.system(f"cd {self.get_course_repo_dir()} && dbwebb update")
+        self.run_shell_command_in_course_repo("dbwebb update")
 
-        result = os.system((
-            f"cd {self.get_course_repo_dir()} && "
+        result = self.run_shell_command_in_course_repo(
             f"dbwebb test --docker {self._kmom} {self._acr} --download"
-        ))
+        )
 
-        return "PASSED" if result == 0 else "FAILED"
+        return "PG" if result == 0 else "Ux"
+
+
+
+    def get_content_from_test_log(self, filename):
+        """ Reads the log results and returns them """
+        pathToLogfile = f"{self.get_course_repo_dir()}/.log/test/{filename}"
+
+        with open(pathToLogfile, 'r') as fh:
+            content = fh.read()
+
+        return content
