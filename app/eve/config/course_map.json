@@ -1,6 +1,6 @@
 {
-    "python": {
-        "git_url": "https://github.com/dbwebb-se/python.git",
+    "default": {
+        "git_url": "https://github.com/dbwebb-se/{course}.git",
         "dbwebb_test_command": "dbwebb test --docker {kmom} {acr} --download",
         "log_file": ".log/test/docker/main.ansi"
     }

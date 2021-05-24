@@ -5,19 +5,19 @@ Model class for eve.index
 import os
 import json
 
-root_url = os.path.dirname(__file__) + "/../.."
+app_base_url = os.path.dirname(__file__) + "/../.."
 
 class CourseManager:
     """ Manges test command and courses """
-    _COURSES_BASE_FOLDER = f"{root_url}/eve/courses"
-    _EVE_CONFIG_PATH = f"{root_url}/eve/config"
+    _COURSES_BASE_FOLDER = f"{app_base_url}/eve/courses"
+    _EVE_CONFIG_PATH = f"{app_base_url}/eve/config"
 
     def __init__(self, assignment):
         """ Initiate the class """
         self._course = assignment["course"]
         self._kmom = assignment["kmom"]
         self._acr = assignment["acr"]
-        self._config = self.get_config()
+        self.set_config()
 
 
     def __str__(self):
@@ -26,13 +26,25 @@ class CourseManager:
 
 
 
-    @staticmethod
-    def get_config(filename="course_map.json"):
+    def set_config(self):
         """ Gets the configuration files """
-        with open(f"{CourseManager._EVE_CONFIG_PATH}/{filename}", 'r') as fh:
+        with open(f"{CourseManager._EVE_CONFIG_PATH}/course_map.json", 'r') as fh:
             config = json.load(fh)
-        return config
+        self._config = config
 
+
+    def get_config_from_course_by_key(self, key):
+        """ Gets the configuration value from [course][key] """
+        try:
+            config = self._config[self._course][key]
+        except KeyError:
+            config = self._config['default'][key]
+        
+        return config.format(
+            kmom=self._kmom,
+            acr=self._acr,
+            course=self._course,
+        )
 
 
     def get_course_repo_dir(self):
@@ -58,7 +70,8 @@ class CourseManager:
             + init-me
         """
         os.mkdir(self.get_course_repo_dir())
-        git_url = self._config[self._course]['git_url']
+
+        git_url = self.get_config_from_course_by_key('git_url')
         os.system(f"git clone {git_url} {self.get_course_repo_dir()}")
 
         self.run_shell_command_in_course_repo("make docker-install")
@@ -89,22 +102,16 @@ class CourseManager:
         self.reset_kmom()
         self.run_shell_command_in_course_repo("dbwebb update")
 
-        test_command = self._config[self._course]['dbwebb_test_command'].format(
-            kmom = self._kmom,
-            acr = self._acr
-        )
-        result = self.run_shell_command_in_course_repo(test_command)
+        dbwebb_test_command = self.get_config_from_course_by_key('dbwebb_test_command')
+        result = self.run_shell_command_in_course_repo(dbwebb_test_command)
 
         return "PG" if result == 0 else "Ux"
 
 
 
-    def get_content_from_test_log(self, filename):
+    def get_content_from_test_log(self):
         """ Reads the log results and returns them """
-        log_file = self._config[self._course]['log_file'].format(
-            kmom = self._kmom,
-            acr = self._acr
-        )
+        log_file = self.get_config_from_course_by_key('log_file')
         pathToLogfile = f"{self.get_course_repo_dir()}/{log_file}"
 
         with open(pathToLogfile, 'r') as fh:
