@@ -26,7 +26,7 @@ Available routes:
 ```
 
 
-Database:
+### Database:
 Setup SQLite database if `migrations` folder already exist:
 ```
 flask db upgrade
@@ -50,6 +50,29 @@ If you have the wrong migrations version in the database when you want to upgrad
 flask db stamp head
 flask db upgrade
 ```
+
+### Test configuration:
+As `dbwebb test` can vary, inside `app/eve/config/course_map.json` lies a configuration file.
+You can override the `default` configurations for a course by adding a new object matching the course's name. Example:
+```json
+{
+    "python": {
+        "log_file": ".log/test/{kmom}.log",
+    },
+    "default": {
+        "git_url": "https://github.com/dbwebb-se/{course}.git",
+        "dbwebb_test_command": "dbwebb test --docker {kmom} {acr} --download",
+        "log_file": ".log/test/docker/main.ansi"
+    }
+}
+```
+
+This will change the log file's location from the default value.  
+
+Supported string substitutions are:
+ * `{course}`  - will be replaced with the assignments course.
+ * `{kmom}`    - will be replaced with the assignments kmom.
+ * `{acr}`     - will be replaced with the students acronym.
 
 # Box view
 
