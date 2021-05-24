@@ -1,19 +1,24 @@
 """
 Contains routes for main purpose of app
 """
-from flask import redirect, url_for, request, current_app
+from flask import current_app
 from app.eve import bp
-from app.eve.models.course_repo import CourseManager
-import os
+from app.eve.models.course_manager import CourseManager
+import app.eve.globals as g
+
+# blueprints does not recognize "un-imported" names .. look for better fix.
+g.is_test_running = False
 
 @bp.before_request
 def before_request():
     """
     Executes before the requests
     """
-    pass
-    # här kan vi logga saker
-    # current_app.logger.debug("{} is authenticated".format(current_user))
+    if g.is_test_running:
+        return {"Status": "Eve is busy, try again in a few minutes"}
+
+    g.is_test_running = True
+
 
 
 @bp.route('/eve', methods=['GET', 'POST'])
@@ -22,13 +27,9 @@ def index():
     Route for index page
 
     TODO:
-    1. Database (sqlite) - how does Wall-E data look like?
-      - Handle the assignment object differently - Create a class for it.
-    2. Add a queue system so tests does not overlap?
-    3. Update the database with the new grade and ping Wall-E
-    4. Extra assignments?
-      - Maybe not, it does not affect the grade YET and they can run it locally.
-      - If yes, change how it works in the examiner module.
+    1. Use the database.
+    2. Update the database with the new grade and feedback, then ping Wall-E.
+    3. Write tests
     """
 
     CM = CourseManager({
@@ -41,7 +42,7 @@ def index():
         CM.create_and_initiate_dbwebb_course_repo()
 
     grade = CM.update_download_and_run_tests()
-    log_content = CM.get_content_from_test_log('docker/main.ansi')
+    log_content = CM.get_content_from_test_log()
 
     print(f"{CM} - {grade}!")
 
@@ -50,3 +51,14 @@ def index():
         "grade": grade,
         "log": log_content
     }
+
+
+@bp.teardown_request
+def teardown_request(error=None):
+    """
+    Executes after all requests, regardless if error or not.
+    """
+    if error:
+        current_app.logger.info(str(error))
+
+    g.is_test_running = False
