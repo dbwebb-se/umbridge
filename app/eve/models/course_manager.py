@@ -3,25 +3,35 @@ Model class for eve.index
 """
 
 import os
+import json
 
 root_url = os.path.dirname(__file__) + "/../.."
 
 class CourseManager:
     """ Manges test command and courses """
     _COURSES_BASE_FOLDER = f"{root_url}/eve/courses"
-    _GIT_REPO_BASE_URL = "https://github.com/dbwebb-se"
+    _EVE_CONFIG_PATH = f"{root_url}/eve/config"
 
     def __init__(self, assignment):
         """ Initiate the class """
         self._course = assignment["course"]
         self._kmom = assignment["kmom"]
         self._acr = assignment["acr"]
-
+        self._config = self.get_config()
 
 
     def __str__(self):
         """Class string representation"""
         return f"{self._acr} {self._kmom} {self._course}"
+
+
+
+    @staticmethod
+    def get_config(filename="course_map.json"):
+        """ Gets the configuration files """
+        with open(f"{CourseManager._EVE_CONFIG_PATH}/{filename}", 'r') as fh:
+            config = json.load(fh)
+        return config
 
 
 
@@ -48,10 +58,8 @@ class CourseManager:
             + init-me
         """
         os.mkdir(self.get_course_repo_dir())
-        os.system(
-            f"git clone {CourseManager._GIT_REPO_BASE_URL}/{self._course}.git "
-            f"{self.get_course_repo_dir()}"
-        )
+        git_url = self._config[self._course]['git_url']
+        os.system(f"git clone {git_url} {self.get_course_repo_dir()}")
 
         self.run_shell_command_in_course_repo("make docker-install")
         self.run_shell_command_in_course_repo("dbwebb init-me")
@@ -81,9 +89,11 @@ class CourseManager:
         self.reset_kmom()
         self.run_shell_command_in_course_repo("dbwebb update")
 
-        result = self.run_shell_command_in_course_repo(
-            f"dbwebb test --docker {self._kmom} {self._acr} --download"
+        test_command = self._config[self._course]['dbwebb_test_command'].format(
+            kmom = self._kmom,
+            acr = self._acr
         )
+        result = self.run_shell_command_in_course_repo(test_command)
 
         return "PG" if result == 0 else "Ux"
 
@@ -91,7 +101,11 @@ class CourseManager:
 
     def get_content_from_test_log(self, filename):
         """ Reads the log results and returns them """
-        pathToLogfile = f"{self.get_course_repo_dir()}/.log/test/{filename}"
+        log_file = self._config[self._course]['log_file'].format(
+            kmom = self._kmom,
+            acr = self._acr
+        )
+        pathToLogfile = f"{self.get_course_repo_dir()}/{log_file}"
 
         with open(pathToLogfile, 'r') as fh:
             content = fh.read()
