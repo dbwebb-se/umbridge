@@ -26,6 +26,30 @@ Available routes:
 ```
 
 
+Database:
+Setup SQLite database if `migrations` folder already exist:
+```
+flask db upgrade
+```
+
+If you have upgraded the code for any SQLAlchemy models:
+```
+flask db migrate -m '<message>'
+flask db upgrade
+```
+
+If you need to recreate app.db and migrations folder:
+```
+flask db init
+flask db migrate -m '<message>'
+flask db upgrade
+```
+
+If you have the wrong migrations version in the database when you want to upgrade it you can change it with:
+```
+flask db stamp head
+flask db upgrade
+```
 
 # Box view
 
