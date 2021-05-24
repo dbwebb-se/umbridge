@@ -2,6 +2,12 @@ import logging
 from flask import Flask
 from flask.logging import default_handler
 from app.config import ProdConfig, RequestFormatter
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+
+db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app(config_class=ProdConfig):
     """
@@ -10,6 +16,9 @@ def create_app(config_class=ProdConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
+    db.init_app(app)
+    migrate.init_app(app, db)
+    
 
     #pylint: disable=wrong-import-position, cyclic-import, import-outside-toplevel
     from app.errors import bp as errors_bp
@@ -31,3 +40,5 @@ def create_app(config_class=ProdConfig):
         app.logger.setLevel(logging.INFO)
 
     return app
+
+from app import models #pylint: disable=wrong-import-position, cyclic-import, import-outside-toplevel

@@ -1,4 +1,6 @@
 .vscode
+app.db
+migrations/
 
 
 # Byte-compiled / optimized / DLL files
