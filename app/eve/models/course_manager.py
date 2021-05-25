@@ -33,18 +33,20 @@ class CourseManager:
         self._config = config
 
 
+
     def get_config_from_course_by_key(self, key):
         """ Gets the configuration value from [course][key] """
         try:
             config = self._config[self._course][key]
         except KeyError:
             config = self._config['default'][key]
-        
+
         return config.format(
             kmom=self._kmom,
             acr=self._acr,
             course=self._course,
         )
+
 
 
     def get_course_repo_dir(self):
@@ -64,6 +66,7 @@ class CourseManager:
         return os.system(f"cd {self.get_course_repo_dir()} && {command}")
 
 
+
     def create_and_initiate_dbwebb_course_repo(self):
         """
         Clones a new course repo and installs all dependencies
@@ -79,19 +82,6 @@ class CourseManager:
 
 
 
-    def reset_kmom(self):
-        """
-        Empties a kmom from the students code
-
-        TODO: Update and remove everything inside the kmoms subdir
-            instead of "files only" which it currently does.
-        """
-        for root, _, files in os.walk(f"{self.get_course_repo_dir()}/{self._kmom}"):
-            for file in files:
-                os.remove(os.path.join(root, file))
-
-
-
     def update_download_and_run_tests(self):
         """
         Resets the kmom, updates the course repo and runs the tests
@@ -99,7 +89,6 @@ class CourseManager:
             0   => exit code 0 => PASSED
             256 => exit code 1 => FAILED
         """
-        self.reset_kmom()
         self.run_shell_command_in_course_repo("dbwebb update")
 
         dbwebb_test_command = self.get_config_from_course_by_key('dbwebb_test_command')
