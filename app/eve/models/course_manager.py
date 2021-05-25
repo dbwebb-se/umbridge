@@ -10,13 +10,13 @@ app_base_url = os.path.dirname(__file__) + "/../.."
 class CourseManager:
     """ Manges test command and courses """
     _COURSES_BASE_FOLDER = f"{app_base_url}/eve/courses"
-    _EVE_CONFIG_PATH = f"{app_base_url}/eve/config"
+    _CONFIG_PATH = f"{app_base_url}/settings"
 
-    def __init__(self, assignment):
+    def __init__(self, submission):
         """ Initiate the class """
-        self._course = assignment["course"]
-        self._kmom = assignment["kmom"]
-        self._acr = assignment["acr"]
+        self._course = submission.course
+        self._kmom = submission.kmom
+        self._acr = submission.acronym
         self.set_config()
 
 
@@ -28,7 +28,7 @@ class CourseManager:
 
     def set_config(self):
         """ Gets the configuration files """
-        with open(f"{CourseManager._EVE_CONFIG_PATH}/course_map.json", 'r') as fh:
+        with open(f"{CourseManager._CONFIG_PATH}/course_map.json", 'r') as fh:
             config = json.load(fh)
         self._config = config
 
