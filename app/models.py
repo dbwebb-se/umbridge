@@ -5,29 +5,46 @@ Contains Databse model classes
 
 from app import db
 
-class Assignment(db.Model):
+class Submission(db.Model):
     """
-    Represents an assignment
+    Represents an submission
     """
     id = db.Column(db.Integer, primary_key=True)
-    acronym = db.Column(db.String(6), index=True)
+
+    # Student information
+    user_id = db.Column(db.Integer, index=True)
+    user_acronym = db.Column(db.String(6), index=True)
+
+    # Assignment information
+    kmom = db.Column(db.String(6), index=True)
+    assignment_id = db.Column(db.Integer, index=True)
+
+    # Course information
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    course = db.relationship(
+        'Course',
+        primaryjoin="Course.id == Submission.course_id",
+        backref=db.backref('courses', uselist=False))
+
+    # PG | Ux
     grade = db.Column(db.String(2), default=None)
-    status = db.Column(db.String(20), default='PENDING')
     feedback = db.Column(db.Text, default=None)
 
-    kmom = db.Column(db.String(6), index=True)
-    course = db.Column(db.String(25), index=True)
-
-    # stud_id = db.Column(db.Integer, index=True)
-    # kmom = db.Column(db.Integer, index=True)
-    # course = db.Column(db.Integer, index=True)
+    # submitted | pending_review | graded -> Follows CanvasAPI standards
+    workflow_state = db.Column(db.String(15), default='submitted')
 
 
     def __repr__(self):
-        return '<Assignment {}, {}, {}>'.format(self.acronym, self.kmom, self.course)
+        return '<Assignment {}, {}, {}>'.format(self.user_acronym, self.kmom, self.course.name)
 
 
-    def update_status_grade_feedback(self, status, grade, feedback):
-        self.status = status
-        self.grade = grade
-        self.feedback = feedback
+class Course(db.Model):
+    """
+    Represents a course
+    """
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(25))
+    active = db.Column(db.Integer, index=True, default=1)
+
+    def __repr__(self):
+        return '<Course {}, {}, {}>'.format(self.id, self.name, self.active == 1)

@@ -6,7 +6,7 @@ from app.eve import bp
 from app.eve.models.course_manager import CourseManager
 import app.eve.globals as g
 from app import db
-from app.models import Assignment
+from app.models import Submission, Course
 
 # blueprints does not recognize "un-imported" names .. look for better fix.
 g.is_test_running = False
@@ -22,29 +22,35 @@ def before_request():
     g.is_test_running = True
 
 
+
 @bp.route('/eve/reset', methods=['GET', 'POST'])
 def reset():
     """
     Temporary route to reset database and load a test assignment.
     """
+    course_id, course_name = 2508, 'python'
+    # user_id, user_acronym, kmom = 5954, 'mabn17', 'kmom01'
+    # assignment_id = 21567
 
-    Assignment.query.filter(Assignment.id > 0).delete()
-    a = Assignment(acronym="mabn17", kmom="kmom01", course="python")
-    db.session.add(a)
+    Course.query.filter(Course.id > 0).delete()
+    c = Course(id=course_id, name=course_name)
+    db.session.add(c)
     db.session.commit()
 
-    return "Assignment table has been reset"
+    Submission.query.filter(Submission.id > 0).delete()
+    db.session.commit()
+
+    return "Submission and Course table has been reset with dummy data"
 
 
-@bp.route('/eve', methods=['GET', 'POST'])
+@bp.route('/eve/test', methods=['GET', 'POST'])
 def index():
     """
     Route for index page
     """
 
-    submissions = Assignment.query.filter_by(status="PENDING")
+    submissions = Submission.query.filter_by(workflow_state="submitted")
     for sub in submissions:
-
         CM = CourseManager(sub)
 
         if not CM.does_course_repo_exist():
@@ -53,10 +59,13 @@ def index():
         grade = CM.update_download_and_run_tests()
         feedback = CM.get_content_from_test_log()
 
-        sub.update_status_grade_feedback('GRADED', grade, feedback)
+        sub.workflow_state = 'pending_review'
+        sub.grade = grade
+        sub.feedback = feedback
+
         db.session.commit()
 
-    return {"Status": f"Corrected {len(submissions)} assignments!"}
+    return {"Status": "Corrected all assignments!"}
 
 
 @bp.teardown_request

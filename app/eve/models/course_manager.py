@@ -5,18 +5,18 @@ Model class for eve.index
 import os
 import json
 
-app_base_url = os.path.dirname(__file__) + "/../.."
+app_base_path = os.path.dirname(__file__) + "/../.."
 
 class CourseManager:
     """ Manges test command and courses """
-    _COURSES_BASE_FOLDER = f"{app_base_url}/eve/courses"
-    _CONFIG_PATH = f"{app_base_url}/settings"
+    _COURSES_BASE_FOLDER = f"{app_base_path}/eve/courses"
+    _CONFIG_PATH = f"{app_base_path}/settings"
 
     def __init__(self, submission):
         """ Initiate the class """
-        self._course = submission.course
+        self._course = submission.course.name
         self._kmom = submission.kmom
-        self._acr = submission.acronym
+        self._acr = submission.user_acronym
         self.set_config()
 
 
