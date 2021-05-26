@@ -2,7 +2,7 @@
 API_URL = "https://bth.instructure.com"
 
 # Canvas API key
-API_KEY = "12133~ra7N8wjhxOEQ3uEuCW6qWpIjaFMifIXCTeRRiIknQozb1M0K6zxEJwTZ7QWjZNe0"
+API_KEY = "12133~lECAoZlKwH6CX7VnOCMZFPl1oAJ5uPWwg5o5C5oLjjYQrD1isRBYqroVtvBQICq2"
 
 HEADERS = {
     'Authorization': 'Bearer ' + API_KEY
