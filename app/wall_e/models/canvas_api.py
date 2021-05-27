@@ -10,12 +10,11 @@ class Canvas(Requester):
     """
     Model class for wall_e.fetch
     """
-    def __init__(self, base_url, api_token, course_id=None):
+    def __init__(self, base_url, api_token, course_id):
         super().__init__(base_url, api_token)
 
-        if course_id:
-            self.course_id = course_id
-            self.set_assignments_and_users()
+        self.course_id = course_id
+        self.set_assignments_and_users()
 
     def set_assignments_and_users(self):
         """ Caches assignments and students in a course """
