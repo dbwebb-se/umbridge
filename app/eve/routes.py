@@ -33,7 +33,7 @@ def reset():
     # assignment_id = 21567
 
     Course.query.filter(Course.id > 0).delete()
-    c = Course(id=course_id, name=course_name)
+    c = Course(id=course_id, name=course_name, active=1)
     db.session.add(c)
     db.session.commit()
 
