@@ -21,8 +21,12 @@ flask run
 Available routes:
 
 ```
-/wall-e
 /eve
+  /reset - Resets the database and adds "Wall-E Kursen" to the course table
+  /grade - Tests all "submitted" assignments
+/wall-e
+  /fetch-submissions - Fetches all submissions that are not graded
+  /grade             - Grades the students 
 ```
 
 
@@ -51,8 +55,38 @@ flask db stamp head
 flask db upgrade
 ```
 
+#### Models
+There are two database tables, `course` and `submission`. A `course` is required before adding `submissions`.
+
+The `course` table contains:
+  * `id` - The `course_id` from Canvas
+  * `name` - The courses dbwebb name eg. "python" or "htmlphp".
+  * `active` - If the course is active, wall-e will fetch submissions from it
+    - 0, Not active
+    - 1, Active
+
+The `submission` table contains:
+  * `id` - Auto generated primary key.
+  * `user_id` - A students canvas id
+  * `user_acronym` - The students acronym
+  * `assignment_id` - The assignments canvas id
+  * `kmom` - The assignments name
+  * `course_id` - The course id (FK) to `course.id`
+  * `course` - Pointer to the `course` based on `course_id`
+  * `feedback` - Dbwebb test logfile content
+  * `grade` - The grade of the assignment
+     - `NULL`, not yet graded
+     - `"Ux"`, one or more tests has failed
+     - `"PG"`, all tests passed
+  * `workflow_state` - Follows the CanvasAPI standards and represents the current status of an assignment
+     - `"submitted"`, recently fetched by wall-e
+     - `"pending_review"` has been tested by eve
+     - `"graded"`, grade has been reported to canvas
+
+
 ### Test configuration:
-As `dbwebb test` can vary, inside `app/eve/config/course_map.json` lies a configuration file.
+There is a configuration file inside `app/settings/course_map.json`. This is used to configure the default behavior depending on the course. If a course is missing a key or does not exist it will fallback to the default values.
+
 You can override the `default` configurations for a course by adding a new object matching the course's name. Example:
 ```json
 {
@@ -67,7 +101,12 @@ You can override the `default` configurations for a course by adding a new objec
 }
 ```
 
-This will change the log file's location from the default value.  
+This will change the log file's location for the python course.
+
+Supported keys are:
+ * `git_url` - The link to the course repo.
+ * `dbwebb_test_command` - The command used to test the assignment.
+ * `log_file` - The file that will be sent to the students upon grading.
 
 Supported string substitutions are:
  * `{course}`  - will be replaced with the assignments course.
