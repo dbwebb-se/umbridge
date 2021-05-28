@@ -54,7 +54,7 @@ flask db upgrade
 If you need to recreate app.db and migrations folder:
 ```
 flask db init
-flask db migrate -m '<message>'
+flask db migrate
 flask db upgrade
 ```
 
