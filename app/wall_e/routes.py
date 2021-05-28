@@ -7,13 +7,22 @@ from app import db
 from app.models import Submission, Course
 from app.settings.api_config import API_KEY, API_URL
 from app.wall_e.models.canvas_api import Canvas, Grader
+import app.globals as g
+from time import sleep
+
+# blueprints does not recognize "un-imported" names .. look for better fix.
+g.is_fetching_or_grading = False
 
 @bp.before_request
 def before_request():
     """
     update last_seen for User before handling request
     """
-    pass
+    if g.is_fetching_or_grading:
+        return { "message": "Wall-E is busy, try again in a few minutes" }
+
+    g.is_fetching_or_grading = True
+
     # här kan vi logga saker
     # current_app.logger.info("Testar logging")
 
@@ -51,7 +60,7 @@ def fetch():
             db.session.add(s)
             db.session.commit()
 
-    return {}
+    return { "message": "Successfully fetched new assignments from canvas" }
 
 
 
@@ -68,4 +77,15 @@ def grade():
         sub.workflow_state = "graded"
         db.session.commit()
 
-    return {}
+    return { "message": "Canvas has been updated with the new grades." }
+
+
+@bp.teardown_request
+def teardown_request(error=None):
+    """
+    Executes after all requests, regardless if error or not.
+    """
+    if error:
+        current_app.logger.info(str(error))
+
+    g.is_fetching_or_grading = False

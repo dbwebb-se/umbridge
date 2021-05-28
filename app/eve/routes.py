@@ -4,7 +4,7 @@ Contains routes for main purpose of app
 from flask import current_app
 from app.eve import bp
 from app.eve.models.course_manager import CourseManager
-import app.eve.globals as g
+import app.globals as g
 from app import db
 from app.models import Submission, Course
 
@@ -17,7 +17,7 @@ def before_request():
     Executes before the requests
     """
     if g.is_test_running:
-        return {"Status": "Eve is busy, try again in a few minutes"}
+        return { "message": "Eve is busy, try again in a few minutes" }
 
     g.is_test_running = True
 
@@ -44,7 +44,7 @@ def reset():
 
 
 @bp.route('/eve/test', methods=['GET', 'POST'])
-def index():
+def test():
     """
     Route for index page
     """
@@ -65,7 +65,7 @@ def index():
 
         db.session.commit()
 
-    return {"Status": "Corrected all assignments!"}
+    return { "message": "All new assignments has been corrected" }
 
 
 @bp.teardown_request
