@@ -5,6 +5,7 @@ from app.config import ProdConfig, RequestFormatter
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from os import system
+import click
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -42,15 +43,20 @@ def create_app(config_class=ProdConfig):
 
 
     @app.cli.command()
-    def grade():
+    @click.argument("base64_token", default="ZGJ3ZWJiOnN1cGVyLXNlY3JldA==")
+    def grade(base64_token):
         """
         Run scheduled job.
         Example
         * * * * * cd /path/to/repo && .venv/bin/flask grade
         """
-        system('curl localhost:5000/wall-e/fetch-submissions')
-        system('curl localhost:5000/eve/test')
-        system('curl localhost:5000/wall-e/grade')
+        curl_cmd = "curl -i -H"
+        headers = f'"Authorization: Basic {base64_token}"'
+        host = "http://localhost:5000"
+
+        system(f"{curl_cmd} {headers} {host}/wall-e/fetch-submissions")
+        system(f"{curl_cmd} {headers} {host}/eve/test")
+        system(f"{curl_cmd} {headers} {host}/wall-e/grade")
 
 
     return app
