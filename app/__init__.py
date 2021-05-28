@@ -4,10 +4,11 @@ from flask.logging import default_handler
 from app.config import ProdConfig, RequestFormatter
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+from os import system
 
 db = SQLAlchemy()
 migrate = Migrate()
+
 
 def create_app(config_class=ProdConfig):
     """
@@ -38,6 +39,19 @@ def create_app(config_class=ProdConfig):
         )
         default_handler.setFormatter(formatter)
         app.logger.setLevel(logging.INFO)
+
+
+    @app.cli.command()
+    def grade():
+        """
+        Run scheduled job.
+        Example
+        * * * * * cd /path/to/repo && .venv/bin/flask grade
+        """
+        system('curl localhost:5000/wall-e/fetch-submissions')
+        system('curl localhost:5000/eve/test')
+        system('curl localhost:5000/wall-e/grade')
+
 
     return app
 
