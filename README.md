@@ -21,14 +21,23 @@ flask run
 Available routes:
 
 ```
+/wall-e
+  /fetch-submissions - Fetches all submissions that are not graded from canvas and adds them to the database as 'submitted'. Returns a redirect to `eve/test/`
+
+  /grade             - Grades the students
+
+
 /eve
   /reset - Resets the database and adds "Wall-E Kursen" to the course table
-  /grade - Tests all "submitted" assignments
-/wall-e
-  /fetch-submissions - Fetches all submissions that are not graded
-  /grade             - Grades the students 
+  /test - Tests all "submitted" assignments as well as updates them with the test results, their grade and the workflow_state to "pending review". Returns a redirect to `/wall-e/grade`
 ```
 
+Start the server and use `flask grade` to fetch, test and report the grades to canvas.
+
+Example of a cron job to correct the students every 15 minuts:
+```bash
+*/15 * * * * cd /path/to/repo && .venv/bin/flask grade
+```
 
 ### Database:
 Setup SQLite database if `migrations` folder already exist:
