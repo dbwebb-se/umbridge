@@ -1,14 +1,13 @@
 """
 Contains routes for main purpose of app
 """
-from flask import current_app
+from flask import current_app, request
 from app.wall_e import bp
-from app import db
+from app import db, auth
 from app.models import Submission, Course
 from app.settings.api_config import API_KEY, API_URL
 from app.wall_e.models.canvas_api import Canvas, Grader
 import app.globals as g
-from time import sleep
 
 # blueprints does not recognize "un-imported" names .. look for better fix.
 g.is_fetching_or_grading = False
@@ -28,6 +27,7 @@ def before_request():
 
 
 @bp.route('/wall-e/fetch-submissions', methods=['GET', 'POST'])
+@auth.login_required
 def fetch():
     """
     Route for fetching gradable submissions
@@ -65,6 +65,7 @@ def fetch():
 
 
 @bp.route('/wall-e/grade', methods=['GET', 'POST'])
+@auth.login_required
 def grade():
     """
     Route for grading students

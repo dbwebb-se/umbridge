@@ -5,8 +5,8 @@ from flask import current_app
 from app.eve import bp
 from app.eve.models.course_manager import CourseManager
 import app.globals as g
-from app import db
-from app.models import Submission, Course
+from app import db, auth
+from app.models import Submission, Course, User
 
 # blueprints does not recognize "un-imported" names .. look for better fix.
 g.is_test_running = False
@@ -40,10 +40,17 @@ def reset():
     Submission.query.filter(Submission.id > 0).delete()
     db.session.commit()
 
+    User.query.filter(User.id > 0).delete()
+    user = User(username='dbwebb')
+    user.password = 'super-secret'
+    db.session.add(user)
+    db.session.commit()
+
     return "Submission and Course table has been reset with dummy data"
 
 
 @bp.route('/eve/test', methods=['GET', 'POST'])
+@auth.login_required
 def test():
     """
     Route for index page
