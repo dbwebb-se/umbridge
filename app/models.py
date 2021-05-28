@@ -4,6 +4,7 @@ Contains Databse model classes
 """
 
 from app import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class Submission(db.Model):
     """
@@ -48,3 +49,28 @@ class Course(db.Model):
 
     def __repr__(self):
         return '<Course {}, {}, {}>'.format(self.id, self.name, self.active == 1)
+
+
+class User(db.Model):
+    """ Represents a system user """
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(25), unique=True)
+    password_hash = db.Column(db.String(128))
+
+    @property
+    def password(self):
+        raise AttributeError('password not readable')
+
+    @password.setter
+    def password(self, password):
+        """ Setter for password """
+        self.password_hash = generate_password_hash(password)
+
+    def verify_password(self, password):
+        """ Compares given password to the hashed password """ 
+        return check_password_hash(self.password_hash, password)
+
+
+
+    def __repr__(self):
+        return '<User {}, {}>'.format(self.id, self.username)
