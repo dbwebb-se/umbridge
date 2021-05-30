@@ -27,7 +27,7 @@ Fetches all ungraded submissions from the database and test them.
 
 ```json
 {
-    { "message": "All new assignments has been corrected" }
+    "message": "All new assignments has been corrected"
 }
 ```
 
