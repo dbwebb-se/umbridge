@@ -1,3 +1,8 @@
+Umbridge
+================================
+
+Automatic grading system that utilizes the [canvas api](https://canvas.instructure.com/doc/api/) and [dbwebb cli](https://github.com/dbwebb-se/dbwebb-cli).
+
 ### Run application
 
 Start byt setting the FLASK_APP, FLASK_ENV and CANVAS_API_TOKEN env vars:
@@ -47,9 +52,9 @@ Available routes:
 ```
 
 **More information** can be found in the api documentation:
-1. [wall-e](docs/api/wall-e.md)
-2. [eve](docs/api/eve.md)
-3. [courses](docs/api/courses.md)
+1. [wall-e](/api/wall-e.md)
+2. [eve](/api/eve.md)
+3. [courses](/api/courses.md)
 
 
 ### Execute the grading process:
