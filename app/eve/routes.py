@@ -17,7 +17,7 @@ def before_request():
     Executes before the requests
     """
     if g.is_test_running:
-        return { "message": "Eve is busy, try again in a few minutes" }
+        return { "message": "Eve is busy, try again in a few minutes" }, 423
 
     g.is_test_running = True
 
@@ -29,12 +29,12 @@ def reset():
     Temporary route to reset database and load a test assignment.
     """
     course_id, course_name = 2508, 'python'
-    # user_id, user_acronym, kmom = 5954, 'mabn17', 'kmom01'
-    # assignment_id = 21567
 
     Course.query.filter(Course.id > 0).delete()
-    c = Course(id=course_id, name=course_name, active=1)
-    db.session.add(c)
+    c1 = Course(id=course_id, name=course_name, active=1)
+    c2 = Course(id=123, name='ike-aktiv', active=0)
+    db.session.add(c1)
+    db.session.add(c2)
     db.session.commit()
 
     Submission.query.filter(Submission.id > 0).delete()
@@ -46,11 +46,11 @@ def reset():
     db.session.add(user)
     db.session.commit()
 
-    return "Submission and Course table has been reset with dummy data"
+    return {"message": "Submission and Course table has been reset with dummy data"}
 
 
 @bp.route('/eve/test', methods=['GET', 'POST'])
-@auth.login_required
+@auth.requires_authorization_header
 def test():
     """
     Route for index page

@@ -4,9 +4,16 @@ from flask import request, abort
 from functools import wraps
 
 
-def login_required(f):
+def requires_authorization_header(f):
+    """
+    Decorator for locked routes
+    """
     @wraps(f)
-    def decorated_function(*args, **kws):
+    def decorator(*args, **kws):
+        """
+        Looks for an Authorization header
+        and compares it to the user database
+        """
         authorization = request.headers.get('Authorization')
 
         if not authorization:
@@ -27,4 +34,4 @@ def login_required(f):
             abort(401, "Invalid username or password")
 
         return f(*args, **kws)
-    return decorated_function
+    return decorator
