@@ -12,31 +12,26 @@ class Submission(db.Model):
     """
     id = db.Column(db.Integer, primary_key=True)
 
-    # Student information
-    user_id = db.Column(db.Integer, index=True)
-    user_acronym = db.Column(db.String(6), index=True)
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    user_acronym = db.Column(db.String(6), nullable=False)
 
-    # Assignment information
-    kmom = db.Column(db.String(6), index=True)
-    assignment_id = db.Column(db.Integer, index=True)
+    kmom = db.Column(db.String(6), nullable=False)
+    assignment_id = db.Column(db.Integer, nullable=False)
 
-    # Course information
-    course_id = db.Column(db.Integer, db.ForeignKey('course.id'))
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
     course = db.relationship(
         'Course',
         primaryjoin="Course.id == Submission.course_id",
         backref=db.backref('courses', uselist=False))
 
-    # PG | Ux
     grade = db.Column(db.String(2), default=None)
     feedback = db.Column(db.Text, default=None)
-
-    # submitted | pending_review | graded -> Follows CanvasAPI standards
     workflow_state = db.Column(db.String(15), default='submitted')
 
 
     def __repr__(self):
-        return '<Assignment {}, {}, {}>'.format(self.user_acronym, self.kmom, self.course.name)
+        return '<Assignment {}, {}, {}>'.format(
+            self.user_acronym, self.kmom, self.course.name)
 
 
 class Course(db.Model):
@@ -44,11 +39,39 @@ class Course(db.Model):
     Represents a course
     """
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(25))
-    active = db.Column(db.Integer, index=True, default=1)
+    name = db.Column(db.String(25), nullable=False)
+    active = db.Column(db.Integer, default=1)
+
+    @property
+    def serialize(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'active': self.active,
+        }
+
+    @classmethod
+    def create(cls, data):
+        course = cls(**data)
+        db.session.add(course)
+        db.session.commit()
+
+        return course
+
+    def update(self, data):
+        self.active = data.get('active') or self.active
+        self.name = data.get('name') or self.name
+        db.session.commit()
+
+        return self
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        return self
 
     def __repr__(self):
-        return '<Course {}, {}, {}>'.format(self.id, self.name, self.active == 1)
+        return '<Course {}, {}, Active: {}>'.format(self.id, self.name, self.active == 1)
 
 
 class User(db.Model):
@@ -59,7 +82,7 @@ class User(db.Model):
 
     @property
     def password(self):
-        raise AttributeError('password not readable')
+        raise AttributeError('password is not readable')
 
     @password.setter
     def password(self, password):
