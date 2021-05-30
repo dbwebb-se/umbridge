@@ -1,10 +1,13 @@
 ## Content
+
 1. Get Submissions
 2. Grade Submissions
 
 Back to [README](../README.md)
 
+
 # 1. Get Submissions
+
 Fetches all submissions that requires drading from Canvas and stores the database.
 
 **URL** : `/fetch-submissions`
@@ -16,7 +19,7 @@ Fetches all submissions that requires drading from Canvas and stores the databas
 {}
 ```
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -34,6 +37,7 @@ Fetches all submissions that requires drading from Canvas and stores the databas
 
    
 # 2. Grade Submissions
+
 Gets all the tested submissions from the database and reports them to Canvas.
 
 **URL** : `/wall-e/grade`
@@ -46,7 +50,7 @@ Gets all the tested submissions from the database and reports them to Canvas.
 ```
 
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -63,6 +67,7 @@ Gets all the tested submissions from the database and reports them to Canvas.
 
 
 ## Incorrect Response
+
 The server might have a penging request to grade a submission. To avoid conflicts this will cancel the request.
 
 **Code**: `423 Locked`

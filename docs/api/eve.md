@@ -1,10 +1,13 @@
 ## Content
+
 1. Test Submissions
 2. Reset the database (Temporary)
 
 Back to [README](../README.md)
 
+
 # 1. Test Submissions
+
 Fetches all ungraded submissions from the database and test them.
 
 **URL** : `/eve/grade`
@@ -16,7 +19,7 @@ Fetches all ungraded submissions from the database and test them.
 {}
 ```
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -32,6 +35,7 @@ Fetches all ungraded submissions from the database and test them.
 ```
 
 ## Incorrect Response
+
 The server might have a penging request to grade a submission. To avoid conflicts this will cancel the request.
 
 **Code**: `423 Locked`
@@ -46,6 +50,7 @@ The server might have a penging request to grade a submission. To avoid conflict
 
    
 # 2. Reset the database (Temporary)
+
 Resets the database, adds a user to login as, adds the test course and resets the submission table.
 
 **URL** : `/eve/reset`
@@ -73,6 +78,7 @@ Resets the database, adds a user to login as, adds the test course and resets th
 ```
 
 ## Incorrect Response
+
 The server might have a penging request to grade a submission. To avoid conflicts this will cancel the request.
 
 **Code**: `423 Locked`

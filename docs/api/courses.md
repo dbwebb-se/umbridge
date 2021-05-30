@@ -1,4 +1,5 @@
 ## Content
+
 1. Get courses
 2. Add a new course
 3. Update a course
@@ -7,16 +8,15 @@
 Back to [README](../README.md)
 
 
-
-
 # 1. Get courses
+
 Fetches all courses
 
 **URL** : `/courses`
 
 **Method** : `GET`
 
-**Optional query parameters** :
+**Optional query parameters**:  
 | Param Name     | What                                |
 |:---------------|:------------------------------------|
 | `?id`          | The course id                       |
@@ -24,7 +24,7 @@ Fetches all courses
 | `?active`      | It the course is active or not      |
 
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -52,6 +52,7 @@ Fetches all courses
 ```
 
 ## Incorrect Response
+
 If the wrong query parametes are given, unatherized or a server error appears.
 
 **Code**: `[400, 401, 500]`
@@ -66,6 +67,7 @@ If the wrong query parametes are given, unatherized or a server error appears.
 
 
 # 2. Add a new course
+
 Adds a new course to the database
 
 **URL** : `/courses`
@@ -82,7 +84,7 @@ Adds a new course to the database
 ```
 
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -104,6 +106,7 @@ Returns the newly created object.
 ```
 
 ## Incorrect Response
+
 If the course id exsists, given the wrong data, unatherized or a server error appears.
 
 **Code**: `[400, 401, 500]`
@@ -121,6 +124,7 @@ If the course id exsists, given the wrong data, unatherized or a server error ap
 
 
 # 3. Update a course
+
 Uppdates an existing course
 
 **URL** : `/courses`
@@ -137,7 +141,7 @@ Uppdates an existing course
 ```
 
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -159,6 +163,7 @@ Returns the updated object.
 ```
 
 ## Incorrect Response
+
 If the course id does not exsist, unatherized or a server error appears.
 
 **Code**: `[400, 401, 500]`
@@ -174,6 +179,7 @@ If the course id does not exsist, unatherized or a server error appears.
 
 
 # 4. Delete a course
+
 Uppdates an existing course
 
 **URL** : `/courses`
@@ -188,7 +194,7 @@ Uppdates an existing course
 ```
 
 
-**Auth required** : YES
+**Auth required** : YES  
 **Header**: `{ 'Authorization': 'Basic {credentials}' }`
 
 ## Success Response
@@ -205,6 +211,7 @@ Returns a success message with the deleted objects string representation.
 ```
 
 ## Incorrect Response
+
 If the course id does not exsist, unatherized or a server error appears.
 
 **Code**: `[400, 401, 500]`
