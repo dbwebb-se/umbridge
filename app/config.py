@@ -11,9 +11,14 @@ basedir = os.path.abspath(os.path.dirname(__file__) +  "/..")
 class Config():
     """Base configuration"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    CANVAS_API_URL = 'https://bth.instructure.com'
+    CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN') or '12133~lECAoZlKwH6CX7VnOCMZFPl1oAJ5uPWwg5o5C5oLjjYQrD1isRBYqroVtvBQICq2'
+
 
 class ProdConfig(Config):
     """Production configuration"""
