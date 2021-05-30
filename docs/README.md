@@ -52,9 +52,9 @@ Available routes:
 ```
 
 **More information** can be found in the api documentation:
-1. [wall-e](/api/wall-e.md)
-2. [eve](/api/eve.md)
-3. [courses](/api/courses.md)
+1. [wall-e](/docs/api/wall-e.md)
+2. [eve](/docs/api/eve.md)
+3. [courses](/docs/api/courses.md)
 
 
 ### Execute the grading process:
