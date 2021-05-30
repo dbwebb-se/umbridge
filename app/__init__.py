@@ -31,6 +31,9 @@ def create_app(config_class=ProdConfig):
 
     from app.eve import bp as eve_bp
     app.register_blueprint(eve_bp)
+
+    from app.courses import bp as courses_bp
+    app.register_blueprint(courses_bp)
     #pylint: enable=wrong-import-position, cyclic-import, import-outside-toplevel
 
 
@@ -43,20 +46,20 @@ def create_app(config_class=ProdConfig):
 
 
     @app.cli.command()
-    @click.argument("base64_token", default="ZGJ3ZWJiOnN1cGVyLXNlY3JldA==")
-    def grade(base64_token):
+    @click.argument("token", default="ZGJ3ZWJiOnN1cGVyLXNlY3JldA==")
+    def grade(token):
         """
-        Run scheduled job.
-        Example
-        * * * * * cd /path/to/repo && .venv/bin/flask grade
-        """
-        curl_cmd = "curl -i -H"
-        headers = f'"Authorization: Basic {base64_token}"'
-        host = "http://localhost:5000"
+        Ro run scheduled job.
+        Fetches the assignments, corrects reports the grades to canvas.
 
-        system(f"{curl_cmd} {headers} {host}/wall-e/fetch-submissions")
-        system(f"{curl_cmd} {headers} {host}/eve/test")
-        system(f"{curl_cmd} {headers} {host}/wall-e/grade")
+        * * * * * cd /path/to/repo && .venv/bin/flask grade {token}
+        """
+        curl = f'curl -i -H "Authorization: Basic {token}"'
+        host = 'http://localhost:5000'
+
+        system(f"{curl} {host}/wall-e/fetch-submissions")
+        system(f"{curl} {host}/eve/test")
+        system(f"{curl} {host}/wall-e/grade")
 
 
     return app
