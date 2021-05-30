@@ -11,7 +11,7 @@ def not_found_error(error):
     Error handler for code 404
     """
     current_app.logger.info(error)
-    return str(error), 404
+    return { "message": str(error) }, 404
 
 
 @bp.app_errorhandler(500)
@@ -22,4 +22,4 @@ def internal_error(error):
     current_app.logger.error(error)
     # här kan vi återställa DB om problem
     # db.session.rollback()
-    return str(error), 500
+    return { "message": str(error) }, 500
