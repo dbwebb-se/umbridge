@@ -1,9 +1,12 @@
 ### Run application
 
-Start byt setting the FLASK_APP and FLASK_ENV env vars:
-```
+Start byt setting the FLASK_APP, FLASK_ENV and CANVAS_API_TOKEN env vars:
+```bash
 export FLASK_APP=umbridge.py
 export FLASK_ENV=development
+
+export CANVAS_API_TOKEN={Your Canvas token} # Has a working default that will be removed later.
+export CANVAS_API_URL={The Base URL to the canvas api} # defults to `'https://bth.instructure.com'`.
 ```
 
 Available environments:
@@ -23,20 +26,39 @@ Available routes:
 ```
 /wall-e
   /fetch-submissions - Fetches all submissions that are not graded from canvas and adds them to the database as 'submitted'. Returns a redirect to `eve/test/`
-
   /grade             - Grades the students
 
 
 /eve
   /reset - Resets the database and adds "Wall-E Kursen" to the course table
   /test - Tests all "submitted" assignments as well as updates them with the test results, their grade and the workflow_state to "pending review". Returns a redirect to `/wall-e/grade`
+
+
+/courses 
+  ['GET'] - Gets courses
+  ['POST'] - Adds a new course
+  ['POST'] - Updates a course
+  ['DELETE'] - Removes a course
 ```
 
-Start the server and use `flask grade` to fetch, test and report the grades to canvas.
+**Some** routes requires an `Authorization` header:
+```
+{ 'Authorization': 'Basic {credentials}' }
+```
+
+**More information** can be found in the api documentation:
+1. [wall-e](docs/api/wall-e.md)
+2. [eve](docs/api/eve.md)
+3. [courses](docs/api/courses.md)
+
+
+### Execute the grading process:
+Start the server and use `flask grade {credentials}` to fetch, test and report the grades to canvas.  
+`credentials` has a default value of the test user and will be removed on production.
 
 Example of a cron job to correct the students every 15 minuts:
 ```bash
-*/15 * * * * cd /path/to/repo && .venv/bin/flask grade
+*/15 * * * * cd /path/to/repo && .venv/bin/flask grade {credentials}
 ```
 
 ### Database:
@@ -65,7 +87,7 @@ flask db upgrade
 ```
 
 #### Models
-There are two database tables, `course` and `submission`. A `course` is required before adding `submissions`.
+There are three database tables, `course`, `submission` and `user`. A `course` is required before adding `submissions`. `user` keeps information about autenticaded users to access routes.
 
 The `course` table contains:
   * `id` - The `course_id` from Canvas
@@ -91,6 +113,12 @@ The `submission` table contains:
      - `"submitted"`, recently fetched by wall-e
      - `"pending_review"` has been tested by eve
      - `"graded"`, grade has been reported to canvas
+
+The `user` table contains:
+ * `id` - Auto generated primary key.
+ * `username` - The username
+ * `password_hash` - A hashed password, set this by calling `user.password = password`.
+
 
 
 ### Test configuration:
