@@ -19,9 +19,9 @@ Fetches all courses
 **Optional query parameters**:  
 | Param Name     | What                                |
 |:---------------|:------------------------------------|
-| `?id`          | The course id                       |
-| `?name`        | The course name                     |
-| `?active`      | It the course is active or not      |
+| `id`          | The course id                       |
+| `name`        | The course name                     |
+| `active`      | It the course is active or not      |
 
 
 **Auth required** : YES  
