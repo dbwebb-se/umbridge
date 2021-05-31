@@ -1,7 +1,12 @@
 {
     "default": {
         "git_url": "https://github.com/dbwebb-se/{course}.git",
-        "dbwebb_test_command": "dbwebb test --docker {kmom} {acr} --download",
+        "installation_commands": [
+            "make docker-install",
+            "dbwebb init-me"
+        ],
+        "test_command": "dbwebb test --docker {assignment_name} {acr} --download",
+        "update_command": "dbwebb udpate",
         "log_file": ".log/test/docker/test-results.ansi"
     }
 }

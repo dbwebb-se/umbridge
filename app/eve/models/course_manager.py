@@ -15,14 +15,14 @@ class CourseManager:
     def __init__(self, submission):
         """ Initiate the class """
         self._course = submission.course.name
-        self._kmom = submission.kmom
+        self.assignment_name = submission.assignment_name
         self._acr = submission.user_acronym
         self.set_config()
 
 
     def __str__(self):
         """Class string representation"""
-        return f"{self._acr} {self._kmom} {self._course}"
+        return f"{self._acr} {self.assignment_name} {self._course}"
 
 
 
@@ -42,7 +42,7 @@ class CourseManager:
             config = self._config['default'][key]
 
         return config.format(
-            kmom=self._kmom,
+            assignment_name=self.assignment_name,
             acr=self._acr,
             course=self._course,
         )
@@ -77,22 +77,24 @@ class CourseManager:
         git_url = self.get_config_from_course_by_key('git_url')
         os.system(f"git clone {git_url} {self.get_course_repo_dir()}")
 
-        self.run_shell_command_in_course_repo("make docker-install")
-        self.run_shell_command_in_course_repo("dbwebb init-me")
+        commands = self.get_config_from_course_by_key('installation_commands')
+        for command in commands:
+            self.run_shell_command_in_course_repo(command)
 
 
 
     def update_download_and_run_tests(self):
         """
-        Resets the kmom, updates the course repo and runs the tests
+        Updates the course repo and runs the tests
         os.system() returns a status-code
             0   => exit code 0 => PASSED
             256 => exit code 1 => FAILED
         """
-        self.run_shell_command_in_course_repo("dbwebb update")
+        update_command = self.get_config_from_course_by_key('update_command')
+        self.run_shell_command_in_course_repo(update_command)
 
-        dbwebb_test_command = self.get_config_from_course_by_key('dbwebb_test_command')
-        result = self.run_shell_command_in_course_repo(dbwebb_test_command)
+        test_command = self.get_config_from_course_by_key('test_command')
+        result = self.run_shell_command_in_course_repo(test_command)
 
         return "PG" if result == 0 else "Ux"
 
