@@ -106,7 +106,7 @@ The `submission` table contains:
   * `user_id` - A students canvas id
   * `user_acronym` - The students acronym
   * `assignment_id` - The assignments canvas id
-  * `kmom` - The assignments name
+  * `assignment_name` - The assignments name (kmom)
   * `course_id` - The course id (FK) to `course.id`
   * `course` - Pointer to the `course` based on `course_id`
   * `feedback` - Dbwebb test logfile content
@@ -133,26 +133,32 @@ You can override the `default` configurations for a course by adding a new objec
 ```json
 {
     "python": {
-        "log_file": ".log/test/{kmom}.log",
+        "log_file": ".log/test/{assignment_name}.log",
     },
     "default": {
-        "git_url": "https://github.com/dbwebb-se/{course}.git",
-        "dbwebb_test_command": "dbwebb test --docker {kmom} {acr} --download",
-        "log_file": ".log/test/docker/main.ansi"
+      "git_url": "https://github.com/dbwebb-se/{course}.git",
+      "installation_commands": [
+          "make docker-install",
+          "dbwebb init-me"
+      ],
+      "test_command": "dbwebb test --docker {assignment_name} {acr} --download",
+      "update_command": "dbwebb update",
+      "log_file": ".log/test/docker/test-results.ansi"
     }
-}
 ```
 
 This will change the log file's location for the python course.
 
 Supported keys are:
  * `git_url` - The link to the course repo.
- * `dbwebb_test_command` - The command used to test the assignment.
+ * `test_command` - The command used to test the assignment.
+ * `update_command` - The command used update the git repo before executing tests.
  * `log_file` - The file that will be sent to the students upon grading.
+ * `installation_commands` - The steps taken when installing required dependencies.
 
 Supported string substitutions are:
- * `{course}`  - will be replaced with the assignments course.
- * `{kmom}`    - will be replaced with the assignments kmom.
+ * `{course}` - will be replaced with the assignments course.
+ * `{assignment_name}` - will be replaced with the assignments name (kmom).
  * `{acr}`     - will be replaced with the students acronym.
 
 # Box view
