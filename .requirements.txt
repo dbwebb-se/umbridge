@@ -4,3 +4,6 @@ sqlalchemy < 1.4.0
 flask-sqlalchemy == 2.4.4
 flask-migrate == 2.5.3
 canvasapi == 2.2.0
+pylint >= 2.6.0
+pytest >= 6.1.2
+coverage~=4.5.4
