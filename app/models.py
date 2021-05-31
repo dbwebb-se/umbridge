@@ -3,8 +3,8 @@
 Contains Databse model classes
 """
 
-from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import db
 
 class Submission(db.Model):
     """
@@ -15,7 +15,7 @@ class Submission(db.Model):
     user_id = db.Column(db.Integer, nullable=False, index=True)
     user_acronym = db.Column(db.String(6), nullable=False)
 
-    kmom = db.Column(db.String(6), nullable=False)
+    assignment_name = db.Column(db.String(9), nullable=False)
     assignment_id = db.Column(db.Integer, nullable=False)
 
     course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
@@ -31,7 +31,7 @@ class Submission(db.Model):
 
     def __repr__(self):
         return '<Assignment {}, {}, {}>'.format(
-            self.user_acronym, self.kmom, self.course.name)
+            self.user_acronym, self.assignment_name, self.course.name)
 
 
 class Course(db.Model):
@@ -44,6 +44,7 @@ class Course(db.Model):
 
     @property
     def serialize(self):
+        """ Returns the course as an object """
         return {
             'id': self.id,
             'name': self.name,
@@ -52,6 +53,10 @@ class Course(db.Model):
 
     @classmethod
     def create(cls, data):
+        """
+        Creates a course and
+        adds it to the database.
+        """
         course = cls(**data)
         db.session.add(course)
         db.session.commit()
@@ -59,6 +64,10 @@ class Course(db.Model):
         return course
 
     def update(self, data):
+        """
+        Updates a course and
+        commits changes to the database.
+        """
         self.active = data.get('active') or self.active
         self.name = data.get('name') or self.name
         db.session.commit()
@@ -66,6 +75,10 @@ class Course(db.Model):
         return self
 
     def delete(self):
+        """
+        Deletes a course and
+        commits changes to the database.
+        """
         db.session.delete(self)
         db.session.commit()
         return self
@@ -82,6 +95,7 @@ class User(db.Model):
 
     @property
     def password(self):
+        """ Getter for password """
         raise AttributeError('password is not readable')
 
     @password.setter
@@ -89,11 +103,11 @@ class User(db.Model):
         """ Setter for password """
         self.password_hash = generate_password_hash(password)
 
-    def verify_password(self, password):
+    def compare_password(self, password):
         """ Compares given password to the hashed password """ 
         return check_password_hash(self.password_hash, password)
 
 
 
     def __repr__(self):
-        return '<User {}, {}>'.format(self.id, self.username)
+        return '<User {}>'.format(self.username)

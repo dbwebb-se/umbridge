@@ -21,15 +21,6 @@ def get_course(data):
 
 
 
-@bp.before_request
-def before_request():
-    """
-    Executes before the requests
-    """
-    pass
-
-
-
 @bp.route('/courses', methods=['GET'])
 @auth.requires_authorization_header
 def get_courses():

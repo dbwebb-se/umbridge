@@ -1,7 +1,7 @@
 """
 Contains routes for main purpose of app
 """
-from flask import current_app
+from flask import current_app, abort
 from app.eve import bp
 from app.eve.models.course_manager import CourseManager
 import app.globals as g
@@ -17,7 +17,7 @@ def before_request():
     Executes before the requests
     """
     if g.is_test_running:
-        return { "message": "Eve is busy, try again in a few minutes" }, 423
+        abort(423, { "message": "Eve is busy, try again in a few minutes" })
 
     g.is_test_running = True
 

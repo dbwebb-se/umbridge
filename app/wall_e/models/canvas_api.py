@@ -129,7 +129,7 @@ class Grader(Requester):
         Creates a temporary log file
         and sends it as a comment
         """
-        file_name = f"{Grader.APP_BASE_PATH}/wall_e/temp/feedback_{sub.kmom}_{sub.user_acronym}.txt"
+        file_name = f"{Grader.APP_BASE_PATH}/wall_e/temp/feedback_{sub.assignment_name}_{sub.user_acronym}.txt"
 
         with open(file_name, "w+") as fh:
             fh.write(sub.feedback)

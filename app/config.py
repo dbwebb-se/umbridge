@@ -1,3 +1,8 @@
+"""
+Contains Prod, Dev and Test config classes.
+Also Custom class for logging, RequestFormatter.
+"""
+
 
 import os
 from logging import Formatter
@@ -17,7 +22,8 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CANVAS_API_URL = 'https://bth.instructure.com'
-    CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN') or '12133~lECAoZlKwH6CX7VnOCMZFPl1oAJ5uPWwg5o5C5oLjjYQrD1isRBYqroVtvBQICq2'
+    CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN') or \
+        '12133~lECAoZlKwH6CX7VnOCMZFPl1oAJ5uPWwg5o5C5oLjjYQrD1isRBYqroVtvBQICq2'
 
 
 class ProdConfig(Config):

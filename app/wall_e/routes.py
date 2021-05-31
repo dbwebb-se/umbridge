@@ -1,7 +1,8 @@
 """
 Contains routes for main purpose of app
 """
-from flask import current_app
+
+from flask import current_app, abort
 from app.wall_e import bp
 from app import db, auth
 from app.models import Submission, Course
@@ -17,7 +18,7 @@ def before_request():
     update last_seen for User before handling request
     """
     if g.is_fetching_or_grading:
-        return { "message": "Wall-E is busy, try again in a few minutes" }, 423
+        abort(423, { "message": "Wall-E is busy, try again in a few minutes" })
 
     g.is_fetching_or_grading = True
 
@@ -55,9 +56,9 @@ def fetch():
                 continue
 
             user_acronym = students[user_id]
-            kmom = canvas.get_assignment_name_by_id(assignment_id=assignment_id)
+            assignment_name = canvas.get_assignment_name_by_id(assignment_id=assignment_id)
             s = Submission(
-                assignment_id=assignment_id, kmom=kmom, user_id=user_id,
+                assignment_id=assignment_id, assignment=assignment_name, user_id=user_id,
                 user_acronym=user_acronym, course_id=c.id)
 
             db.session.add(s)

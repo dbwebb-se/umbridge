@@ -1,11 +1,17 @@
+
+"""
+Factory for application
+"""
+
+
 import logging
-from flask import Flask
-from flask.logging import default_handler
-from app.config import ProdConfig, RequestFormatter
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from os import system
 import click
+from flask import Flask
+from flask.logging import default_handler
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from app.config import ProdConfig, RequestFormatter
 
 db = SQLAlchemy()
 migrate = Migrate()
