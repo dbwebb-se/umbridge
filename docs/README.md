@@ -133,7 +133,7 @@ You can override the `default` configurations for a course by adding a new objec
 ```json
 {
     "python": {
-        "log_file": ".log/test/{assignment_name}.log",
+        "ignore_assignments": [ 'kmom02' ]
     },
     "default": {
       "git_url": "https://github.com/dbwebb-se/{course}.git",
@@ -143,11 +143,12 @@ You can override the `default` configurations for a course by adding a new objec
       ],
       "test_command": "dbwebb test --docker {assignment_name} {acr} --download",
       "update_command": "dbwebb update",
-      "log_file": ".log/test/docker/test-results.ansi"
+      "log_file": ".log/test/docker/test-results.ansi",
+      "ignore_assignments": []
     }
 ```
 
-This will change the log file's location for the python course.
+This will change so that courses with the name `"python"` will ignore correcting the canvas assignment `"kmom02"`.
 
 Supported keys are:
  * `git_url` - The link to the course repo.
@@ -155,11 +156,12 @@ Supported keys are:
  * `update_command` - The command used update the git repo before executing tests.
  * `log_file` - The file that will be sent to the students upon grading.
  * `installation_commands` - The steps taken when installing required dependencies.
+ * `ignore_assignments` - A list of assignments to ignore.
 
 Supported string substitutions are:
  * `{course}` - will be replaced with the assignments course.
  * `{assignment_name}` - will be replaced with the assignments name (kmom).
- * `{acr}`     - will be replaced with the students acronym.
+ * `{acr}` - will be replaced with the students acronym.
 
 # Box view
 

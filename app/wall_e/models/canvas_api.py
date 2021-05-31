@@ -3,6 +3,7 @@
 """
 import os
 from app.wall_e.models.requester import Requester
+from app.settings import settings
 from canvasapi import submission, requester
 
 
@@ -10,10 +11,12 @@ class Canvas(Requester):
     """
     Model class for wall_e.fetch
     """
-    def __init__(self, base_url, api_token, course_id):
+    def __init__(self, base_url, api_token, course_id, course_name):
         super().__init__(base_url, api_token)
 
         self.course_id = course_id
+        self._course_name = course_name
+        self._config = settings.get_course_map()
         self.set_assignments_and_users()
 
     def set_assignments_and_users(self):
@@ -37,6 +40,7 @@ class Canvas(Requester):
 
         return self._request_get(
             f"/api/v1/courses/{self.course_id}/assignments").json()
+
 
     def get_course(self):
         """
@@ -71,35 +75,44 @@ class Canvas(Requester):
         Return a single assignment
         based on name
         """
-        return [a for a in self.assignments if a["id"] == name][0]
+        return [a for a in self.assignments if a["name"] == name][0]
 
     def get_assignment_name_by_id(self, assignment_id):
         """
         Return a single assignment
         based on its id
         """
+
+        print('ID', [a["name"] for a in self.assignments if a["id"] == assignment_id][0])
         return [a["name"] for a in self.assignments if a["id"] == assignment_id][0]
+
 
     def get_gradeable_submissions(self):
         """
         Return gradeable submissions
         based on assignment_id
         """
-        return self._request_get(
+        submissions = self._request_get(
             f"/api/v1/courses/{self.course_id}/students/submissions", payload={
                 "student_ids": ["all"],
-                "workflow_state": ["submitted"]
+                "workflow_state": ["submitted"],
+
             }
         ).json()
 
+        try:
+            ignore = self._config[self._course_name]['ignore_assignments']
+        except KeyError:
+            ignore = self._config['default']['ignore_assignments']
 
-
+        return [
+            s for s in submissions if self.get_assignment_name_by_id(s['assignment_id']) not in ignore
+        ]
 
 class Grader(Requester):
     """
     Model class for wall_e.grade
     """
-    APP_BASE_PATH = os.path.dirname(__file__) + "/../.."
 
     def __init__(self, base_url, api_token):
         super().__init__(base_url, api_token)
@@ -129,7 +142,7 @@ class Grader(Requester):
         Creates a temporary log file
         and sends it as a comment
         """
-        file_name = f"{Grader.APP_BASE_PATH}/wall_e/temp/feedback_{sub.assignment_name}_{sub.user_acronym}.txt"
+        file_name = f"{settings.APP_BASE_PATH}/wall_e/temp/feedback_{sub.assignment_name}_{sub.user_acronym}.txt"
 
         with open(file_name, "w+") as fh:
             fh.write(sub.feedback)

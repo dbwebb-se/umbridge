@@ -4,33 +4,25 @@ Model class for eve.index
 
 import os
 import json
+from app.settings import settings
 
 app_base_path = os.path.dirname(__file__) + "/../.."
 
 class CourseManager:
     """ Manges test command and courses """
-    _COURSES_BASE_FOLDER = f"{app_base_path}/eve/courses"
-    _CONFIG_PATH = f"{app_base_path}/settings"
+    _COURSES_BASE_FOLDER = f"{settings.APP_BASE_PATH}/eve/courses"
 
     def __init__(self, submission):
         """ Initiate the class """
         self._course = submission.course.name
         self.assignment_name = submission.assignment_name
         self._acr = submission.user_acronym
-        self.set_config()
+        self._config = settings.get_course_map()
 
 
     def __str__(self):
         """Class string representation"""
         return f"{self._acr} {self.assignment_name} {self._course}"
-
-
-
-    def set_config(self):
-        """ Gets the configuration files """
-        with open(f"{CourseManager._CONFIG_PATH}/course_map.json", 'r') as fh:
-            config = json.load(fh)
-        self._config = config
 
 
 

@@ -38,7 +38,8 @@ def fetch():
         canvas = Canvas(
             base_url=current_app.config['CANVAS_API_URL'],
             api_token=current_app.config['CANVAS_API_TOKEN'],
-            course_id=c.id)
+            course_id=c.id,
+            course_name=c.name)
 
         students = canvas.users_and_acronyms()
         subs = canvas.get_gradeable_submissions()
@@ -58,7 +59,7 @@ def fetch():
             user_acronym = students[user_id]
             assignment_name = canvas.get_assignment_name_by_id(assignment_id=assignment_id)
             s = Submission(
-                assignment_id=assignment_id, assignment=assignment_name, user_id=user_id,
+                assignment_id=assignment_id, assignment_name=assignment_name, user_id=user_id,
                 user_acronym=user_acronym, course_id=c.id)
 
             db.session.add(s)
