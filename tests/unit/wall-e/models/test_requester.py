@@ -1,5 +1,5 @@
 """
-Contains tests for app.wall_e.requester.Requester class
+Contains tests for app.wall_e.models.requester.Requester class
 """
 # pylint: disable=unused-argument, disable=protected-access
 from unittest import mock
