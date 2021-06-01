@@ -1,6 +1,7 @@
 .vscode
 app.db
 migrations/
+tests/coverage_html/
 
 
 # Byte-compiled / optimized / DLL files
