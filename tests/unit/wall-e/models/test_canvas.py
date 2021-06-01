@@ -12,11 +12,18 @@ def test_init(mock_base_req, test_app):
     """
     Tests that the courses user are formatted properly.
     """
-    get_mocked_canvas_set_response(mock_base_req, [
+    mock_value = [
         { 'login_id': 'moc@bth.se', 'id': 0 }
-    ])
+    ]
+
+    c = get_mocked_canvas_set_response(mock_base_req, mock_value)
 
     assert mock_base_req.call_count == 2
+    assert c.users == mock_value
+    assert c.assignments == mock_value
+    assert c.course_id == 1
+    assert c._course_name == 'name'
+    assert c._config is not None
 
 
 @mock.patch('app.wall_e.models.requester.Requester._base_request')

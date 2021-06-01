@@ -6,6 +6,17 @@ from unittest import mock
 from app.wall_e.models.requester import Requester
 
 
+def test_init(test_app):
+    """
+    Tests if the url_parser returns the correct value
+    """
+    url, token = 'url', 'token'
+    r = Requester(url, token)
+
+    assert r._key == token
+    assert r._url == url
+
+
 def test_get_headers(test_app):
     """
     Checks if the default header values are correct
