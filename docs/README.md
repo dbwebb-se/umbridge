@@ -133,7 +133,7 @@ You can override the `default` configurations for a course by adding a new objec
 ```json
 {
     "python": {
-        "ignore_assignments": [ 'kmom02' ]
+        "ignore_assignments": [ "kmom02" ]
     },
     "default": {
       "git_url": "https://github.com/dbwebb-se/{course}.git",
