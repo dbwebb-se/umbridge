@@ -4,7 +4,18 @@ Contains Databse model classes
 """
 
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
 from app import db
+
+
+def rollback_and_log(error):
+    """
+    Rollback the database and loggs the error.
+    Can be used when overriding http-status 500.
+    """
+    current_app.logger.error(error)
+    db.session.rollback()
+
 
 class Submission(db.Model):
     """
@@ -52,15 +63,14 @@ class Course(db.Model):
         }
 
     @classmethod
-    def create(cls, data):
+    def create(cls, **kwargs):
         """
         Creates a course and
         adds it to the database.
         """
-        course = cls(**data)
+        course = cls(**kwargs)
         db.session.add(course)
         db.session.commit()
-
         return course
 
     def update(self, data):
@@ -71,7 +81,6 @@ class Course(db.Model):
         self.active = data.get('active') or self.active
         self.name = data.get('name') or self.name
         db.session.commit()
-
         return self
 
     def delete(self):
@@ -82,6 +91,7 @@ class Course(db.Model):
         db.session.delete(self)
         db.session.commit()
         return self
+
 
     def __repr__(self):
         return '<Course {}, {}, Active: {}>'.format(self.id, self.name, self.active == 1)
@@ -106,7 +116,6 @@ class User(db.Model):
     def compare_password(self, password):
         """ Compares given password to the hashed password """ 
         return check_password_hash(self.password_hash, password)
-
 
 
     def __repr__(self):

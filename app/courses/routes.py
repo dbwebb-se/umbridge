@@ -5,7 +5,7 @@ from flask import request
 from sqlalchemy.exc import InvalidRequestError, IntegrityError
 from app.courses import bp
 from app import auth
-from app.models import Course
+from app.models import Course, rollback_and_log
 
 
 
@@ -55,8 +55,10 @@ def create_course():
     try:
         course = Course.create(**data)
     except (InvalidRequestError, TypeError) as e:
+        rollback_and_log(e)
         return { "message": "Invalid data", 'info': str(e) }, 400
-    except IntegrityError:
+    except IntegrityError as e:
+        rollback_and_log(e)
         return { "message": f"Id {data['id']} already exists." }, 400
 
     return { "course": course.serialize }, 201

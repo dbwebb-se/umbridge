@@ -3,7 +3,7 @@ Contains error handlers
 """
 from flask import current_app
 from app.errors import bp
-
+from app import db
 
 @bp.app_errorhandler(404)
 def not_found_error(error):
@@ -14,6 +14,7 @@ def not_found_error(error):
     return { "message": str(error) }, 404
 
 
+
 @bp.app_errorhandler(500)
 def internal_error(error):
     """
@@ -21,5 +22,5 @@ def internal_error(error):
     """
     current_app.logger.error(error)
     # här kan vi återställa DB om problem
-    # db.session.rollback()
+    db.session.rollback()
     return { "message": str(error) }, 500
