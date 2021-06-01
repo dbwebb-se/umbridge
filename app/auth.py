@@ -24,14 +24,13 @@ def requires_authorization_header(f):
         if not authorization:
             abort(401, "No Authorization token provided")
 
-        _type, credentials = authorization.split(' ')
-
         try:
+            _type, credentials = authorization.split(' ')
             message = base64.b64decode(credentials).decode('utf-8')
-        except (base64.binascii.Error, UnicodeDecodeError):
+            username, password = message.split(":")
+        except (base64.binascii.Error, UnicodeDecodeError, ValueError):
             abort(401, "Incorrect token value")
 
-        username, password = message.split(":")
         usr = User.query.filter_by(username=username).first()
 
         if not usr or not usr.compare_password(password):
