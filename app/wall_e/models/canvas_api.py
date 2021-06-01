@@ -83,7 +83,6 @@ class Canvas(Requester):
         based on its id
         """
 
-        print('ID', [a["name"] for a in self.assignments if a["id"] == assignment_id][0])
         return [a["name"] for a in self.assignments if a["id"] == assignment_id][0]
 
 
@@ -105,9 +104,12 @@ class Canvas(Requester):
         except KeyError:
             ignore = self._config['default']['ignore_assignments']
 
-        return [
-            s for s in submissions if self.get_assignment_name_by_id(s['assignment_id']) not in ignore
-        ]
+        if ignore:
+            submissions = [
+                s for s in submissions if self.get_assignment_name_by_id(s['assignment_id']) not in ignore
+            ]
+
+        return submissions
 
 class Grader(Requester):
     """
