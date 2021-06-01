@@ -6,7 +6,7 @@
             "dbwebb init-me"
         ],
         "test_command": "dbwebb test --docker {assignment_name} {acr} --download",
-        "update_command": "dbwebb udpate",
+        "update_command": "dbwebb update",
         "log_file": ".log/test/docker/test-results.ansi",
         "ignore_assignments": []
     }

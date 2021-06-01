@@ -1,6 +1,7 @@
 # Features
 1. Write tests
-2. Look over error-management
+    1. Unit
+    2. Integration
 3. Update `dbwebb test` script for python to "auto potatoe" and store output from other errors such as docker.
 
 # On prod
