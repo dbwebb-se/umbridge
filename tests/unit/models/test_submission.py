@@ -31,7 +31,7 @@ def submission1():
     )
 
 
-def test_new_courses(submission1):
+def test_new_submission(submission1):
     """
     Test that user object contain correct values
     """
