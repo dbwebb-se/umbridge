@@ -8,7 +8,7 @@ class Requester():
         self._url = base_url
 
     def _get_headers(self, headers=None):
-        header = { "Authorization": f"Bearer {self._key}" }
+        header = { "Authorization": f"Basic {self._key}" }
         if headers:
             header.update(headers)
 
