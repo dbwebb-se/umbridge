@@ -23,7 +23,7 @@ class Config():
 
     CANVAS_API_URL = 'https://bth.instructure.com'
     CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN') or \
-        '12133~lECAoZlKwH6CX7VnOCMZFPl1oAJ5uPWwg5o5C5oLjjYQrD1isRBYqroVtvBQICq2'
+        '12133~QeZiHV7RxiaBB0gfXfM4kBplv9R4ZfrbpgXGonD2u12PR7GqfPIKzB4OVykYY3Gn'
 
 
 class ProdConfig(Config):
