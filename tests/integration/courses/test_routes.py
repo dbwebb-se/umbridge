@@ -22,8 +22,12 @@ def run_before_and_after_tests(client):
     db.session.add(u)
     db.session.commit()
 
-    c = Course(id=1, name='python', active=1)
+    c = Course(id=1, name='python', active=0)
+    c1 = Course(id=99, name='oopython', active=1)
+    c2 = Course(id=55, name='webapp', active=1)
     db.session.add(c)
+    db.session.add(c1)
+    db.session.add(c2)
     db.session.commit()
 
     yield # This is where the testing happens
@@ -43,6 +47,8 @@ def course1_data():
         'id': 5,
         'name': "htmlphp"
     }
+
+
 
 #################  GET  ###################################
 
@@ -74,7 +80,6 @@ def test_add_course_no_valid_user(course1_data, client):
 def test_add_course_valid(course1_data, client):
     """
     Trys a valid response and checks if it the course is added to db.
-    Then, to add wrong inputs and duplicated ids.
     """
 
     response = client.post('/courses', data=course1_data, headers=valid_header)
@@ -89,6 +94,10 @@ def test_add_course_valid(course1_data, client):
     assert created.active == 1
 
 
+def test_add_course_extra_key(client):
+    """
+    Trys to add keys that does not exist.
+    """
     data = { 'id': 35, 'name': 'js', 'active': 0, 'hm': 22 }
     response = client.post('/courses', data=data, headers=valid_header)
     created = Course.query.filter_by(id=35).first()
@@ -98,10 +107,35 @@ def test_add_course_valid(course1_data, client):
     assert b"\'hm\' is an invalid keyword" in response.data
 
 
-    data = { 'id': course1_data['id'], 'name': 'js', 'active': 0 }
+def test_add_course_where_id_exists(client):
+    """
+    Trys to add a key that exsists in the database
+    """
+    data = { 'id': 1, 'name': 'js', 'active': 0 }
     response = client.post('/courses', data=data, headers=valid_header)
     assert response.status_code == 400
     assert b"already exists" in response.data
+
+
+def test_add_course_with_no_data(client):
+    """
+    Trys to add a course with no data provided
+    """
+    data4 = {}
+    response4 = client.post('/courses', data=data4, headers=valid_header)
+    assert response4.status_code == 400
+    assert b"No data provided" in response4.data
+
+
+def test_add_course_without_id(client):
+    """
+    Trys to add a course with no id
+    """
+    data = { 'name': 'databas', 'active': 0 }
+    response = client.post('/courses', data=data, headers=valid_header)
+    assert response.status_code == 400
+    assert b"No data provided" in response.data
+
 
 #################  PUT     ###################################
 
