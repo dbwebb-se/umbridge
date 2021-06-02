@@ -7,7 +7,7 @@
         ],
         "test_command": "dbwebb test --docker {assignment_name} {acr} --download",
         "update_command": "dbwebb update",
-        "log_file": ".log/test/docker/test-results.ansi",
+        "log_file": ".log/test/docker/main.ansi",
         "ignore_assignments": []
     }
 }
