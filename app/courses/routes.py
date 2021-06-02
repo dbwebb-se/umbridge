@@ -48,8 +48,7 @@ def create_course():
     Route to add new courses
     """
     data = request.form
-
-    if not data:
+    if not data or 'id' not in data:
         return { "message": "No data provided" }, 400
 
     try:

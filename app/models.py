@@ -49,7 +49,7 @@ class Course(db.Model):
     """
     Represents a course
     """
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False, nullable=False)
     name = db.Column(db.String(25), nullable=False)
     active = db.Column(db.Integer, default=1)
 
