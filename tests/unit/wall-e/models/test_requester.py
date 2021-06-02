@@ -25,11 +25,11 @@ def test_get_headers(test_app):
     r = Requester('url', 'token')
 
     res = r._get_headers()
-    assert res == { 'Authorization': 'Basic token' }
+    assert res == { 'Authorization': 'Bearer token' }
 
     res_with_extra = r._get_headers({ 'Content-Type': 'application/json' })
     assert res_with_extra == {
-        'Authorization': 'Basic token',
+        'Authorization': 'Bearer token',
         'Content-Type': 'application/json'
     }
 
@@ -38,7 +38,7 @@ def test_get_headers(test_app):
         'Keep-Alive': 'timeout=5, max=1000'
     })
     assert res_with_extras == {
-        'Authorization': 'Basic token',
+        'Authorization': 'Bearer token',
         'Content-Type': 'application/json',
         'Keep-Alive': 'timeout=5, max=1000'
     }
