@@ -5,7 +5,8 @@ from flask import request
 from sqlalchemy.exc import InvalidRequestError, IntegrityError
 from app.courses import bp
 from app import auth
-from app.models import Course, rollback_and_log
+from app.models import Course, rollback_and_log, format_dict
+from app.errors.custom.database import DBCreationError
 
 
 
@@ -27,7 +28,7 @@ def get_courses():
     """
     Route to display all courses
     """
-    params = request.args
+    params = format_dict(request.args)
 
     if params:
         try:
@@ -47,18 +48,18 @@ def create_course():
     """
     Route to add new courses
     """
-    data = request.form
+    data = format_dict(request.form)
     if not data or 'id' not in data:
         return { "message": "No data provided" }, 400
 
     try:
         course = Course.create(**data)
-    except (InvalidRequestError, TypeError) as e:
+    except (InvalidRequestError, IntegrityError, TypeError) as e:
         rollback_and_log(e)
         return { "message": "Invalid data", 'info': str(e) }, 400
-    except IntegrityError as e:
+    except DBCreationError as e:
         rollback_and_log(e)
-        return { "message": f"Id {data['id']} already exists." }, 400
+        return { "message": str(e) }, 400
 
     return { "course": course.serialize }, 201
 
@@ -70,7 +71,7 @@ def update_course():
     """
     Route to update a course
     """
-    data = request.form
+    data = format_dict(request.form)
     course = get_course(data)
 
     if not course:
@@ -87,7 +88,7 @@ def delete_course():
     """
     Route to remove a course
     """
-    data = request.form
+    data = format_dict(request.form)
     course = get_course(data)
 
     if not course:

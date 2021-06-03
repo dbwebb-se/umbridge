@@ -6,6 +6,7 @@ Contains Databse model classes
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app
 from app import db
+from app.errors.custom.database import DBCreationError
 
 
 def rollback_and_log(error):
@@ -15,6 +16,20 @@ def rollback_and_log(error):
     """
     current_app.logger.error(error)
     db.session.rollback()
+
+def format_dict(dic):
+    """
+    SqlAlchemy (on Linux) can't
+    handle string arguments on type int.
+    """
+    if not dic:
+        return {}
+
+    formated_dic = {}
+    for k, v in dic.items():
+        formated_dic[k] = int(v) if v.isdigit() else v
+
+    return formated_dic
 
 
 class Submission(db.Model):
@@ -68,6 +83,9 @@ class Course(db.Model):
         Creates a course and
         adds it to the database.
         """
+        if cls.query.filter_by(id=kwargs.get('id')).first() is not None:
+            raise DBCreationError(f'ID {kwargs.get("id")} already exists.')
+
         course = cls(**kwargs)
         db.session.add(course)
         db.session.commit()
