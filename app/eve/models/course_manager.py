@@ -6,7 +6,7 @@ import os
 import json
 from app.settings import settings
 
-app_base_path = os.path.dirname(__file__) + "/../.."
+
 
 class CourseManager:
     """ Manges test command and courses """
@@ -33,12 +33,17 @@ class CourseManager:
         except KeyError:
             config = self._config['default'][key]
 
-        return config.format(
-            assignment_name=self.assignment_name,
-            acr=self._acr,
-            course=self._course,
-        )
 
+        if isinstance(config, str):
+            return config.format(
+                assignment_name=self.assignment_name,
+                acr=self._acr,
+                course=self._course,
+            )
+
+        return [
+            cnf.format(assignment_name=self.assignment_name, acr=self._acr, course=self._course) for cnf in config
+        ]
 
 
     def get_course_repo_dir(self):
@@ -70,6 +75,7 @@ class CourseManager:
         os.system(f"git clone {git_url} {self.get_course_repo_dir()}")
 
         commands = self.get_config_from_course_by_key('installation_commands')
+        print('COMMANDS', commands)
         for command in commands:
             self.run_shell_command_in_course_repo(command)
 
