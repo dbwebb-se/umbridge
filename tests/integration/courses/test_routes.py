@@ -12,10 +12,10 @@ from app.courses.routes import get_course
 
 
 valid_header = Headers([('Authorization', "Basic ZGJ3ZWJiOnN1cGVyLXNlY3JldA==")])
-non_exsiting_user_header = Headers([('Authorization', "Basic dXNlcjpwYXNz")])
+non_existing_user_header = Headers([('Authorization', "Basic dXNlcjpwYXNz")])
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=True, scope="function")
 def run_before_and_after_tests(client):
     """Fixture to execute asserts before and after a test is run"""
     # Setup:
@@ -35,6 +35,7 @@ def run_before_and_after_tests(client):
     yield # This is where the testing happens
 
     # Teardown :
+    db.session.rollback()
     Course.query.filter(Course.id > 0).delete()
     User.query.filter(User.id > 0).delete()
     db.session.commit()
@@ -95,7 +96,7 @@ def test_get_courses_invalid_header(client):
     """
     Trys to get courses with a non existing user
     """
-    response = client.get('/courses', headers=non_exsiting_user_header)
+    response = client.get('/courses', headers=non_existing_user_header)
 
     assert response.status_code == 401
     assert b"Invalid username or password" in response.data
@@ -105,7 +106,7 @@ def test_get_courses_invalid_user(client):
     """
     Trys to get courses with a non existing user
     """
-    response = client.get('/courses', headers=non_exsiting_user_header)
+    response = client.get('/courses', headers=non_existing_user_header)
 
     assert response.status_code == 401
     assert b"Invalid username or password" in response.data
@@ -125,7 +126,7 @@ def test_get_all_courses(client):
     assert r['courses'][2] == { 'id': 1, 'name': 'python', 'active': 0 }
 
 
-def test_get_all_by_query_param(client):
+def test_get_all_active_courses(client):
     """
     Trys to get active courses
     """
@@ -179,7 +180,7 @@ def test_add_course_no_valid_user(course1_data, client):
     Trys to add a course with valid header but non existing user
     """
 
-    response = client.post('/courses', data=course1_data, headers=non_exsiting_user_header)
+    response = client.post('/courses', data=course1_data, headers=non_existing_user_header)
 
     assert response.status_code == 401
     assert b"Invalid username or password" in response.data
@@ -262,7 +263,7 @@ def test_edit_course_no_valid_user(course1_data, client):
     """
     Trys to edit a course with valid header but non existing user
     """
-    response = client.put('/courses', data=course1_data, headers=non_exsiting_user_header)
+    response = client.put('/courses', data=course1_data, headers=non_existing_user_header)
     assert response.status_code == 401
     assert b"Invalid username or password" in response.data
 
@@ -369,7 +370,7 @@ def test_delete_course_no_valid_user(course1_data, client):
     """
     Trys to delete a course with valid header but non existing user
     """
-    response = client.put('/courses', data=course1_data, headers=non_exsiting_user_header)
+    response = client.put('/courses', data=course1_data, headers=non_existing_user_header)
     assert response.status_code == 401
     assert b"Invalid username or password" in response.data
 
