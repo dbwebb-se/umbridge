@@ -1,11 +1,26 @@
 Umbridge
 ================================
 
-Automatic grading system that utilizes the [canvas api](https://canvas.instructure.com/doc/api/) and [dbwebb cli](https://github.com/dbwebb-se/dbwebb-cli).
+Automatic grading system that utilizes the [canvas api](https://canvas.instructure.com/doc/api/). It is primarily build for the [dbwebb-cli](https://github.com/dbwebb-se/dbwebb-cli) and its courses.
+
+
+
+#### Installation
+
+```bash
+# Setup virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install pip requeirements
+make install
+```
+
+
 
 ### Run application
 
-Start byt setting the FLASK_APP, FLASK_ENV and CANVAS_API_TOKEN env vars:
+Start by setting the `FLASK_APP`, `FLASK_ENV` and `CANVAS_API_TOKEN` env vars:
 ```bash
 export FLASK_APP=umbridge.py
 export FLASK_ENV=development
@@ -59,7 +74,7 @@ Available routes:
 
 ### Execute the grading process:
 Start the server and use `flask grade {credentials}` to fetch, test and report the grades to canvas.  
-`credentials` has a default value of the test user and will be removed on production.
+**Note**: `credentials` has a default value of the test user and will be removed on production.
 
 Example of a cron job to correct the students every 15 minuts:
 ```bash
@@ -126,7 +141,7 @@ The `user` table contains:
 
 
 
-### Test configuration:
+### App configuration for grading courses:
 There is a configuration file inside `app/settings/course_map.json`. This is used to configure the default behavior depending on the course. If a course is missing a key or does not exist it will fallback to the default values.
 
 You can override the `default` configurations for a course by adding a new object matching the course's name. Example:
@@ -162,6 +177,15 @@ Supported string substitutions are:
  * `{course}` - will be replaced with the assignments course.
  * `{assignment_name}` - will be replaced with the assignments name (kmom).
  * `{acr}` - will be replaced with the students acronym.
+
+
+### Run application tests
+
+There are several make commands for testing the application. Use make help to see which. To run all tests and validation use:
+
+```
+make test
+```
 
 # Box view
 
