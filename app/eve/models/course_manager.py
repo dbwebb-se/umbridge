@@ -33,17 +33,16 @@ class CourseManager:
         except KeyError:
             config = self._config['default'][key]
 
+        formatter = {
+            'kmom': self.assignment_name,
+            'acr': self._acr,
+            'course': self._course
+        }
 
         if isinstance(config, str):
-            return config.format(
-                assignment_name=self.assignment_name,
-                acr=self._acr,
-                course=self._course,
-            )
+            return config.format(**formatter)
 
-        return [
-            cnf.format(assignment_name=self.assignment_name, acr=self._acr, course=self._course) for cnf in config
-        ]
+        return [cnf.format(**formatter) for cnf in config]
 
 
     def get_course_repo_dir(self):
