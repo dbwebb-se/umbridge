@@ -156,7 +156,7 @@ You can override the `default` configurations for a course by adding a new objec
           "make docker-install",
           "dbwebb init-me"
       ],
-      "test_command": "dbwebb test --docker {assignment_name} {acr} --download",
+      "test_command": "dbwebb test --docker {kmom} {acr} --download",
       "update_command": "dbwebb update",
       "log_file": ".log/test/docker/test-results.ansi",
       "ignore_assignments": []
@@ -175,7 +175,7 @@ Supported keys are:
 
 Supported string substitutions are:
  * `{course}` - will be replaced with the assignments course.
- * `{assignment_name}` - will be replaced with the assignments name (kmom).
+ * `{kmom}` - will be replaced with the canvas assignment name.
  * `{acr}` - will be replaced with the students acronym.
 
 
