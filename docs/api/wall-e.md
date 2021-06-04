@@ -1,12 +1,12 @@
 ## Content
 
-1. Get Submissions
-2. Grade Submissions
+1. [Get Submissions](#get-submissions)
+2. [Grade Submissions](#grade-submissions)
 
 Back to [README](../README.md)
 
 
-# 1. Get Submissions
+# <a id="get-submissions"></a> 1. Get Submissions
 
 Fetches all submissions that requires drading from Canvas and stores the database.
 
@@ -36,7 +36,7 @@ Fetches all submissions that requires drading from Canvas and stores the databas
 
 
    
-# 2. Grade Submissions
+# <a id="grade-submissions"></a> 2. Grade Submissions
 
 Gets all the tested submissions from the database and reports them to Canvas.
 

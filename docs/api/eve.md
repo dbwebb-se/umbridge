@@ -1,12 +1,12 @@
 ## Content
 
-1. Test Submissions
-2. Reset the database (Temporary)
+1. [Test Submissions](#test-submissions)
+2. [Reset the database](#reset) *(Temporary)*
 
 Back to [README](../README.md)
 
 
-# 1. Test Submissions
+# <a id="test-submissions"></a> 1. Test Submissions
 
 Fetches all ungraded submissions from the database and test them.
 
@@ -49,7 +49,7 @@ The server might have a penging request to grade a submission. To avoid conflict
 ```
 
    
-# 2. Reset the database (Temporary)
+# <a id="reset"></a> 2. Reset the database (Temporary)
 
 Resets the database, adds a user to login as, adds the test course and resets the submission table.
 

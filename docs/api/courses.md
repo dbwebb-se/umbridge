@@ -1,14 +1,15 @@
 ## Content
 
-1. Get courses
-2. Add a new course
-3. Update a course
-4. Delete a course
+1. [Get courses](#get-courses)
+2. [Add a new course](#add-course)
+3. [Update a course](#update-course)
+4. [Delete a course](#delete-course)
 
 Back to [README](../README.md)
 
 
-# 1. Get courses
+
+# <a id="get-courses"></a> 1. Get courses
 
 Fetches all courses
 
@@ -17,8 +18,8 @@ Fetches all courses
 **Method** : `GET`
 
 **Optional query parameters**:  
-| Param Name     | What                                |
-|:---------------|:------------------------------------|
+| Param Name     | What                               |
+|:--------------|:------------------------------------|
 | `id`          | The course id                       |
 | `name`        | The course name                     |
 | `active`      | It the course is active or not      |
@@ -66,7 +67,7 @@ If the wrong query parametes are given, unatherized or a server error appears.
 ```
 
 
-# 2. Add a new course
+# <a id="add-course"></a> 2. Add a new course
 
 Adds a new course to the database
 
@@ -123,7 +124,7 @@ If the course id exsists, given the wrong data, unatherized or a server error ap
 
 
 
-# 3. Update a course
+# <a id="update-course"></a> 3. Update a course
 
 Uppdates an existing course
 
@@ -178,7 +179,7 @@ If the course id does not exsist, unatherized or a server error appears.
 
 
 
-# 4. Delete a course
+# <a id="delete-course"></a> 4. Delete a course
 
 Uppdates an existing course
 
