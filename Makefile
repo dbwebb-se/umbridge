@@ -73,14 +73,6 @@ help:
 
 
 
-# target: add-ssh                         - Add ssh key to agent
-.PHONY: add-ssh
-add-ssh:
-	eval `ssh-agent -s`
-	ssh-add <path/too/ssh-key>
-
-
-
 # target: info                         - Displays versions.
 .PHONY: info
 info:
