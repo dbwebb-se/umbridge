@@ -189,7 +189,7 @@ clean: clean-py clean-cov
 
 
 
-# target: install                      - Install all Python packages specified in requirement.txt (requirements/prod.txt)
+# target: install                      - Install all Python packages specified in the .requirement.txt file
 .PHONY: install
 install:
 	${pip} install -r .requirements.txt
