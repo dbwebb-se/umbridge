@@ -113,8 +113,8 @@ The `course` table contains:
   * `id` - The `course_id` from Canvas
   * `name` - The courses dbwebb name eg. "python" or "htmlphp".
   * `active` - If the course is active, wall-e will fetch submissions from it
-    - 0, Not active
-    - 1, Active
+    - `0`, Not active
+    - `1`, Active
 
 The `submission` table contains:
   * `id` - Auto generated primary key.
