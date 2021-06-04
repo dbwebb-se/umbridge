@@ -42,7 +42,7 @@ def test_init(submission1, test_app):
     assert str(cm) == 'moc kmom02 python'
 
 
-def test_get_config_from_course_by_key(submission1, test_app):
+def test_get_config_from_course_by_key_normal(submission1, test_app):
     """ Test so the configuration loader """
     cm = CourseManager(submission1)
 
@@ -55,6 +55,41 @@ def test_get_config_from_course_by_key(submission1, test_app):
     }
     assert cm.get_config_from_course_by_key('name') == 'value2'
     assert cm.get_config_from_course_by_key('val') == 'name'
+
+
+def test_get_config_from_course_by_key_formatted(submission1, test_app):
+    """ Test so the configuration loaders formatting """
+    cm = CourseManager(submission1)
+
+    cm._config = {
+        "default": {
+            "git_url": "https://github.com/dbwebb-se/{course}.git",
+            "installation_commands": [
+                "make docker-install",
+                "dbwebb init-me"
+            ],
+            "test_command": "dbwebb test --docker {kmom} {acr} --download",
+            "update_command": "dbwebb update",
+            "log_file": ".log/test/docker/main.ansi",
+            "ignore_assignments": []
+        },
+        "python": {
+            "ignore_assignments": [ '{kmom}', 'kmom03' ]
+        }
+    }
+
+    assert cm.get_config_from_course_by_key('git_url') \
+        == 'https://github.com/dbwebb-se/python.git'
+    assert cm.get_config_from_course_by_key('installation_commands') \
+        == [ "make docker-install", "dbwebb init-me" ]
+    assert cm.get_config_from_course_by_key('test_command') \
+        == 'dbwebb test --docker kmom02 moc --download'
+    assert cm.get_config_from_course_by_key('update_command') \
+        == 'dbwebb update'
+    assert cm.get_config_from_course_by_key('log_file') \
+        == '.log/test/docker/main.ansi'
+    assert cm.get_config_from_course_by_key('ignore_assignments') \
+        == [ 'kmom02', 'kmom03' ]
 
 
 def test_get_course_repo_dir(submission1, test_app):
