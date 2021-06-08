@@ -7,3 +7,7 @@
 1. Remove the default token from `app/config.py`
 1. Remove the default credentials from `app/__init__.py`
 1. Remove the the route `eve/reset`
+
+
+# other
+1. user on canvas for credentials to connect to api
