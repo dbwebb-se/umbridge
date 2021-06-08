@@ -1,7 +1,7 @@
 # Features
 1. Update `dbwebb test` script for python to "auto potatoe" or update it for the new studserver user.
 1. Create an endpoint that returns all assignments that has been corrected by both Umbridge and a teacher - *For an external php script that shows code*.
-
+1. Show result log in php code view so students can see color codings?
 
 # On prod
 1. Remove the default token from `app/config.py`
