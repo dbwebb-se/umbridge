@@ -2,7 +2,7 @@
 Contains routes for main purpose of app
 """
 
-from flask import current_app, abort
+from flask import current_app, abort, request
 from app.wall_e import bp
 from app import db, auth
 from app.models import Submission, Course
@@ -49,7 +49,7 @@ def fetch():
             user_id = sub["user_id"]
 
             exists = Submission.query.filter_by(
-                assignment_id=assignment_id, workflow_state='submitted',
+                assignment_id=assignment_id, workflow_state='new',
                 user_id=user_id
             ).count()
 
@@ -79,10 +79,10 @@ def grade():
         base_url=current_app.config['CANVAS_API_URL'],
         api_token=current_app.config['CANVAS_API_TOKEN'])
 
-    graded_submissions = Submission.query.filter_by(workflow_state="pending_review")
+    graded_submissions = Submission.query.filter_by(workflow_state="tested")
 
     for sub in graded_submissions:
-        grader.grade_submission(sub)
+        grader.grade_submission(sub, url=request.host)
         sub.workflow_state = "graded"
         db.session.commit()
 

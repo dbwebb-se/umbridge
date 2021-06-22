@@ -59,6 +59,10 @@ Available routes:
   ['POST'] - Adds a new course
   ['POST'] - Updates a course
   ['DELETE'] - Removes a course
+
+
+/results
+  /feedback/<log_id> - Displays the feedback log, `log_id` is the submissions' `uuid` with its `id` concatenated ("{uuid}{id}") at the end on the small off chance the uuid is a duplicate.
 ```
 
 **Some** routes requires an `Authorization` header:
@@ -118,6 +122,7 @@ The `course` table contains:
 
 The `submission` table contains:
   * `id` - Auto generated primary key.
+  * `uuid` - Auto generated uuid4 that are used to view feedback logs.
   * `user_id` - A students canvas id
   * `user_acronym` - The students acronym
   * `assignment_id` - The assignments canvas id
@@ -129,9 +134,9 @@ The `submission` table contains:
      - `NULL`, not yet graded
      - `"Ux"`, one or more tests has failed
      - `"PG"`, all tests passed
-  * `workflow_state` - Follows the CanvasAPI standards and represents the current status of an assignment
-     - `"submitted"`, recently fetched by wall-e
-     - `"pending_review"` has been tested by eve
+  * `workflow_state` - Keeps track of the state, eg. if the submission needs to be tested or sent to canvas.
+     - `"new"`, recently fetched by wall-e
+     - `"tested"` has been tested by eve
      - `"graded"`, grade has been reported to canvas
 
 The `user` table contains:

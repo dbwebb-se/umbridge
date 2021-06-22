@@ -56,7 +56,7 @@ def test():
     Route for index page
     """
 
-    submissions = Submission.query.filter_by(workflow_state="submitted")
+    submissions = Submission.query.filter_by(workflow_state="new")
     for sub in submissions:
         CM = CourseManager(sub)
 
@@ -66,7 +66,7 @@ def test():
         grade = CM.update_download_and_run_tests()
         feedback = CM.get_content_from_test_log()
 
-        sub.workflow_state = 'pending_review'
+        sub.workflow_state = 'tested'
         sub.grade = grade
         sub.feedback = feedback
 
