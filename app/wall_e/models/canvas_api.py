@@ -4,7 +4,6 @@
 import os
 from app.wall_e.models.requester import Requester
 from app.settings import settings
-from canvasapi import submission, requester
 
 
 class Canvas(Requester):
@@ -91,11 +90,11 @@ class Canvas(Requester):
         Return gradeable submissions
         based on assignment_id
         """
+        # submitted = all assignments that has not been graded on canvas
         submissions = self._request_get(
             f"/api/v1/courses/{self.course_id}/students/submissions", payload={
                 "student_ids": ["all"],
                 "workflow_state": ["submitted"],
-
             }
         ).json()
 
@@ -119,13 +118,19 @@ class Grader(Requester):
     def __init__(self, base_url, api_token):
         super().__init__(base_url, api_token)
 
-    def grade_submission(self, sub):
+    def grade_submission(self, sub, url):
         """
         Grade submission
         """
+        feedback_text = (
+            "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n"
+            f"Loggfilen för alla tester kan du se via följande länk: http://{url}/results/feedback/{sub.uuid}{sub.id}\n"
+            "Kontakta en av de kursansvariga om resultatet är felaktigt."
+        )
+
         payload = {
             "comment": {
-                "text_comment": "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.",
+                "text_comment": feedback_text,
             },
             "submission": {
                 "posted_grade": sub.grade
@@ -135,27 +140,3 @@ class Grader(Requester):
         self._request_put(
             f"/api/v1/courses/{sub.course_id}/assignments/{sub.assignment_id}/submissions/{sub.user_id}",
             payload=payload)
-
-        self.create_and_send_logfile(sub)
-
-
-    def create_and_send_logfile(self, sub):
-        """
-        Creates a temporary log file
-        and sends it as a comment
-        """
-        file_name = f"{settings.APP_BASE_PATH}/wall_e/temp/feedback_{sub.assignment_name}_{sub.user_acronym}.txt"
-
-        with open(file_name, "w+") as fh:
-            fh.write(sub.feedback)
-
-        r = requester.Requester(self._url, self._key)
-        s = submission.Submission(
-            r, attributes={
-            "course_id": sub.course_id,
-            "assignment_id": sub.assignment_id,
-            "user_id": sub.user_id
-        })
-
-        s.upload_comment(file_name)
-        os.remove(file_name)
