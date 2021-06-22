@@ -3,6 +3,7 @@
 Contains Databse model classes
 """
 
+import uuid as uid
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import current_app
 from app import db
@@ -31,12 +32,17 @@ def format_dict(dic):
 
     return formated_dic
 
+def get_uuid4():
+    """ Returns a unique if for feedback view """
+    return str(uid.uuid4())
+
 
 class Submission(db.Model):
     """
     Represents an submission
     """
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(45), default=get_uuid4)
 
     user_id = db.Column(db.Integer, nullable=False, index=True)
     user_acronym = db.Column(db.String(6), nullable=False)
@@ -52,7 +58,7 @@ class Submission(db.Model):
 
     grade = db.Column(db.String(2), default=None)
     feedback = db.Column(db.Text, default=None)
-    workflow_state = db.Column(db.String(15), default='submitted')
+    workflow_state = db.Column(db.String(15), default='new')
 
 
     def __repr__(self):
