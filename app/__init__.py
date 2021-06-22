@@ -40,6 +40,9 @@ def create_app(config_class=ProdConfig):
 
     from app.courses import bp as courses_bp
     app.register_blueprint(courses_bp)
+
+    from app.results import bp as results_bp
+    app.register_blueprint(results_bp)
     #pylint: enable=wrong-import-position, cyclic-import, import-outside-toplevel
 
 
