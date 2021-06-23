@@ -123,8 +123,8 @@ class Grader(Requester):
         Grade submission
         """
         feedback_text = (
-            "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n"
-            f"Loggfilen för alla tester kan du se via följande länk: http://{url}/results/feedback/{sub.uuid}{sub.id}\n"
+            "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
+            f"Loggfilen för alla tester kan du se via följande länk: http://{url}/results/feedback/{sub.uuid}{sub.id}\n\n"
             "Kontakta en av de kursansvariga om resultatet är felaktigt."
         )
 
