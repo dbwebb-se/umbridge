@@ -49,6 +49,7 @@ def reset():
     return {"message": "Submission and Course table has been reset with dummy data"}
 
 
+
 @bp.route('/eve/test', methods=['GET', 'POST'])
 @auth.requires_authorization_header
 def test():
