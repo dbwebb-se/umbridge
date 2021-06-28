@@ -5,7 +5,7 @@ Factory for application
 
 
 import logging
-from os import system
+import os
 import click
 from flask import Flask
 from flask.logging import default_handler
@@ -64,11 +64,11 @@ def create_app(config_class=ProdConfig):
         * * * * * cd /path/to/repo && .venv/bin/flask grade {token}
         """
         curl = f'curl -i -H "Authorization: Basic {token}"'
-        host = 'http://localhost:5000'
+        host = os.environ.get('HOST') or 'http://localhost:5000'
 
-        system(f"{curl} {host}/wall-e/fetch-submissions")
-        system(f"{curl} {host}/eve/test")
-        system(f"{curl} {host}/wall-e/grade")
+        os.system(f"{curl} {host}/wall-e/fetch-submissions")
+        os.system(f"{curl} {host}/eve/test")
+        os.system(f"{curl} {host}/wall-e/grade")
 
 
     return app

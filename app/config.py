@@ -24,6 +24,7 @@ class Config():
     CANVAS_API_URL = 'https://bth.instructure.com'
     CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN') or \
         '12133~WhTU1hL4C472pg4wpGkXiIryQL61gEvxzbhTpbcyBcR8T03shtT9xtPRDo2yjOkJ'
+    HOST = os.environ.get('HOST') or 'http://localhost:5000'
 
 
 class ProdConfig(Config):

@@ -24,9 +24,9 @@ Start by setting the `FLASK_APP`, `FLASK_ENV` and `CANVAS_API_TOKEN` env vars:
 ```bash
 export FLASK_APP=umbridge.py
 export FLASK_ENV=development
-
-export CANVAS_API_TOKEN={Your Canvas token} # Has a working default that will be removed later.
+export CANVAS_API_TOKEN={Your Canvas token}
 export CANVAS_API_URL={The Base URL to the canvas api} # defults to `'https://bth.instructure.com'`.
+export HOST={The server base_url} # defults to `'http://localhost:5000'`.
 ```
 
 Available environments:
