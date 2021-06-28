@@ -82,7 +82,7 @@ def grade():
     graded_submissions = Submission.query.filter_by(workflow_state="tested")
 
     for sub in graded_submissions:
-        grader.grade_submission(sub, url=request.host)
+        grader.grade_submission(sub, url=current_app.config['HOST'])
         sub.workflow_state = "graded"
         db.session.commit()
 

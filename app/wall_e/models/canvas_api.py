@@ -1,7 +1,6 @@
 """
 
 """
-import os
 from app.wall_e.models.requester import Requester
 from app.settings import settings
 
