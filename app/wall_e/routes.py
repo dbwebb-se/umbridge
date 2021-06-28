@@ -2,7 +2,7 @@
 Contains routes for main purpose of app
 """
 
-from flask import current_app, abort, request
+from flask import current_app, abort
 from app.wall_e import bp
 from app import db, auth
 from app.models import Submission, Course
@@ -48,10 +48,10 @@ def fetch():
             assignment_id = sub["assignment_id"]
             user_id = sub["user_id"]
 
-            exists = Submission.query.filter_by(
-                assignment_id=assignment_id, workflow_state='new',
-                user_id=user_id
-            ).count()
+            # Ignores the submission if it exists
+            stud_attempts = Submission.query.filter_by(
+                assignment_id=assignment_id, user_id=user_id)
+            exists = [a for a in stud_attempts if a.workflow_state in ['new', 'tested']]
 
             if exists:
                 continue
