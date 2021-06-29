@@ -1,0 +1,88 @@
+<head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+
+    <style>
+        .larger { width: 1500px !important; }
+        .sidenav {
+            width: 140px;
+            position: fixed;
+            top: 20px;
+            left: 10px;
+            background: #eee;
+            overflow-x: hidden;
+            padding: 8px 0;
+            font-size: 8px;
+        }
+
+        #sourcecode {
+            z-index: 99;
+        }
+        
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #2196F3;
+            display: block;
+        }
+        
+        .sidenav a:hover {
+            color: #064579;
+        }
+
+        .main {
+            z-index: 99;
+            margin-left: 140px;
+            font-size: 20px;
+            padding: 0px 10px;
+        }
+
+    </style>
+</head>
+
+
+<body>
+    <div class="sidenav {{ ('larger' if not file_content else '') }}">
+        <a href="{{ url_for('results.browse_files', req_path=previus_directory) }}">../</a>
+        {% for file in files %}
+            <a href="{{ (request.path + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}">
+                {{ (link_content + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}
+            </a>
+        {% endfor %}
+    </div>
+
+
+
+    <div class="main">
+
+    {% if file_content %}
+        <div class="row">
+        <div class="col-md-8">
+            <pre><code id="sourcecode" class="{{file_extention}}">{{file_content}}</code></pre>
+        </div>
+        </div>
+    
+        <script>
+        hljs.initHighlightingOnLoad();
+    
+        $(function() {
+            $.ajax({
+            type: 'GET',
+            url: '/api/1/strategy/source/json/{{ name }}',
+            dataType: "json",
+    
+            success: function (response) {
+                console.log(response);
+                $("#sourcecode").html(response);
+                $('pre code').each(function(i, block) {
+                hljs.highlightBlock(block);
+                });
+            }
+            });
+        });
+        </script>
+  {% endif %}
+</div>
+</body>
