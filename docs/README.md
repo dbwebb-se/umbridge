@@ -62,7 +62,8 @@ Available routes:
 
 
 /results
-  /feedback/<log_id> - Displays the feedback log, `log_id` is the submissions' `uuid` with its `id` concatenated ("{uuid}{id}") at the end on the small off chance the uuid is a duplicate.
+  /feedback/<log_id: string> - Displays the feedback log, `log_id` is the submissions' `uuid` with its `id` concatenated ("{uuid}{id}") at the end on the small off chance the uuid is a duplicate.
+  /browse/<?req_path: string> - Displays a filetree where the user can navigare around files, it utilizes highlight.js to display the code in colorcoding for almost any file-extention.
 ```
 
 **Some** routes requires an `Authorization` header:
