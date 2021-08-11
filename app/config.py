@@ -6,11 +6,12 @@ Also Custom class for logging, RequestFormatter.
 
 import os
 from logging import Formatter
+from dotenv import load_dotenv
 from flask import request
 
 
 basedir = os.path.abspath(os.path.dirname(__file__) +  "/..")
-
+load_dotenv(os.path.join(basedir, '.env'))
 
 
 class Config():
@@ -22,8 +23,7 @@ class Config():
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     CANVAS_API_URL = 'https://bth.instructure.com'
-    CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN') or \
-        '12133~WhTU1hL4C472pg4wpGkXiIryQL61gEvxzbhTpbcyBcR8T03shtT9xtPRDo2yjOkJ'
+    CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN')
     HOST = os.environ.get('HOST') or 'http://localhost:5000'
 
 
