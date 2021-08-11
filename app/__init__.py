@@ -1,4 +1,3 @@
-
 """
 Factory for application
 """
@@ -25,7 +24,7 @@ def create_app(config_class=ProdConfig):
     app.config.from_object(config_class)
 
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db, render_as_batch=True)
     
 
     #pylint: disable=wrong-import-position, cyclic-import, import-outside-toplevel
