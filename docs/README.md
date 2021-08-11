@@ -20,13 +20,15 @@ make install
 
 ### Run application
 
-Start by setting the `FLASK_APP`, `FLASK_ENV` and `CANVAS_API_TOKEN` env vars:
+Start by setting the env vars. Create `.env` in project root folder and add all except `FLASK_APP`, it need to be added globally:
 ```bash
 export FLASK_APP=umbridge.py
 export FLASK_ENV=development
 export CANVAS_API_TOKEN={Your Canvas token}
 export CANVAS_API_URL={The Base URL to the canvas api} # defults to `'https://bth.instructure.com'`.
 export HOST={The server base_url} # defults to `'http://localhost:5000'`.
+export SECRET_KEY="<a secret flask string>"
+export CREDENTIALS="<base64 of username:password>"
 ```
 
 Available environments:
@@ -183,6 +185,28 @@ Supported string substitutions are:
  * `{course}` - will be replaced with the assignments course.
  * `{kmom}` - will be replaced with the canvas assignment name.
  * `{acr}` - will be replaced with the students acronym.
+
+
+
+### Production
+
+Run using the following Supervisorctl config for Gunicorn:
+
+```
+[program:umbridge]
+environment=
+    FLASK_APP="umbridge.py"
+command=<path-to-project>/umbridge/.venv/bin/gunicorn -b localhost:8000 -w 2 --access-logfile /var/log/umbridge/gunicorn-access.log --error-logfile /var/log/umbridge/gunicorn-error.log umbridge:app --timeout 0 --worker-class sync
+directory=<path-to-project>/umbridge
+user=<user>
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+```
+
+We need `--timeout 0 --worker-class sync` to not timeout between correcting students.
+
 
 
 ### Run application tests
