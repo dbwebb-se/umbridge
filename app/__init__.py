@@ -54,7 +54,7 @@ def create_app(config_class=ProdConfig):
 
 
     @app.cli.command()
-    @click.argument("token", default="ZGJ3ZWJiOnN1cGVyLXNlY3JldA==")
+    @click.argument("token")
     def grade(token):
         """
         Ro run scheduled job.
