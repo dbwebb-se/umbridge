@@ -55,8 +55,11 @@ def fetch():
 
             if exists:
                 continue
-
-            user_acronym = students[user_id]
+            try:
+                user_acronym = students[user_id]
+            except KeyError:
+                current_app.logger.info(f"User id {user_id} from submission {sub['id']} is not among students fetched from Canvas.")
+                continue
             assignment_name = canvas.get_assignment_name_by_id(assignment_id=assignment_id)
             s = Submission(
                 assignment_id=assignment_id, assignment_name=assignment_name, user_id=user_id,

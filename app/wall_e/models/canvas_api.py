@@ -52,7 +52,6 @@ class Canvas(Requester):
         Returns users in course by course_id
         """
         formatted_users = {}
-
         for u in self.users:
             formatted_users[u["id"]] = u["login_id"].split("@")[0]
 
