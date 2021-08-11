@@ -3,7 +3,6 @@ Model class for eve.index
 """
 
 import os
-import json
 from app.settings import settings
 
 
