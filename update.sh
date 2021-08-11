@@ -7,7 +7,7 @@
 
 HOST="40.87.149.99"
 SSH_USER="azureuser"
-SSH_KEY_LOCATION="/home/mabn17/.ssh/flask.pem"
+SSH_KEY_LOCATION="~/.ssh/umbridge.pem"
 COMMAND="cd ~/git/umbridge; git pull --rebase; sudo supervisorctl stop umbridge; sudo supervisorctl start umbridge"
 
 ssh -i ${SSH_KEY_LOCATION} ${SSH_USER}@${HOST}
