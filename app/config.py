@@ -22,8 +22,8 @@ class Config():
         'sqlite:///' + os.path.join(basedir, 'app.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    CANVAS_API_URL = 'https://bth.instructure.com'
-    CANVAS_API_TOKEN = os.environ.get('CANVAS_API_TOKEN')
+    URL_CANVAS_API = 'https://bth.instructure.com'
+    TOKEN_CANVAS_API = os.environ.get('TOKEN_CANVAS_API')
     HOST = os.environ.get('HOST') or 'http://localhost:5000'
 
 

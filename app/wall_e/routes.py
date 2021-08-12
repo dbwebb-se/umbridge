@@ -37,7 +37,7 @@ def fetch():
     for c in active_courses:
         canvas = Canvas(
             base_url=current_app.config['CANVAS_API_URL'],
-            api_token=current_app.config['CANVAS_API_TOKEN'],
+            api_token=current_app.config['TOKEN_CANVAS_API'],
             course_id=c.id,
             course_name=c.name)
 
@@ -80,7 +80,7 @@ def grade():
     """
     grader = Grader(
         base_url=current_app.config['CANVAS_API_URL'],
-        api_token=current_app.config['CANVAS_API_TOKEN'])
+        api_token=current_app.config['TOKEN_CANVAS_API'])
 
     graded_submissions = Submission.query.filter_by(workflow_state="tested")
 
