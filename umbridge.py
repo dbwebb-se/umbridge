@@ -1,7 +1,11 @@
 import os
 from logging import Formatter
+from dotenv import load_dotenv
 from app import create_app
 from app import config
+
+basedir = os.path.abspath(os.path.dirname(__file__) +  "/..")
+load_dotenv(os.path.join(basedir, '.env'))
 
 
 env = os.environ.get('FLASK_ENV')
