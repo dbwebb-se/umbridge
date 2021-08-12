@@ -1,7 +1,7 @@
 """
 Contains error handlers
 """
-from flask import current_app
+from flask import current_app, request
 from app.errors import bp
 from app import db
 
@@ -10,7 +10,7 @@ def not_found_error(error):
     """
     Error handler for code 404
     """
-    current_app.logger.info(error)
+    current_app.logger.info(f"{error} URL:{request.path}")
     return { "message": str(error) }, 404
 
 
