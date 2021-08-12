@@ -36,7 +36,7 @@ def fetch():
 
     for c in active_courses:
         canvas = Canvas(
-            base_url=current_app.config['CANVAS_API_URL'],
+            base_url=current_app.config['URL_CANVAS_API'],
             api_token=current_app.config['TOKEN_CANVAS_API'],
             course_id=c.id,
             course_name=c.name)
@@ -79,7 +79,7 @@ def grade():
     Route for grading students
     """
     grader = Grader(
-        base_url=current_app.config['CANVAS_API_URL'],
+        base_url=current_app.config['URL_CANVAS_API'],
         api_token=current_app.config['TOKEN_CANVAS_API'])
 
     graded_submissions = Submission.query.filter_by(workflow_state="tested")
