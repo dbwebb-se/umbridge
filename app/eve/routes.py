@@ -65,7 +65,6 @@ def test():
             CM.create_and_initiate_dbwebb_course_repo()
 
         grade = CM.update_download_and_run_tests()
-        current_app.logger.debug(grade)
 
         feedback = CM.get_content_from_test_log()
 

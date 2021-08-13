@@ -52,6 +52,8 @@ def create_app(config_class=ProdConfig):
         default_handler.setFormatter(formatter)
         app.logger.setLevel(logging.INFO)
 
+    app.logger.debug(f"Using config {config_class.__name__}")
+
 
     @app.cli.command()
     @click.argument("token")

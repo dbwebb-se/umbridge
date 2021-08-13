@@ -1,6 +1,7 @@
 """
 
 """
+from flask import current_app
 from app.wall_e.models.requester import Requester
 from app.settings import settings
 
@@ -20,7 +21,9 @@ class Canvas(Requester):
     def set_assignments_and_users(self):
         """ Caches assignments and students in a course """
         self.users = self.get_users_in_course()
+        current_app.logger.debug(f"Course {self._course_name} has the following users: {self.users}")
         self.assignments = self.get_assignments()
+        current_app.logger.debug(f"Course {self._course_name} has the following assignments: {self.assignments}")
 
 
     def get_users_in_course(self):
@@ -35,7 +38,6 @@ class Canvas(Requester):
         Return assignments
         based on course_id
         """
-
         return self._request_get(
             f"/api/v1/courses/{self.course_id}/assignments").json()
 
@@ -96,6 +98,8 @@ class Canvas(Requester):
             }
         ).json()
 
+        current_app.logger.debug(f"Course {self._course_name} has the following submissions: {self.users}")
+
         try:
             ignore = self._config[self._course_name]['ignore_assignments']
         except KeyError:
@@ -134,6 +138,8 @@ class Grader(Requester):
                 "posted_grade": sub.grade
             }
         }
+
+        current_app.logger.debug(f"Set grade {sub.grade} for {sub.user_id} in assignment {sub.assignment_id}")
 
         self._request_put(
             f"/api/v1/courses/{sub.course_id}/assignments/{sub.assignment_id}/submissions/{sub.user_id}",
