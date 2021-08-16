@@ -8,6 +8,28 @@
         "test_command": "dbwebb test --docker {kmom} {acr} --download",
         "update_command": "dbwebb update",
         "log_file": ".log/test/docker/main.ansi",
-        "ignore_assignments": []
+        "ignore_assignments": [],
+        "assignment_folders": {
+            "kmom01": ["me/kmom01"],
+            "kmom02": ["me/kmom02"],
+            "kmom03": ["me/kmom03"],
+            "kmom04": ["me/kmom04"],
+            "kmom05": ["me/kmom05"],
+            "kmom06": ["me/kmom06"],
+            "kmom10": ["me/kmom10"],
+            "exclude": [""]
+        }
+    },
+    "python": {
+        "assignment_folders": {
+            "kmom01": ["me/kmom01", "me/redovisa"],
+            "kmom02": ["me/kmom02"],
+            "kmom03": ["me/kmom03"],
+            "kmom04": ["me/kmom04"],
+            "kmom05": ["me/kmom05"],
+            "kmom06": ["me/kmom06"],
+            "kmom10": ["me/kmom10", "me/redovisa"],
+            "exclude": ["__pycache__"]
+        }
     }
 }

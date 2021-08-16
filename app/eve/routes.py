@@ -64,13 +64,19 @@ def test():
         if not CM.does_course_repo_exist():
             CM.create_and_initiate_dbwebb_course_repo()
 
+
+
+
         grade = CM.update_download_and_run_tests()
 
         feedback = CM.get_content_from_test_log()
 
+        zip_path = CM.copy_and_zip_student_code(feedback)
+
         sub.workflow_state = 'tested'
         sub.grade = grade
         sub.feedback = feedback
+        sub.zip_file_path = zip_path
 
         db.session.commit()
 

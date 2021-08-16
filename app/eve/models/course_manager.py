@@ -3,6 +3,7 @@ Model class for eve.index
 """
 
 import os
+import shutil
 from app.settings import settings
 
 
@@ -15,6 +16,8 @@ class CourseManager:
         """ Initiate the class """
         self._course = submission.course.name
         self.assignment_name = submission.assignment_name
+        self._assignment_id = submission.assignment_id
+        self._user_id = submission.user_id
         self._acr = submission.user_acronym
         self._config = settings.get_course_map()
 
@@ -38,10 +41,22 @@ class CourseManager:
             'course': self._course
         }
 
+        return self._recursive_format(config, formatter)
+
+
+
+    def _recursive_format(self, config, formatter):
+        """
+        Recursively format all string values in settings
+        """
         if isinstance(config, str):
             return config.format(**formatter)
+        elif isinstance(config, list):
+            return [self._recursive_format(value, formatter) for value in config]
+        elif isinstance(config, dict):
+            return {key:self._recursive_format(value, formatter) for key, value in config.items()}
+        return config
 
-        return [cnf.format(**formatter) for cnf in config]
 
 
     def get_course_repo_dir(self):
@@ -105,3 +120,29 @@ class CourseManager:
             content = fh.read()
 
         return content
+
+
+
+    def copy_and_zip_student_code(self, feedback):
+        """
+        Copy students code and log file to temp and create zip folder.
+        Then remove original folder
+        """
+        dest_dir_name = f"{self._assignment_id}{self._user_id}"
+        dest_parent_path = f"{settings.APP_BASE_PATH}/wall_e/temp"
+        dest = f"{dest_parent_path}/{dest_dir_name}"
+        folders = self.get_config_from_course_by_key("assignment_folders")[self.assignment_name]
+        exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
+
+        os.makedirs(dest)
+        for src in folders:
+            self.run_shell_command_in_course_repo(
+                f"rsync -avq {src} {dest}/ --exclude {','.join(exclude)}"
+            )
+        with open(f"{dest}/log.txt", "w") as fd:
+            fd.write(feedback)
+
+        shutil.make_archive(dest, 'zip', dest)
+        shutil.rmtree(dest)
+
+        return dest + ".zip"

@@ -59,6 +59,7 @@ class Submission(db.Model):
     grade = db.Column(db.String(2), default=None)
     feedback = db.Column(db.Text, default=None)
     workflow_state = db.Column(db.String(15), default='new') # new/tested/graded/
+    zip_file_path = db.Column(db.String(255), default=None)
 
 
     def __repr__(self):
