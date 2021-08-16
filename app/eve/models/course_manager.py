@@ -4,8 +4,8 @@ Model class for eve.index
 
 import os
 import shutil
+from flask import current_app
 from app.settings import settings
-
 
 
 class CourseManager:
@@ -134,7 +134,12 @@ class CourseManager:
         folders = self.get_config_from_course_by_key("assignment_folders")[self.assignment_name]
         exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
 
-        os.makedirs(dest)
+        current_app.logger.debug(f"config for copy/zip dest:{dest}, srcs:{folders}, exclude:{exclude}")
+        try:
+            os.makedirs(dest)
+        except FileExistsError:
+            shutil.rmtree(dest)
+
         for src in folders:
             self.run_shell_command_in_course_repo(
                 f"rsync -avq {src} {dest}/ --exclude {','.join(exclude)}"
@@ -142,7 +147,7 @@ class CourseManager:
         with open(f"{dest}/log.txt", "w") as fd:
             fd.write(feedback)
 
-        shutil.make_archive(dest, 'zip', dest)
+        shutil.make_archive(dest+"z", 'zip', dest) # has to distinguise archive name (z), otherwise it didn't create
         shutil.rmtree(dest)
 
-        return dest + ".zip"
+        return dest+"z.zip"
