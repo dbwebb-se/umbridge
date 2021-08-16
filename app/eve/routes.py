@@ -65,12 +65,13 @@ def test():
             CM.create_and_initiate_dbwebb_course_repo()
 
 
-
-
+        current_app.logger.debug(f"Grading {sub.user_acronym} in assignment {sub.assignment_name}")
         grade = CM.update_download_and_run_tests()
 
+        current_app.logger.debug(f"Getting logfile")
         feedback = CM.get_content_from_test_log()
 
+        current_app.logger.debug(f"Copying and zipping code for {sub.user_acronym} in assignment {sub.assignment_name}")
         zip_path = CM.copy_and_zip_student_code(feedback)
 
         sub.workflow_state = 'tested'
