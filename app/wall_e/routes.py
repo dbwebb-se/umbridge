@@ -65,7 +65,7 @@ def fetch():
                 assignment_id=assignment_id, assignment_name=assignment_name, user_id=user_id,
                 user_acronym=user_acronym, course_id=c.id)
             current_app.logger.debug(f"Found submission for {user_acronym} in assignment {assignment_name}.")
-            current_app.logger.info(f"Found submission assignment {assignment_name}.")
+            current_app.logger.info(f"Found submission for assignment {assignment_name}.")
             
 
             db.session.add(s)

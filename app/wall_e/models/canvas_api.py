@@ -139,7 +139,7 @@ class Grader(Requester):
             }
         }
 
-        current_app.logger.debug(f"Set grade {sub.grade} for {sub.user_id} in assignment {sub.assignment_id}")
+        current_app.logger.debug(f"Set grade {sub.grade} for {sub.user_acronym} in assignment {sub.assignment_id}")
 
         self._request_put(
             f"/api/v1/courses/{sub.course_id}/assignments/{sub.assignment_id}/submissions/{sub.user_id}",
