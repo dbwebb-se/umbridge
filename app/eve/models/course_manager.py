@@ -20,6 +20,7 @@ class CourseManager:
         self._user_id = submission.user_id
         self._acr = submission.user_acronym
         self._config = settings.get_course_map()
+        self._attempt = submission.attempt_nr
 
 
     def __str__(self):
@@ -128,7 +129,7 @@ class CourseManager:
         Copy students code and log file to temp and create zip folder.
         Then remove original folder
         """
-        dest_dir_name = f"{self._assignment_id}{self._user_id}"
+        dest_dir_name = f"{self._assignment_id}{self._user_id}{self._attempt}"
         dest_parent_path = f"{settings.APP_BASE_PATH}/wall_e/temp"
         dest = f"{dest_parent_path}/{dest_dir_name}"
         src_folders = self.get_config_from_course_by_key("assignment_folders")[self.assignment_name]
