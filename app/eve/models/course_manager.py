@@ -131,16 +131,16 @@ class CourseManager:
         dest_dir_name = f"{self._assignment_id}{self._user_id}"
         dest_parent_path = f"{settings.APP_BASE_PATH}/wall_e/temp"
         dest = f"{dest_parent_path}/{dest_dir_name}"
-        folders = self.get_config_from_course_by_key("assignment_folders")[self.assignment_name]
+        src_folders = self.get_config_from_course_by_key("assignment_folders")[self.assignment_name]
         exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
 
-        current_app.logger.debug(f"config for copy/zip dest:{dest}, srcs:{folders}, exclude:{exclude}")
+        current_app.logger.debug(f"config for copy/zip - dest:{dest}, srcs:{src_folders}, exclude:{exclude}")
         try:
             os.makedirs(dest)
         except FileExistsError:
             shutil.rmtree(dest)
 
-        for src in folders:
+        for src in src_folders:
             self.run_shell_command_in_course_repo(
                 f"rsync -avq {src} {dest}/ --exclude {','.join(exclude)}"
             )

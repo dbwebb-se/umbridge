@@ -1,7 +1,9 @@
 """
 
 """
+import os
 from flask import current_app
+from canvasapi import submission, requester
 from app.wall_e.models.requester import Requester
 from app.settings import settings
 
@@ -144,3 +146,23 @@ class Grader(Requester):
         self._request_put(
             f"/api/v1/courses/{sub.course_id}/assignments/{sub.assignment_id}/submissions/{sub.user_id}",
             payload=payload)
+
+        self.send_zip_archive(sub)
+
+
+    def send_zip_archive(self, sub):
+        """
+        Sends archive as a comment
+        """
+        file_name = sub.zip_file_path
+
+        r = requester.Requester(self._url, self._key)
+        s = submission.Submission(
+            r, attributes={
+            "course_id": sub.course_id,
+            "assignment_id": sub.assignment_id,
+            "user_id": sub.user_id
+        })
+        current_app.logger.debug(f"Sending zip as comment to {sub.user_acronym} in assignment {sub.assignment_id}")
+        s.upload_comment(file_name)
+        os.remove(file_name)

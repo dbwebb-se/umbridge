@@ -68,7 +68,7 @@ def test():
         current_app.logger.debug(f"Grading {sub.user_acronym} in assignment {sub.assignment_name}")
         grade = CM.update_download_and_run_tests()
 
-        current_app.logger.debug(f"Getting logfile")
+        current_app.logger.debug("Getting logfile")
         feedback = CM.get_content_from_test_log()
 
         current_app.logger.debug(f"Copying and zipping code for {sub.user_acronym} in assignment {sub.assignment_name}")
