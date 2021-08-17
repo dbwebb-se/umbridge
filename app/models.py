@@ -56,6 +56,9 @@ class Submission(db.Model):
         primaryjoin="Course.id == Submission.course_id",
         backref=db.backref('courses', uselist=False))
 
+    attempt_nr = db.Column(db.Integer, nullable=False)
+
+
     grade = db.Column(db.String(2), default=None)
     feedback = db.Column(db.Text, default=None)
     workflow_state = db.Column(db.String(15), default='new') # new/tested/graded/

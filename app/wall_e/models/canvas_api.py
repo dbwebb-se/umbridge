@@ -100,7 +100,7 @@ class Canvas(Requester):
             }
         ).json()
 
-        current_app.logger.debug(f"Course {self._course_name} has the following submissions: {self.users}")
+        current_app.logger.debug(f"Course {self._course_name} has the following submissions: {submissions}")
 
         try:
             ignore = self._config[self._course_name]['ignore_assignments']
