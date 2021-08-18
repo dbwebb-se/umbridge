@@ -126,9 +126,14 @@ class Grader(Requester):
         """
         Grade submission
         """
+        respons = self.send_zip_archive(sub)
+        id_ = respons["id"]
+        uuid = respons["uuid"]
+
         feedback_text = (
             "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
             f"Loggfilen för alla tester kan du se via följande länk: {url}/results/feedback/{sub.uuid}{sub.id}\n\n"
+            f"Du kan inspektera filerna som användes vid rättning via följande länk: {url}/results/inspect/{id_}/{uuid}\n\n"
             "Kontakta en av de kursansvariga om resultatet är felaktigt."
         )
 
@@ -147,7 +152,6 @@ class Grader(Requester):
             f"/api/v1/courses/{sub.course_id}/assignments/{sub.assignment_id}/submissions/{sub.user_id}",
             payload=payload)
 
-        self.send_zip_archive(sub)
 
 
     def send_zip_archive(self, sub):
@@ -164,5 +168,7 @@ class Grader(Requester):
             "user_id": sub.user_id
         })
         current_app.logger.debug(f"Sending zip as comment to {sub.user_acronym} in assignment {sub.assignment_id}")
-        s.upload_comment(file_name)
+        respons = s.upload_comment(file_name)
+        current_app.logger.debug(f"zip respons: {respons}")
         os.remove(file_name)
+        return respons[1]
