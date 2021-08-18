@@ -45,7 +45,7 @@
 
 <body>
     <div class="sidenav {{ ('larger' if not file_content else '') }}">
-        <a href="{{ url_for('results.browse_files', req_path=previus_directory) }}">../</a>
+        <a href="{{ url_for('results.browse_files', req_path=previous_directory) }}">../</a>
         {% for file in files %}
             <a href="{{ (request.path + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}">
                 {{ (link_content + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}

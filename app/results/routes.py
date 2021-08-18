@@ -39,7 +39,6 @@ def get_log(log_id):
 
 
 
-
 @bp.route('/results/inspect/<id_>/<uuid_>')
 def download_zip(id_, uuid_):
     """
