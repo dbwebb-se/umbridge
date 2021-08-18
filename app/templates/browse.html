@@ -1,7 +1,7 @@
 <head>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/default.min.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/highlight.min.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
 
     <style>
         .larger { width: 1500px !important; }
@@ -65,23 +65,7 @@
         </div>
     
         <script>
-        hljs.initHighlightingOnLoad();
-    
-        $(function() {
-            $.ajax({
-            type: 'GET',
-            url: '/api/1/strategy/source/json/{{ name }}',
-            dataType: "json",
-    
-            success: function (response) {
-                console.log(response);
-                $("#sourcecode").html(response);
-                $('pre code').each(function(i, block) {
-                hljs.highlightBlock(block);
-                });
-            }
-            });
-        });
+        hljs.highlightAll();
         </script>
   {% endif %}
 </div>
