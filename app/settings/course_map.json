@@ -21,6 +21,10 @@
         }
     },
     "python": {
+        "ignore_assignments": [
+            "Individuell examination utförande (inte inlämning!)",
+            "Individuell examination Redovisning inlämning"
+        ],
         "assignment_folders": {
             "kmom01": ["me/kmom01", "me/redovisa"],
             "kmom02": ["me/kmom02"],
