@@ -130,8 +130,16 @@ class Grader(Requester):
         id_ = respons["id"]
         uuid = respons["uuid"]
 
+        passed_comment = "Testerna har passerat. En rättare kommer läsa din redovisningstext, kolla på koden och sätta betyg."
+        failed_comment = "Tyvärr gick något fel i testerna. Läs igenom loggfilen för att se vad som gick fel. Lös felet och gör en ny inlämning."
+        if sub.grade.lower() == "pg":
+            feedback = passed_comment
+        else:
+            feedback = failed_comment
+
         feedback_text = (
             "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
+            f"{feedback}\n\n"
             f"Loggfilen för alla tester kan du se via följande länk: {url}/results/feedback/{sub.uuid}{sub.id}\n\n"
             f"Du kan inspektera filerna som användes vid rättning via följande länk: {url}/results/inspect/{id_}/{uuid}\n\n"
             "Kontakta en av de kursansvariga om resultatet är felaktigt."
