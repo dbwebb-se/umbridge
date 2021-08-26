@@ -1,0 +1,3 @@
+-r test.txt
+-r deploy.txt
+-r ../.requirements.txt

@@ -185,3 +185,8 @@ clean: clean-py clean-cov
 .PHONY: install
 install:
 	${pip} install -r .requirements.txt
+
+# target: install-dev                  - Install all Python packages for development
+.PHONY: install-dev
+install-dev:
+	${pip} install -r requirements/dev.txt
