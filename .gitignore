@@ -3,6 +3,15 @@ app.db
 migrations/
 tests/coverage_html/
 
+# ansible
+*.retry
+
+# Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
