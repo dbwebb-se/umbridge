@@ -1,0 +1,39 @@
+ändra apt update till en pre-task?
+    https://youtu.be/SLW4LX7lbvE?list=PL2_OBreMn7FqZkvMYt6ATmgC0KAGGJNAN&t=1828
+
+[ssh_connection]
+ssh_args                    =
+# pipelining                  = True # Testa i cygwin och alla miljöer.
+
+ansible-playbook <playbook.yml> --syntax-check # före körning för att kolla att syntaxen är korrekt
+
+För att felsöka task. Kan lägga resultat i en variabel och skriva ut med debug:
+tasks:
+    - name ...
+        ....
+      register: foo
+
+    - debug: var=foo
+
+ansible-vault edit <file> # öppnar editor med okrypterad fil och sen krypterar den när man stänger ner
+
+Testing i ansible https://youtu.be/FaXVZ60o8L8?list=PL2_OBreMn7FqZkvMYt6ATmgC0KAGGJNAN&t=1158
+    yamllint - intressant
+    ansible-playbook --syntax-check - intressant
+    ansible-lint - intressant
+    molecule-testing
+    ansible-playbook --check (mot prod) - intressant
+    Parallel infrastructure ? sätta upp en test miljö och om den funkar, rader och sätt upp den riktiga
+
+Testa inline i playbooks https://youtu.be/FaXVZ60o8L8?list=PL2_OBreMn7FqZkvMYt6ATmgC0KAGGJNAN&t=1444
+
+Efter att ändrat i ssh config fil kan vi validera den.
+- name: change ssh config
+  lineinfile:
+    ....
+    validate: 'sshd -T -f %s'
+
+Samma för ändrat i sudoers filen
+...
+    ...
+    validate: 'visudo -cf %s'

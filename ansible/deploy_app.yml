@@ -1,0 +1,6 @@
+---
+    -   hosts: server
+        remote_user: "{{ server_user }}"
+        roles:
+            # -   setup_docker
+            -   deploy_app

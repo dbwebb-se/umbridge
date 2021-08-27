@@ -1,0 +1,91 @@
+---
+# -   name: Install dependencies
+#     become: yes
+#     become_method: sudo
+#     apt:
+#         state: present
+#         pkg: "{{ apt_packages}}"
+
+-   name: Clone a github repository
+    git:
+        repo: https://github.com/dbwebb-se/umbridge.git
+        dest: "/home/{{ server_user }}/umbridge"
+        clone: yes
+        update: yes
+
+-   name: Install requirements
+    pip:
+        requirements: "/home/{{ server_user }}/umbridge/{{ item }}"
+        virtualenv: "/home/{{ server_user }}/umbridge/venv"
+        virtualenv_command: /usr/bin/python3 -m venv
+    with_items:
+        - .requirements.txt
+        - requirements/prod.txt
+
+-   name: Generate secret key for Flask
+    command: 'python3 -c "import uuid; print(uuid.uuid4().hex)"'
+    register: secret_key
+
+
+-   name: Copy .env
+    become: yes
+    become_method: sudo
+    template:
+        src:  .env.j2
+        dest: "/home/{{ server_user }}/umbridge/.env"
+        owner: deploy
+        mode: 0755
+
+-   name: Init DB
+    shell: "cd umbridge && \
+        . venv/bin/activate && \
+        flask db init"
+    ignore_errors: yes
+    register: db_init_status
+
+- debug: msg="{{db_init_status}}"
+
+-   name: Migrate DB
+    shell: "cd umbridge && \
+        . venv/bin/activate && \
+        flask db migrate"
+    ignore_errors: yes
+    when: db_init_status
+    register: not db_migrate_status.failed|bool
+
+-   name: Upgrade DB
+    shell: "cd umbridge && \
+        . venv/bin/activate && \
+        flask db upgrade"
+
+- name: Create a gunicorn log dir
+  become: yes
+  become_method: sudo
+  file:
+    path: /var/log/umbridge
+    state: directory
+    mode: '0755'
+    owner: "{{ server_user }}"
+
+- name: Create gunicorn log files
+  become: yes
+  become_method: sudo
+  file:
+    path: /var/log/umbridge/{{ item }}
+    state: file
+    mode: '0755'
+    owner: "{{ server_user }}"
+  with_items:
+    - "gunicorn-access.log"
+    - "gunicorn-error.log"
+
+-   name: Copy supervisor.conf
+    become: yes
+    become_method: sudo
+    template:
+        src:  supervisor.conf.j2
+        dest: /etc/supervisor/conf.d/umbridge.conf
+        owner: deploy
+        mode: 0755
+    notify: restart supervisor
+

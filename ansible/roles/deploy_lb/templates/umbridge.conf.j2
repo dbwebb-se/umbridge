@@ -1,0 +1,30 @@
+server {
+    listen 80;
+    server_name  {{ domain_name }} www.{{ domain_name }};
+    return 301 https://$server_name$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name  {{ domain_name }} www.{{ domain_name }};
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+    
+    ssl_certificate /etc/letsencrypt/live/{{ domain_name }}/cert.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ domain_name }}/privkey.pem;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+    location ~ /.well-known {
+        root /home/{{ server_user }}/.well-known;
+    }
+
+    location / {
+        add_header X-Content-Type-Options nosniff;
+        add_header X-Frame-Options "SAMEORIGIN";
+        add_header x-xss-protection "1; mode=block" always;
+        proxy_pass http://localhost:8000;
+    }
+    location /static {
+        # handle static files directly, without forwarding to the application
+        alias /home/azureuser/git/umbridge/app/static;
+        expires 30d;
+    }
+}
