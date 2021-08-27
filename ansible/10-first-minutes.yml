@@ -1,8 +1,11 @@
 ---
 -   hosts:
         -   server
-    remote_user: azureuser
+    remote_user: "{{ server_user }}"
     become: yes
     become_method: sudo
     roles:
         -   10-first-minutes
+
+
+# ändra betygskala på uppgifter till PG/UX/G

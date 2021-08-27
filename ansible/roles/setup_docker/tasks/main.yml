@@ -1,33 +1,62 @@
 ---
 -   name: Install docker step 1
+    become: yes
+    become_method: sudo
     apt:
         name: "{{ packages + pip_packages }}"
 
 -   name: Installing docker public key to apt
+    become: yes
+    become_method: sudo
     apt_key:
         id: "{{ docker_key }}"
         url: "{{ docker_url }}"
 
 -   name: Configure docker apt repo
+    become: yes
+    become_method: sudo
     apt_repository:
         repo: "{{ docker_repo }}"
         update_cache: true
-
--   name: Install pip
-    apt:
-        name: python3-pip
 
 -   name: Install docker step 2
     pip:
         name: "docker"
         executable: pip3
 
--   name: Install docker-compose
-    pip:
-        name: "docker-compose"
-        executable: pip3
+# -   name: Install docker-compose
+#     pip:
+#         name: "docker-compose"
+#         executable: pip3
 
 -   name: Install docker step 3
+    become: yes
+    become_method: sudo
     apt:
         name: "docker-ce"
         state: "present"
+
+-   name: Install docker-compose
+    become: yes
+    become_method: sudo
+    get_url: 
+      url : https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: 'u+x,g+x'
+
+-   name: Link docker-compose to /usr/bin
+    become: yes
+    become_method: sudo
+    file:
+        state: link
+        force: yes
+        src: /usr/local/bin/docker-compose
+        path: /usr/bin/docker-compose
+
+- name: adding existing user '{{ server_user }}' to group sudo
+  become: yes
+  become_method: sudo
+  user:
+    name: '{{ server_user }}'
+    groups: docker
+    append: yes

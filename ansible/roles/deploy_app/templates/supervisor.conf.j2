@@ -1,7 +1,7 @@
 [program:umbridge]
 environment=
     HOME="/home/{{ server_user }}"
-command=/home/{{ server_user }}/umbridge/.venv/bin/gunicorn -b localhost:8000 -w 2 --access-logfile /var/log/umbridge/gunicorn-access.log --error-logfile /var/log/umbridge/gunicorn-error.log umbridge:app --timeout 1800 --worker-class sync
+command=/home/{{ server_user }}/umbridge/venv/bin/gunicorn -b localhost:8000 -w 2 --access-logfile /var/log/umbridge/gunicorn-access.log --error-logfile /var/log/umbridge/gunicorn-error.log umbridge:app --timeout 1800 --worker-class sync
 directory=/home/{{ server_user }}/umbridge
 user={{ server_user }}
 autostart=true

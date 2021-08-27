@@ -189,6 +189,6 @@ install:
 # target: install-dev                  - Install all Python packages for development
 .PHONY: install-dev
 install-dev:
-	${pip} install --upgrade setuptools
 	${pip} install --upgrade pip
+	${pip} install --upgrade setuptools
 	${pip} install -r requirements/dev.txt

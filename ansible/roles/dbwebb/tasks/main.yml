@@ -1,0 +1,33 @@
+- name: Install dbwebb
+  become: yes
+  become_method: sudo
+  shell: bash -c "$(wget -qO- https://raw.githubusercontent.com/mosbth/dbwebb-cli/master/install.bash)"
+  args:
+    executable: /bin/bash
+
+- name: Configure dbwebb
+  shell: dbwebb config
+  args:
+    executable: /bin/bash
+    stdin: "{{ acronym }}"
+
+- name: "Make sure dbwebb ssh don't exist"
+  file:
+    path: "/home/{{ server_user }}/.ssh/{{ item }}"
+    state: absent
+  with_items:
+    - dbwebb
+    - dbwebb.pub
+
+- name: Install pexpect
+  pip:
+    name: pexpect
+
+- name: Create sshkey
+  expect:
+    command: /bin/bash dbwebb sshkey
+    responses:
+      "Press enter/return to continue...": ""
+      ".* password:": "{{ stud_password }}"
+      "Are you sure you want to continue connecting .*": "yes"
+  no_log: true

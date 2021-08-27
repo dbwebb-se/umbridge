@@ -4,3 +4,4 @@ packages:
     -   tmux
     -   git
     -   unattended-upgrades
+    -   rsync

@@ -86,6 +86,7 @@ Start the server and use `flask grade {credentials}` to fetch, test and report t
 Example of a cron job to correct the students every 15 minuts:
 ```bash
 */15 * * * * cd /path/to/repo && .venv/bin/flask grade {credentials}
+#*/5 * * * * find /home/azureuser/git/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1
 ```
 
 ### Database:

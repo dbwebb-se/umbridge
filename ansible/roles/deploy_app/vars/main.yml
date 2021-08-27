@@ -2,9 +2,9 @@ apt_packages:
     -   python3.7
     -   python3-venv
     -   python3-dev
+    -   "python-setuptools"
+    -   "python3-pip"
     -   supervisor
-
-app_file: me_page.py
 
 flask_env_vars:
     -   regexp: "^SECRET_KEY"

@@ -24,7 +24,7 @@ server {
     }
     location /static {
         # handle static files directly, without forwarding to the application
-        alias /home/azureuser/git/umbridge/app/static;
+        alias /home/{{ server_user }}/git/umbridge/app/static;
         expires 30d;
     }
 }

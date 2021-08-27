@@ -4,6 +4,11 @@
         name: root
         password: "{{ root_password }}"
 
+-   name: Set user password
+    user:
+        name: {{ server_user }}
+        password: "{{ server_user_pass }}"
+
 -   name: Update apt-cache and upgrade
     apt:
         force_apt_get: yes
@@ -25,30 +30,6 @@
     copy:
         src: files/apt_periodic_50
         dest: /etc/apt/apt.conf.d/50unattended-upgrades
-
--   name: Create user
-    user:
-        name: "{{ server_user }}"
-        password: "{{ server_user_pass }}"
-        state: present
-        shell: /bin/bash
-        groups: "{{ server_user_groups }}"
-
--   name: Generate an OpenSSL public key with a passphrase protected private key
-    delegate_to: 127.0.0.1
-    openssl_publickey:
-        path: "/tmp/key.pub"
-        privatekey_content: "{{ item }}"
-        format: OpenSSH
-    with_file:
-        - "{{ local_ssh_location }}"
-
--   name: Add ssh-key for new user
-    authorized_key:
-        user: "{{ server_user }}"
-        state: present
-        key: "{{ item }}"
-    with_file: "/tmp/key.pub"
 
 -   name: Disallow root ssh access
     lineinfile:
@@ -83,13 +64,4 @@
         regexp: "^AllowUsers"
         line: "AllowUsers {{ server_user }}"
         state: present
-    ignore_errors: yes
-
--   name: Remove default user
-    remote_user: "{{ server_user }}"
-    user:
-        name: azureuser
-        state: absent
-        force: yes
-        remove: yes
     ignore_errors: yes

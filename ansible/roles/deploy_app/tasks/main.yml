@@ -1,10 +1,10 @@
 ---
-# -   name: Install dependencies
-#     become: yes
-#     become_method: sudo
-#     apt:
-#         state: present
-#         pkg: "{{ apt_packages}}"
+-   name: Install dependencies
+    become: yes
+    become_method: sudo
+    apt:
+        state: present
+        pkg: "{{ apt_packages}}"
 
 -   name: Clone a github repository
     git:
@@ -33,7 +33,7 @@
     template:
         src:  .env.j2
         dest: "/home/{{ server_user }}/umbridge/.env"
-        owner: deploy
+        owner: "{{ server_user }}"
         mode: 0755
 
 -   name: Init DB
@@ -58,6 +58,11 @@
         . venv/bin/activate && \
         flask db upgrade"
 
+-   name: Pull latest container
+    docker:
+        image: dbwebb/courserepo:python
+        pull: always
+
 - name: Create a gunicorn log dir
   become: yes
   become_method: sudo
@@ -71,8 +76,8 @@
   become: yes
   become_method: sudo
   file:
-    path: /var/log/umbridge/{{ item }}
-    state: file
+    path: "/var/log/umbridge/{{ item }}"
+    state: touch
     mode: '0755'
     owner: "{{ server_user }}"
   with_items:
@@ -85,7 +90,27 @@
     template:
         src:  supervisor.conf.j2
         dest: /etc/supervisor/conf.d/umbridge.conf
-        owner: deploy
+        owner: "{{ server_user }}"
         mode: 0755
     notify: restart supervisor
 
+-   name: Add credential var
+    cron:
+        name: "UMBRIDGE_CREDENTIAL"
+        env: "yes"
+        job: ="ZGJ3ZWJiOnN1cGVyLXNlY3JldA=="
+        user: "{{ server_user }}"
+
+-   name: Add grade cron job
+    cron:
+        name: "Run grade";
+        user: "{{ server_user }}";
+        minute: */2;
+        job: "cd /home/deploy/umbridge && venv/bin/flask grade $UMBRIDGE_CREDENTIAL";
+
+-   name: Add clean temp cron job
+    cron:
+        name: "Clean temp";
+        user: "{{ server_user }}";
+        minute: */5;
+        job: "find /home/deploy/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1";
