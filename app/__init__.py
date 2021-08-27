@@ -67,9 +67,9 @@ def create_app(config_class=ProdConfig):
         curl = f'curl -i -H "Authorization: Basic {token}"'
         host = os.environ.get('HOST') or 'http://localhost:5000'
 
-        os.system(f"{curl} {host}/wall-e/fetch-submissions")
-        os.system(f"{curl} {host}/eve/test")
-        os.system(f"{curl} {host}/wall-e/grade")
+        os.system(f"{curl} -k {host}/wall-e/fetch-submissions")
+        os.system(f"{curl} -k {host}/eve/test")
+        os.system(f"{curl} -k {host}/wall-e/grade")
 
 
     return app
