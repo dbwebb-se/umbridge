@@ -24,12 +24,15 @@ Start by setting the env vars. Create `.env` in project root folder and add all 
 ```bash
 export FLASK_APP=umbridge.py
 export FLASK_ENV=development
-export CANVAS_API_TOKEN={Your Canvas token}
-export CANVAS_API_URL={The Base URL to the canvas api} # defults to `'https://bth.instructure.com'`.
+export TOKEN_CANVAS_API={Your Canvas token}
+export URL_CANVAS_API={The Base URL to the canvas api} # defults to `'https://bth.instructure.com'`.
 export HOST={The server base_url} # defults to `'http://localhost:5000'`.
 export SECRET_KEY="<a secret flask string>"
 export CREDENTIALS="<base64 of username:password>"
+export UMBRIDGE_ENV=true/false
 ```
+
+If using special umbridge user for dbwebb, export `UMBRIDGE_ENV=true`.
 
 Available environments:
 ```
@@ -83,7 +86,7 @@ Available routes:
 Start the server and use `flask grade {credentials}` to fetch, test and report the grades to canvas.  
 **Note**: `credentials` has a default value of the test user and will be removed on production.
 
-Example of a cron job to correct the students every 15 minuts:
+Example of a cron job to correct the students every 5 minuts and clear folders that are older than 30 min in temp folder:
 ```bash
 */15 * * * * cd /path/to/repo && .venv/bin/flask grade {credentials}
 #*/5 * * * * find /home/azureuser/git/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1
@@ -157,7 +160,17 @@ You can override the `default` configurations for a course by adding a new objec
 ```json
 {
     "python": {
-        "ignore_assignments": [ "kmom02" ]
+        "ignore_assignments": [ "kmom02" ],
+        "assignment_folders": {
+            "kmom01": ["me/kmom01", "me/redovisa"],
+            "kmom02": ["me/kmom02"],
+            "kmom03": ["me/kmom03"],
+            "kmom04": ["me/kmom04"],
+            "kmom05": ["me/kmom05"],
+            "kmom06": ["me/kmom06"],
+            "kmom10": ["me/kmom10", "me/redovisa"],
+            "exclude": ["__pycache__"]
+      }
     },
     "default": {
       "git_url": "https://github.com/dbwebb-se/{course}.git",
@@ -168,7 +181,17 @@ You can override the `default` configurations for a course by adding a new objec
       "test_command": "dbwebb test --docker {kmom} {acr} --download",
       "update_command": "dbwebb update",
       "log_file": ".log/test/docker/test-results.ansi",
-      "ignore_assignments": []
+      "ignore_assignments": [],
+      "assignment_folders": {
+          "kmom01": ["me/kmom01"],
+          "kmom02": ["me/kmom02"],
+          "kmom03": ["me/kmom03"],
+          "kmom04": ["me/kmom04"],
+          "kmom05": ["me/kmom05"],
+          "kmom06": ["me/kmom06"],
+          "kmom10": ["me/kmom10"],
+          "exclude": [""]
+      }
     }
 ```
 
@@ -181,6 +204,7 @@ Supported keys are:
  * `log_file` - The file that will be sent to the students upon grading.
  * `installation_commands` - The steps taken when installing required dependencies.
  * `ignore_assignments` - A list of assignments to ignore.
+ * `assignment_folders` - A dict with which directories are connected to what assignments. This is used to copy directories when zipping students code. Key is assignments name and value is a list with paths to directories which have code for the assignment. Also has key `exclude`, its value is a list with directory names to exclude when copying, e.g. cache dirs as `__pycache__`. Values in course specific dict can't be replace with values from default dict, all or nothing.
 
 Supported string substitutions are:
  * `{course}` - will be replaced with the assignments course.
@@ -196,17 +220,21 @@ Run using the following Supervisorctl config for Gunicorn:
 ```
 [program:umbridge]
 environment=
+    HOME="/home/<user>"
     FLASK_APP="umbridge.py"
-command=<path-to-project>/umbridge/.venv/bin/gunicorn -b localhost:8000 -w 2 --access-logfile /var/log/umbridge/gunicorn-access.log --error-logfile /var/log/umbridge/gunicorn-error.log umbridge:app --timeout 0 --worker-class sync
+command=<path-to-project>/umbridge/.venv/bin/gunicorn -b localhost:8000 -w 2 --access-logfile /var/log/umbridge/gunicorn-access.log --error-logfile /var/log/umbridge/gunicorn-error.log umbridge:app --timeout 1800 --worker-class sync
 directory=<path-to-project>/umbridge
-user=<user>
+user=<user> # setting user doesnt include env vars, like setting correct HOME.
 autostart=true
 autorestart=true
 stopasgroup=true
 killasgroup=true
 ```
 
-We need `--timeout 0 --worker-class sync` to not timeout between correcting students.
+We need `--timeout 1800 --worker-class sync` to not timeout between correcting students. Set high timeout (30 min) so it shouldn't kill process when correcting many students but we still need it to kill the process if somethings hangs.
+
+
+Gunicorn och Supervisorctl has problem with home dir. dbwebb reads config from root (`/`) instead of user home (`~/`). This is why we add HOME in config.
 
 
 
