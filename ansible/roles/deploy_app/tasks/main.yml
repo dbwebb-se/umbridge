@@ -51,7 +51,7 @@
         flask db migrate"
     ignore_errors: yes
     when: db_init_status
-    register: not db_migrate_status.failed|bool
+    # register: not db_migrate_status.failed|bool
 
 -   name: Upgrade DB
     shell: "cd umbridge && \
@@ -59,9 +59,11 @@
         flask db upgrade"
 
 -   name: Pull latest container
-    docker:
-        image: dbwebb/courserepo:python
-        pull: always
+    community.docker.docker_image:
+        name: "dbwebb/courserepo:python"
+        source: pull
+        force_source: yes
+        state: present
 
 - name: Create a gunicorn log dir
   become: yes
@@ -94,23 +96,29 @@
         mode: 0755
     notify: restart supervisor
 
--   name: Add credential var
-    cron:
+-   name: Add credential var to crontab
+    community.general.cronvar:
         name: "UMBRIDGE_CREDENTIAL"
-        env: "yes"
-        job: ="ZGJ3ZWJiOnN1cGVyLXNlY3JldA=="
-        user: "{{ server_user }}"
+        value: ="ZGJ3ZWJiOnN1cGVyLXNlY3JldA=="
 
 -   name: Add grade cron job
     cron:
-        name: "Run grade";
-        user: "{{ server_user }}";
-        minute: */2;
-        job: "cd /home/deploy/umbridge && venv/bin/flask grade $UMBRIDGE_CREDENTIAL";
+        name: "Run grade"
+        user: "{{ server_user }}"
+        minute: "*/2"
+        job: "cd /home/deploy/umbridge && venv/bin/flask grade $UMBRIDGE_CREDENTIAL"
 
 -   name: Add clean temp cron job
     cron:
-        name: "Clean temp";
-        user: "{{ server_user }}";
-        minute: */5;
-        job: "find /home/deploy/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1";
+        name: "Clean temp"
+        user: "{{ server_user }}"
+        minute: "*/5"
+        job: "find /home/deploy/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1"
+
+-   name: Add backup db cron job
+    cron:
+        name: "Clean temp"
+        user: "{{ server_user }}"
+        minute: "0"
+        hour: "*/1"
+        job: "sh /home/{{ server_user }}/backup_db.sh"

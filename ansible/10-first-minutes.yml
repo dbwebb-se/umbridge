@@ -6,6 +6,3 @@
     become_method: sudo
     roles:
         -   10-first-minutes
-
-
-# ändra betygskala på uppgifter till PG/UX/G

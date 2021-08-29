@@ -1,8 +1,4 @@
----
-# -   name: Add certbot repository
-#     apt_repository:
-#         repo: ppa:certbot/certbot
-# 
+--- 
 -   name: Install packages
     apt:
         name: "{{ packages }}"

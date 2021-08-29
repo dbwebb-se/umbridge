@@ -2,11 +2,11 @@
 -   name: Set root password
     user:
         name: root
-        password: "{{ root_password }}"
+        password: "{{ 'root_password' | password_hash('sha512') }}"
 
 -   name: Set user password
     user:
-        name: {{ server_user }}
+        name: "{{ server_user }}"
         password: "{{ server_user_pass }}"
 
 -   name: Update apt-cache and upgrade
@@ -65,3 +65,7 @@
         line: "AllowUsers {{ server_user }}"
         state: present
     ignore_errors: yes
+
+- name: Set timezone
+  timezone:
+    name: "{{ timezone }}"

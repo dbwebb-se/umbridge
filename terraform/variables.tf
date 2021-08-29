@@ -37,6 +37,6 @@ variable "ssh_name" {
 
 variable "user_name" {
   type        = string
-  default     = "azureuser"
+  default     = "deploy"
   description = "Name of default user"
 }
