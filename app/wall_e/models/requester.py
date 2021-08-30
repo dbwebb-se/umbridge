@@ -31,7 +31,6 @@ class Requester():
         )
         data = respons.json()
         if "Link" in respons.headers and 'rel="next"' in respons.headers["Link"]:
-            print(respons.headers["Link"])
             respons = self.request_get_paging(
                 endpoint, payload=payload, headers=headers, page=page+1
             )
