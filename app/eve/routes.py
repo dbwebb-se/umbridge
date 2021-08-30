@@ -65,7 +65,7 @@ def test():
             CM.create_and_initiate_dbwebb_course_repo()
 
 
-        current_app.logger.debug(f"Grading {sub.user_acronym} in assignment {sub.assignment_name}")
+        current_app.logger.info(f"Grading {sub.user_acronym} in assignment {sub.assignment_name}")
         grade = CM.update_download_and_run_tests()
 
         current_app.logger.debug("Getting logfile")
