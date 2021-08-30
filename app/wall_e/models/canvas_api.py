@@ -32,16 +32,17 @@ class Canvas(Requester):
         """
         Returns users in course by course_id
         """
-        return self._request_get(
-            f"/api/v1/courses/{self.course_id}/users?per_page=1000").json()
-    
+        data = self.request_get_paging(
+            f"/api/v1/courses/{self.course_id}/users?page={{page}}&per_page=100")
+        return data
+
     def get_assignments(self):
         """
         Return assignments
         based on course_id
         """
         return self._request_get(
-            f"/api/v1/courses/{self.course_id}/assignments").json()
+            f"/api/v1/courses/{self.course_id}/assignments?per_page=100").json()
 
 
     def get_course(self):
@@ -93,13 +94,14 @@ class Canvas(Requester):
         based on assignment_id
         """
         # submitted = all assignments that has not been graded on canvas
-        submissions = self._request_get(
-            f"/api/v1/courses/{self.course_id}/students/submissions", payload={
+        submissions = self.request_get_paging(
+            f"/api/v1/courses/{self.course_id}/students/submissions?page={{page}}&per_page=100", payload={
                 "student_ids": ["all"],
                 "workflow_state": ["submitted"],
             }
-        ).json()
+        )
 
+        current_app.logger.info(f"Course {self._course_name} has {len(submissions)} submissions")
         current_app.logger.debug(f"Course {self._course_name} has the following submissions: {submissions}")
 
         try:

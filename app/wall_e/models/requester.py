@@ -24,6 +24,21 @@ class Requester():
     def _request_get(self, endpoint, payload={}, headers=None):
         return self._base_request(requests.get, endpoint, headers, params=payload)
 
+    def request_get_paging(self, endpoint, payload={}, headers=None, page=1):
+        data = []
+        respons = self._request_get(
+            endpoint.format(page=page), payload=payload, headers=headers
+        )
+        data = respons.json()
+        if "Link" in respons.headers and 'rel="next"' in respons.headers["Link"]:
+            print(respons.headers["Link"])
+            respons = self.request_get_paging(
+                endpoint, payload=payload, headers=headers, page=page+1
+            )
+            data.extend(respons)
+
+        return data
+
     def _request_post(self, endpoint, payload={}, headers=None):
         return self._base_request(requests.post, endpoint, headers, data=payload)
 
