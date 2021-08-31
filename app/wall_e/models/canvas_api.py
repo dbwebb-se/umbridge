@@ -134,10 +134,14 @@ class Grader(Requester):
 
         passed_comment = "Testerna har passerat. En rättare kommer läsa din redovisningstext, kolla på koden och sätta betyg."
         failed_comment = "Tyvärr gick något fel i testerna. Läs igenom loggfilen för att se vad som gick fel. Lös felet och gör en ny inlämning."
+        error_comment = "Något gick fel i umbridge, kontakta kursansvarig."
+
         if sub.grade.lower() == "pg":
             feedback = passed_comment
-        else:
+        elif sub.grade.lower() == "ux":
             feedback = failed_comment
+        else:
+            feedback = error_comment
 
         feedback_text = (
             "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"

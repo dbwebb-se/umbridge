@@ -3,6 +3,8 @@ Model class for eve.index
 """
 
 import os
+from re import sub
+import subprocess
 import shutil
 from flask import current_app
 from app.settings import settings
@@ -74,7 +76,10 @@ class CourseManager:
 
     def run_shell_command_in_course_repo(self, command):
         """ cd into the course repo and executes shell command """
-        return os.system(f"cd {self.get_course_repo_dir()} && {command}")
+        current_app.logger.debug(f"Runnin command {command}")
+        return subprocess.run(
+            command, cwd=f"{self.get_course_repo_dir()}", capture_output=True
+        ).returncode
 
 
 
@@ -89,7 +94,6 @@ class CourseManager:
         os.system(f"git clone {git_url} {self.get_course_repo_dir()}")
 
         commands = self.get_config_from_course_by_key('installation_commands')
-        print('COMMANDS', commands)
         for command in commands:
             self.run_shell_command_in_course_repo(command)
 
@@ -107,8 +111,13 @@ class CourseManager:
 
         test_command = self.get_config_from_course_by_key('test_command')
         result = self.run_shell_command_in_course_repo(test_command)
-
-        return "PG" if result == 0 else "Ux"
+        current_app.logger.debug(f"Got exit code {result} from test command!")
+        if result == 0:
+            return "PG"
+        elif result in (7,): # add more know exit codes for errors when find them
+            current_app.logger.error(f"Test returned {result} for {self._acr} in assignment {self.assignment_name}")
+            return "U" # return U when known error happens
+        return "Ux"
 
 
 
@@ -124,7 +133,7 @@ class CourseManager:
 
 
 
-    def copy_and_zip_student_code(self, feedback):
+    def copy_and_zip_student_code(self, feedback, grade):
         """
         Copy students code and log file to temp and create zip folder.
         Then remove original folder
@@ -136,15 +145,20 @@ class CourseManager:
         exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
 
         current_app.logger.debug(f"config for copy/zip - dest:{dest}, srcs:{src_folders}, exclude:{exclude}")
+
         try:
             os.makedirs(dest)
         except FileExistsError:
             shutil.rmtree(dest)
 
-        for src in src_folders:
-            self.run_shell_command_in_course_repo(
-                f"rsync -avq {src} {dest}/ --exclude {','.join(exclude)}"
-            )
+        if grade == "U":
+            current_app.logger.debug(f"Not copying code for zip, because U grade")
+        else:
+            for src in src_folders:
+                self.run_shell_command_in_course_repo(
+                    ["rsync", "-avq", f"{src}", "{dest}/", "--exclude", f"{','.join(exclude)}"]
+                )
+
         with open(f"{dest}/log.txt", "w") as fd:
             fd.write(feedback)
 

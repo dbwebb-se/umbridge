@@ -2,11 +2,11 @@
     "default": {
         "git_url": "https://github.com/dbwebb-se/{course}.git",
         "installation_commands": [
-            "make docker-install",
-            "dbwebb init-me"
+            ["make", "docker-install"],
+            ["dbwebb", "init-me"]
         ],
-        "test_command": "dbwebb test --docker {kmom} {acr} --download",
-        "update_command": "dbwebb update",
+        "test_command": ["dbwebb", "test", "--docker", "{kmom}", "{acr}", "--download"],
+        "update_command": ["dbwebb", "--version"],
         "log_file": ".log/test/docker/main.ansi",
         "ignore_assignments": [],
         "assignment_folders": {

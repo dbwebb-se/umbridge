@@ -72,7 +72,7 @@ def test():
         feedback = CM.get_content_from_test_log()
 
         current_app.logger.debug(f"Copying and zipping code for {sub.user_acronym} in assignment {sub.assignment_name}")
-        zip_path = CM.copy_and_zip_student_code(feedback)
+        zip_path = CM.copy_and_zip_student_code(feedback, grade)
 
         sub.workflow_state = 'tested'
         sub.grade = grade
