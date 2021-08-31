@@ -19,7 +19,9 @@ def get_log(log_id):
     if not log_id:
         return { "message": "No Log-id provided" }, 400
 
-    submission_id, submission_uuid = log_id[-1], log_id[:-1]
+    seperator_index = log_id.rfind("-")
+    submission_uuid = log_id[:seperator_index]
+    submission_id = log_id[seperator_index+1:]
 
     sub = Submission.query.filter_by(id=submission_id, uuid=submission_uuid).first()
 
