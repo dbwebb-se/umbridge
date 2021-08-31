@@ -5,9 +5,9 @@
 # Repo needs to be public.
 ##
 
-HOST="40.87.149.99"
-SSH_USER="azureuser"
+HOST="umbridge.arnesson.dev"
+SSH_USER="deploy"
 SSH_KEY_LOCATION="~/.ssh/umbridge.pem"
-COMMAND="cd ~/git/umbridge; git pull --rebase; sudo supervisorctl stop umbridge; sudo supervisorctl start umbridge"
+COMMAND="cd ~/umbridge; git pull --rebase; sudo cp /var/log/supervisor/*.log /var/log/supervisor/old/; sudo supervisorctl stop umbridge; sudo supervisorctl start umbridge"
 
-ssh -i ${SSH_KEY_LOCATION} ${SSH_USER}@${HOST}
+ssh -i ${SSH_KEY_LOCATION} ${SSH_USER}@${HOST} "${COMMAND}"
