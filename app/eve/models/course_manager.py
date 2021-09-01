@@ -77,9 +77,12 @@ class CourseManager:
     def run_shell_command_in_course_repo(self, command):
         """ cd into the course repo and executes shell command """
         current_app.logger.debug(f"Runnin command {command}")
-        return subprocess.run(
+        output = subprocess.run(
             command, cwd=f"{self.get_course_repo_dir()}", capture_output=True
-        ).returncode
+        )
+        current_app.logger.debug(f"Got output {output}")
+
+        return output.returncode
 
 
 
@@ -156,7 +159,7 @@ class CourseManager:
         else:
             for src in src_folders:
                 self.run_shell_command_in_course_repo(
-                    ["rsync", "-avq", f"{src}", "{dest}/", "--exclude", f"{','.join(exclude)}"]
+                    ["rsync", "-avq", f"{src}", f"{dest}/", "--exclude", f"{','.join(exclude)}"]
                 )
 
         with open(f"{dest}/log.txt", "w") as fd:
