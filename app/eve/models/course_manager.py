@@ -87,7 +87,6 @@ class CourseManager:
 
         if output.stderr:
             current_app.logger.error(output.stderr)
-            print(output.stderr.decode("utf-8"), file=sys.stderr)
 
         current_app.logger.debug(f"Got output {output}")
 
