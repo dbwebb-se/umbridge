@@ -3,6 +3,7 @@ Model class for eve.index
 """
 
 import os
+import sys
 from re import sub
 import subprocess
 import shutil
@@ -74,12 +75,20 @@ class CourseManager:
 
 
 
-    def run_shell_command_in_course_repo(self, command):
+    def run_shell_command_in_course_repo(self, command, print_output=False):
         """ cd into the course repo and executes shell command """
         current_app.logger.debug(f"Runnin command {command}")
         output = subprocess.run(
-            command, cwd=f"{self.get_course_repo_dir()}", capture_output=True
+            command, cwd=f"{self.get_course_repo_dir()}",
+            capture_output=True,
         )
+        if print_output:
+            print(output.stdout.decode("utf-8"))
+
+        if output.stderr:
+            current_app.logger.error(output.stderr)
+            print(output.stderr.decode("utf-8"), file=sys.stderr)
+
         current_app.logger.debug(f"Got output {output}")
 
         return output.returncode
@@ -113,8 +122,9 @@ class CourseManager:
         self.run_shell_command_in_course_repo(update_command)
 
         test_command = self.get_config_from_course_by_key('test_command')
-        result = self.run_shell_command_in_course_repo(test_command)
+        result = self.run_shell_command_in_course_repo(test_command, print_output=True)
         current_app.logger.debug(f"Got exit code {result} from test command!")
+
         if result == 0:
             return "PG"
         elif result in (7,): # add more know exit codes for errors when find them
