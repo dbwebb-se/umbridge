@@ -38,7 +38,7 @@ Fetches all submissions that requires drading from Canvas and stores the databas
    
 # <a id="grade-submissions"></a> 2. Grade Submissions
 
-Gets all the tested submissions from the database and reports them to Canvas.
+Gets all the tested submissions from the database and reports them to Canvas. If know error code is encountered during testing, the grade U will be sent to Canvas.
 
 **URL** : `/wall-e/grade`
 

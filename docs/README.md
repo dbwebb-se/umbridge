@@ -1,7 +1,7 @@
 Umbridge
 ================================
 
-Automatic grading system that utilizes the [canvas api](https://canvas.instructure.com/doc/api/). It is primarily build for the [dbwebb-cli](https://github.com/dbwebb-se/dbwebb-cli) and its courses.
+Automatic grading system that utilizes the [canvas api](https://canvas.instructure.com/doc/api/). It is primarily built for the [dbwebb-cli](https://github.com/dbwebb-se/dbwebb-cli) and its courses.
 
 
 
@@ -82,15 +82,21 @@ Available routes:
 3. [courses](/docs/api/courses.md)
 
 
+
 ### Execute the grading process:
+
 Start the server and use `flask grade {credentials}` to fetch, test and report the grades to canvas.  
 **Note**: `credentials` has a default value of the test user and will be removed on production.
 
 Example of a cron job to correct the students every 5 minuts and clear folders that are older than 30 min in temp folder:
 ```bash
-*/15 * * * * cd /path/to/repo && .venv/bin/flask grade {credentials}
-#*/5 * * * * find /home/azureuser/git/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1
+UMBRIDGE_CREDENTIAL=="<credentials>"
+*/30 * * * * find /home/azureuser/git/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +30  | xargs rm -rf >/dev/null 2>&1
+*/5 * * * * cd /path/to/repo && venv/bin/flask grade $UMBRIDGE_CREDENTIAL
+0 */1 * * * sh /path/to/repo/backup_db.sh
 ```
+
+
 
 ### Database:
 Setup SQLite database if `migrations` folder already exist:
@@ -117,8 +123,11 @@ flask db stamp head
 flask db upgrade
 ```
 
+
+
 #### Models
-There are three database tables, `course`, `submission` and `user`. A `course` is required before adding `submissions`. `user` keeps information about autenticaded users to access routes.
+
+There are three database tables, `course`, `submission` and `user`. A `course` is required before adding `submissions`. `user` keeps information about authenticated users to access routes.
 
 The `course` table contains:
   * `id` - The `course_id` from Canvas
@@ -154,7 +163,8 @@ The `user` table contains:
 
 
 ### App configuration for grading courses:
-There is a configuration file inside `app/settings/course_map.json`. This is used to configure the default behavior depending on the course. If a course is missing a key or does not exist it will fallback to the default values.
+
+There is a configuration file inside `app/settings/course_map.json`. This is used to configure the default behavior depending on the course. If a course is missing a key or does not exist it will fallback to the default values. Commands need to be written in list with each argument as own element.
 
 You can override the `default` configurations for a course by adding a new object matching the course's name. Example:
 ```json
@@ -175,11 +185,11 @@ You can override the `default` configurations for a course by adding a new objec
     "default": {
       "git_url": "https://github.com/dbwebb-se/{course}.git",
       "installation_commands": [
-          "make docker-install",
-          "dbwebb init-me"
+          ["make", "docker-install"],
+          ["dbwebb", "init-me"]
       ],
-      "test_command": "dbwebb test --docker {kmom} {acr} --download",
-      "update_command": "dbwebb update",
+      "test_command": ["dbwebb", "test", "--docker", "{kmom}", "{acr}", "--download"],
+      "update_command": ["dbwebb", "update"],
       "log_file": ".log/test/docker/test-results.ansi",
       "ignore_assignments": [],
       "assignment_folders": {
