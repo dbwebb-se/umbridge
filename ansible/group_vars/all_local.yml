@@ -1,0 +1,15 @@
+server_user: ""
+server_user_pass: ""
+root_password: ""
+
+acronym: "umbridge"
+stud_password: ""
+
+domain_name: ""
+canvas_api_token: ""
+credential: ""
+
+admin_email: ""
+
+ansible_ssh_private_key_file: "~/.ssh/umbridge.pem"
+ansible_python_interpreter: "python3"
