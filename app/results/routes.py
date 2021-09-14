@@ -94,9 +94,13 @@ def browse_files(req_path):
 
     # When a file is requested
     if os.path.isfile(abs_path):
-        with open(abs_path, 'r') as file:
-            file_content = file.read()
-        file_extention = abs_path.split('.')[-1]
+        try:
+            with open(abs_path, 'r') as file:
+                file_content = file.read()
+            file_extention = abs_path.split('.')[-1]
+        except UnicodeDecodeError:
+            file_content = "Can only display text files!"
+            file_extention = "txt"
 
         return render_template(
             'browse.html', previous_directory=previous_directory,
