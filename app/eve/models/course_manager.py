@@ -77,7 +77,7 @@ class CourseManager:
 
     def run_shell_command_in_course_repo(self, command, print_output=False):
         """ cd into the course repo and executes shell command """
-        current_app.logger.debug(f"Runnin command {command}")
+        current_app.logger.debug(f"Running command {command}")
         output = subprocess.run(
             command, cwd=f"{self.get_course_repo_dir()}",
             capture_output=True,
@@ -122,9 +122,9 @@ class CourseManager:
 
         test_command = self.get_config_from_course_by_key('test_command')
         result = self.run_shell_command_in_course_repo(test_command, print_output=True)
-        current_app.logger.debug(f"Got exit code {result} from test command!")
+        current_app.logger.info(f"Got exit code {result} from test command!")
         if result in (7,):
-            current_app.logger.debug(f"Running test command again to try if error is fixed!")
+            current_app.logger.debug("Running test command again to try if error is fixed!")
             result = self.run_shell_command_in_course_repo(test_command, print_output=True)
 
 
