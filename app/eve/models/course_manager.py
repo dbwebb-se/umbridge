@@ -109,6 +109,14 @@ class CourseManager:
             self.run_shell_command_in_course_repo(command)
 
 
+    def prepare_for_students_code(self):
+        """
+        Run prepare command in course repo to prepare for testing student
+        """
+        prepare_command = self.get_config_from_course_by_key('prepare_student')
+        self.run_shell_command_in_course_repo(prepare_command)
+
+
 
     def update_download_and_run_tests(self):
         """
@@ -182,3 +190,12 @@ class CourseManager:
         shutil.rmtree(dest)
 
         return dest+"z.zip"
+
+
+
+    def clean_up_students_code(self):
+        """
+        Run clean up command in course repo to remove students code
+        """
+        clean_up_command = self.get_config_from_course_by_key('clean_up_student')
+        self.run_shell_command_in_course_repo(clean_up_command)

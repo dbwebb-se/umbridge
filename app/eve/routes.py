@@ -64,8 +64,9 @@ def test():
         if not CM.does_course_repo_exist():
             CM.create_and_initiate_dbwebb_course_repo()
 
-
         current_app.logger.info(f"Grading {sub.user_acronym} in assignment {sub.assignment_name}")
+        CM.prepare_for_students_code()
+
         grade = CM.update_download_and_run_tests()
 
         current_app.logger.debug("Getting logfile")
@@ -74,6 +75,7 @@ def test():
         current_app.logger.debug(f"Copying and zipping code for {sub.user_acronym} in assignment {sub.assignment_name}")
         zip_path = CM.copy_and_zip_student_code(feedback, grade)
 
+        CM.clean_up_students_code()
         sub.workflow_state = 'tested'
         sub.grade = grade
         sub.feedback = feedback

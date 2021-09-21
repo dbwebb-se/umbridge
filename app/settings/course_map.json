@@ -2,8 +2,7 @@
     "default": {
         "git_url": "https://github.com/dbwebb-se/{course}.git",
         "installation_commands": [
-            ["make", "docker-install"],
-            ["dbwebb", "init-me"]
+            ["make", "docker-install"]
         ],
         "test_command": ["dbwebb", "test", "--docker", "{kmom}", "{acr}", "--download"],
         "update_command": ["dbwebb", "update"],
@@ -18,7 +17,9 @@
             "kmom06": ["me/kmom06"],
             "kmom10": ["me/kmom10"],
             "exclude": [""]
-        }
+        },
+        "prepare_student": ["dbwebb", "init-me"],
+        "clean_up_student": ["rm", "-rf", "me"]
     },
     "python": {
         "ignore_assignments": [
