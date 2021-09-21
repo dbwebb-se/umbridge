@@ -8,6 +8,6 @@
 HOST="umbridge.arnesson.dev"
 SSH_USER="deploy"
 SSH_KEY_LOCATION="~/.ssh/umbridge.pem"
-COMMAND="cd ~/umbridge; git pull --rebase; sudo cp /var/log/supervisor/*.log /home/{$SSH_USER}/log_backup/; sudo supervisorctl stop umbridge; sudo supervisorctl start umbridge"
+COMMAND="cd ~/umbridge; git pull --rebase; sudo cp /var/log/supervisor/*.log /home/{$SSH_USER}/log_backup/; sudo supervisorctl reload"
 
 ssh -i ${SSH_KEY_LOCATION} ${SSH_USER}@${HOST} "${COMMAND}"
