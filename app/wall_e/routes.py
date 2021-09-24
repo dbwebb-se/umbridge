@@ -94,7 +94,7 @@ def grade():
         grader.grade_submission(sub, url=current_app.config['HOST'])
         sub.workflow_state = "graded"
         db.session.commit()
-        current_app.logger.info(f"Posted grade {sub.grade} to canvas")
+        current_app.logger.info(f"Posted grade {sub.grade} to canvas for {sub.user_acronym}")
 
 
     return { "message": "Canvas has been updated with the new grades." }, 200

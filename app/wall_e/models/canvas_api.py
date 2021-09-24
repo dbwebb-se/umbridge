@@ -128,28 +128,36 @@ class Grader(Requester):
         """
         Grade submission
         """
-        respons = self.send_zip_archive(sub)
-        id_ = respons["id"]
-        uuid = respons["uuid"]
-
         passed_comment = "Testerna har passerat. En rättare kommer läsa din redovisningstext, kolla på koden och sätta betyg."
         failed_comment = "Tyvärr gick något fel i testerna. Läs igenom loggfilen för att se vad som gick fel. Lös felet och gör en ny inlämning."
         error_comment = "Något gick fel i umbridge, kontakta kursansvarig."
 
-        if sub.grade.lower() == "pg":
-            feedback = passed_comment
-        elif sub.grade.lower() == "ux":
-            feedback = failed_comment
-        else:
-            feedback = error_comment
+        respons = self.send_zip_archive(sub)
 
-        feedback_text = (
-            "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
-            f"{feedback}\n\n"
-            f"Loggfilen för alla tester kan du se via följande länk: {url}/results/feedback/{sub.uuid}-{sub.id}\n\n"
-            f"Du kan inspektera filerna som användes vid rättning via följande länk: {url}/results/inspect/{id_}/{uuid}\n\n"
-            "Kontakta en av de kursansvariga om resultatet är felaktigt."
-        )
+        if respons is not None:
+            if sub.grade.lower() == "pg":
+                feedback = passed_comment
+            elif sub.grade.lower() == "ux":
+                feedback = failed_comment
+            else:
+                feedback = error_comment
+
+            id_ = respons["id"]
+            uuid = respons["uuid"]
+
+            feedback_text = (
+                "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
+                f"{feedback}\n\n"
+                f"Loggfilen för alla tester kan du se via följande länk: {url}/results/feedback/{sub.uuid}-{sub.id}\n\n"
+                f"Du kan inspektera filerna som användes vid rättning via följande länk: {url}/results/inspect/{id_}/{uuid}\n\n"
+                "Kontakta en av de kursansvariga om resultatet är felaktigt."
+            )
+        else:
+            feedback_text = (
+                "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
+                f"Umbridge kunde inte hitta filerna efter rättningen, försök göra en ny inlämning. Om det inte hjälper, kontakta kursansvarig.\n\n"
+                f"Loggfilen för alla tester kan du se via följande länk: {url}/results/feedback/{sub.uuid}-{sub.id}\n\n"
+            )
 
         payload = {
             "comment": {
@@ -182,7 +190,12 @@ class Grader(Requester):
             "user_id": sub.user_id
         })
         current_app.logger.debug(f"Sending zip as comment to {sub.user_acronym} in assignment {sub.assignment_id}")
-        respons = s.upload_comment(file_name)
+        try:
+            respons = s.upload_comment(file_name)
+        except IOError:
+            current_app.logger.error(f"File {file_name} is missing, can't upload file for {sub.user_acronym} in {sub.assignment_name}.")
+            sub.grade = "U"
+            return None
         current_app.logger.debug(f"zip respons: {respons}")
         os.remove(file_name)
         return respons[1]
