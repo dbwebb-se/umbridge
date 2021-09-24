@@ -15,6 +15,12 @@ class CourseManager:
     """ Manges test command and courses """
     _COURSES_BASE_FOLDER = f"{settings.APP_BASE_PATH}/eve/courses"
 
+    KNOWN_ERRORS = {
+        7: "failed potatoe",
+        124: "timeout",
+        137: "timeout with SIGKILL",
+    }
+
     def __init__(self, submission):
         """ Initiate the class """
         self._course = submission.course.name
@@ -138,7 +144,7 @@ class CourseManager:
 
         if result == 0:
             return "PG"
-        elif result in (7,): # add more know exit codes for errors when find them
+        elif result in self.KNOWN_ERRORS: # add more know exit codes for errors when find them
             current_app.logger.error(f"Test returned {result} for {self._acr} in assignment {self.assignment_name}")
             return "U" # return U when known error happens
         return "Ux"
@@ -175,13 +181,13 @@ class CourseManager:
         except FileExistsError:
             shutil.rmtree(dest)
 
-        if grade == "U":
-            current_app.logger.debug(f"Not copying code for zip, because U grade")
-        else:
-            for src in src_folders:
-                self.run_shell_command_in_course_repo(
-                    ["rsync", "-avq", f"{src}", f"{dest}/", "--exclude", f"{','.join(exclude)}"]
-                )
+        # if grade == "U":
+        #     current_app.logger.debug(f"Not copying code for zip, because U grade")
+        # else:
+        for src in src_folders:
+            self.run_shell_command_in_course_repo(
+                ["rsync", "-avq", f"{src}", f"{dest}/", "--exclude", f"{','.join(exclude)}"]
+            )
 
         with open(f"{dest}/log.txt", "w") as fd:
             fd.write(feedback)
