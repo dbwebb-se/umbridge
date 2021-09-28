@@ -62,20 +62,23 @@ def test():
         CM = CourseManager(sub)
 
         if not CM.does_course_repo_exist():
+            current_app.logger.info(f"Missing course repo for {sub.course.name}, initiating!")
             CM.create_and_initiate_dbwebb_course_repo()
 
         current_app.logger.info(f"Grading {sub.user_acronym} in assignment {sub.assignment_name}")
         CM.prepare_for_students_code()
 
         grade = CM.update_download_and_run_tests()
+        current_app.logger.info(f"{sub.user_acronym} got grade {grade}")
 
-        current_app.logger.debug("Getting logfile")
+        current_app.logger.info("Getting logfile")
         feedback = CM.get_content_from_test_log()
 
         current_app.logger.debug(f"Copying and zipping code for {sub.user_acronym} in assignment {sub.assignment_name}")
         zip_path = CM.copy_and_zip_student_code(feedback, grade)
 
         CM.clean_up_students_code()
+
         sub.workflow_state = 'tested'
         sub.grade = grade
         sub.feedback = feedback

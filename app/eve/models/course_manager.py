@@ -140,9 +140,11 @@ class CourseManager:
             0   => exit code 0 => PASSED
             256 => exit code 1 => FAILED
         """
+        current_app.logger.info(f"Updating repo")
         update_command = self.get_config_from_course_by_key('update_command')
         self.run_shell_command_in_course_repo(update_command)
 
+        current_app.logger.info(f"Testing code")
         test_command = self.get_config_from_course_by_key('test_command')
         result = self.run_shell_command_in_course_repo(test_command, print_output=True)
         current_app.logger.info(f"Got exit code {result} from test command!")

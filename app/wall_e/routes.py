@@ -67,9 +67,8 @@ def fetch():
             s = Submission(
                 assignment_id=assignment_id, assignment_name=assignment_name, user_id=user_id,
                 user_acronym=user_acronym, course_id=c.id, attempt_nr=sub["attempt"])
-            current_app.logger.debug(f"Found submission for {user_acronym} in assignment {assignment_name}.")
-            current_app.logger.info(f"Found submission for assignment {assignment_name}.")
-            
+            current_app.logger.info(f"Found submission for {user_acronym} in assignment {assignment_name}.")
+
 
             db.session.add(s)
             db.session.commit()
@@ -91,10 +90,10 @@ def grade():
     graded_submissions = Submission.query.filter_by(workflow_state="tested")
 
     for sub in graded_submissions:
+        current_app.logger.info(f"Grading {sub.user_acronym} on canvas with {sub.grade} on {sub.assignment_name}")
         grader.grade_submission(sub, url=current_app.config['HOST'])
         sub.workflow_state = "graded"
         db.session.commit()
-        current_app.logger.info(f"Posted grade {sub.grade} to canvas for {sub.user_acronym}")
 
 
     return { "message": "Canvas has been updated with the new grades." }, 200
