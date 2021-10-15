@@ -84,9 +84,16 @@ class Canvas(Requester):
         Return a single assignment
         based on its id
         """
+        for assignment in self.assignments:
+            if assignment["id"] == assignment_id:
+                name = self._config[self._course_name]['canvas_name_to_assignment'].get(
+                    assignment["name"],
+                    assignment["name"]
+                )
+                current_app.logger.error(f"Name of assignment {assignment['name']} {name} {self._config[self._course_name]['canvas_name_to_assignment']}")
 
-        return [a["name"] for a in self.assignments if a["id"] == assignment_id][0]
-
+                return name
+        return None
 
     def get_gradeable_submissions(self):
         """

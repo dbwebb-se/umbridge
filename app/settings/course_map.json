@@ -35,6 +35,9 @@
             "kmom06": ["me/kmom06"],
             "kmom10": ["me/kmom10", "me/redovisa"],
             "exclude": ["__pycache__"]
+        },
+        "canvas_name_to_assignment": {
+            "Individuell examination try1 Redovisning inlämning": "kmom10"
         }
     }
 }
