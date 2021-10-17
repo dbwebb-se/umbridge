@@ -62,7 +62,7 @@ def fetch():
                     f"User id {user_id} from submission {sub['id']} is not among students fetched from Canvas."
                 )
                 continue
-            assignment_name = canvas.get_assignment_name_by_id(assignment_id=assignment_id) # logga här så vi ser vilket namn vi får?!?!? Används denna funktionen på fler ställen?
+            assignment_name = canvas.get_assignment_name_by_id(assignment_id=assignment_id)
 
             s = Submission(
                 assignment_id=assignment_id, assignment_name=assignment_name, user_id=user_id,

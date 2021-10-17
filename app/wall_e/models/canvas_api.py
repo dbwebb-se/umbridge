@@ -79,6 +79,8 @@ class Canvas(Requester):
         """
         return [a for a in self.assignments if a["name"] == name][0]
 
+
+
     def get_assignment_name_by_id(self, assignment_id):
         """
         Return a single assignment
@@ -90,10 +92,13 @@ class Canvas(Requester):
                     assignment["name"],
                     assignment["name"]
                 )
-                current_app.logger.error(f"Name of assignment {assignment['name']} {name} {self._config[self._course_name]['canvas_name_to_assignment']}")
+                current_app.logger.debug(f"Found the name {name} for assignment {assignment['name']}")
 
                 return name
+        current_app.logger.error(f"could not find a matching assignment id to {assignment['id']}")
         return None
+
+
 
     def get_gradeable_submissions(self):
         """
