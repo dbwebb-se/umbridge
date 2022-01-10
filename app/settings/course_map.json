@@ -5,7 +5,7 @@
             ["make", "docker-install"]
         ],
         "test_command": ["dbwebb", "test", "--docker", "{kmom}", "{acr}", "--download"],
-        "update_command": ["dbwebb", "update"],
+        "update_command": ["dbwebb", "--version"],
         "log_file": ".log/test/docker/main.ansi",
         "ignore_assignments": [],
         "assignment_folders": {
@@ -24,7 +24,8 @@
     "python": {
         "ignore_assignments": [
             "Individuell examination utförande (inte inlämning!)",
-            "Individuell examination Redovisning inlämning"
+            "Individuell examination Redovisning inlämning",
+            "Individuell examination try2 Redovisning inlämning"
         ],
         "assignment_folders": {
             "kmom01": ["me/kmom01", "me/redovisa"],
