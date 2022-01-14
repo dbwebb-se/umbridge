@@ -5,7 +5,7 @@
             ["make", "docker-install"]
         ],
         "test_command": ["dbwebb", "test", "--docker", "{kmom}", "{acr}", "--download"],
-        "update_command": ["dbwebb", "--version"],
+        "update_command": ["dbwebb", "update"],
         "log_file": ".log/test/docker/main.ansi",
         "ignore_assignments": [],
         "assignment_folders": {
