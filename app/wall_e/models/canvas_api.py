@@ -62,7 +62,6 @@ class Canvas(Requester):
                 formatted_users[u["id"]] = u["login_id"].split("@")[0]
             except TypeError:
                 current_app.logger.error(f"could not extract acronym for user {u}")
-                raise Exception("Look at me")
 
         return formatted_users
 
