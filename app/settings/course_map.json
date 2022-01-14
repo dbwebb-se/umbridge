@@ -19,7 +19,9 @@
             "exclude": [""]
         },
         "prepare_student": ["dbwebb", "init-me"],
-        "clean_up_student": ["rm", "-rf", "me"]
+        "clean_up_student": ["rm", "-rf", "me"],
+        "canvas_name_to_assignment": {
+        }
     },
     "python": {
         "ignore_assignments": [
@@ -40,5 +42,8 @@
         "canvas_name_to_assignment": {
             "Individuell examination try1 Redovisning inlämning": "kmom10"
         }
+    },
+    "oopython": {
+        "canvas_name_to_assignment": {}
     }
 }
