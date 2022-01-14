@@ -75,7 +75,7 @@ Adds a new course to the database
 
 **Method** : `POST`
 
-**Data** :
+**Data** - Send as form :
 ```json
 {
     "id": "{The Canvas Course Id}",
