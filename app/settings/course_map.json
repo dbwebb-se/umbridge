@@ -46,7 +46,13 @@
     "oopython": {
         "canvas_name_to_assignment": {},
         "ignore_assignments": [
-            "kmom10 - klassdiagram"
+            "kmom10 - klassdiagram",
+            "kmom01 quiz",
+            "kmom02 quiz",
+            "kmom03 quiz",
+            "kmom04 quiz",
+            "kmom05 quiz",
+            "kmom06 quiz"
         ],
         "assignment_folders": {
             "kmom01": [
