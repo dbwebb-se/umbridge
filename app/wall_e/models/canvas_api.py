@@ -62,6 +62,9 @@ class Canvas(Requester):
                 formatted_users[u["id"]] = u["login_id"].split("@")[0]
             except TypeError:
                 current_app.logger.error(f"could not extract acronym for user {u}")
+            except KeyError:
+                current_app.logger.error(f"could not find key 'login_id' for {u}")
+
 
         return formatted_users
 
