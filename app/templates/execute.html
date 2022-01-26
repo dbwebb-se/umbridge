@@ -1,0 +1,29 @@
+<head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.10.4/brython.min.js">
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.10.4/brython_stdlib.js">
+    </script>
+    <style>
+    </style>
+
+
+</head>
+<body onload="brython()">
+    <textarea style="color:var(--dark-3);font-family: Consolas;margin:auto;" id="code" class="codearea" rows="20" cols="80"></textarea>
+    
+    
+    <script type="text/python">
+            import sys
+            from interpreter import Interpreter
+    
+            print("Activate console") # need this to activate Interpreter to print to console instead of Interpreter.
+            sys.path.insert(0,'{{ url_for("results.import_code", path=dir) }}')
+            i = Interpreter("code", rows=30, cols=84, default_css=True)
+    
+            i.feed("# The output from executing files is shown in the web console!")
+            i.feed("# Press F12 to open console!")
+            i.feed("# Try importing and running files from the directory!")
+        </script>
+
+</body>

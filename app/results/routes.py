@@ -2,11 +2,12 @@
 Contains routes for main purpose of app
 """
 
+import logging
 import os
 import shutil
 import requests
 from ansi2html import Ansi2HTMLConverter
-from flask import render_template, abort, request, current_app, redirect
+from flask import render_template, abort, request, current_app, redirect, send_from_directory
 from app.results import bp
 from app.models import Submission
 from app.settings.settings import APP_BASE_PATH
@@ -110,5 +111,39 @@ def browse_files(req_path):
 
     # Show directory contents
     files = os.listdir(abs_path)
+
     return render_template(
         'browse.html', files=files, previous_directory=previous_directory, link_content=link_content)
+
+
+
+@bp.route('/results/execute/<path:files_path>')
+def execute_files(files_path):
+    """
+    Execute students code
+    """
+    TEMP_DIR = APP_BASE_PATH + "/wall_e/temp"
+    abs_path = os.path.join(TEMP_DIR, files_path)
+
+
+    # Return 404 if path doesn't exist
+    if not os.path.exists(abs_path):
+        current_app.logger.error(f"Tried to view path: {abs_path}")
+        return abort(404)
+
+    return render_template(
+        'execute.html', dir=files_path)
+
+
+
+@bp.route('/results/import/<path:path>')
+def import_code(path):
+    """ Route for returning python files that brython looks for when import is done in interpreter """
+    TEMP_DIR = f"{APP_BASE_PATH}/wall_e/temp"
+    abs_path = os.path.join(TEMP_DIR, path)
+
+    # Return 404 if path doesn't exist
+    if not os.path.exists(abs_path):
+        return abort(404)
+
+    return send_from_directory(TEMP_DIR, path)
