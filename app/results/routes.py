@@ -125,12 +125,12 @@ def execute_files(files_path):
     TEMP_DIR = APP_BASE_PATH + "/wall_e/temp"
     abs_path = os.path.join(TEMP_DIR, files_path)
 
-
     # Return 404 if path doesn't exist
     if not os.path.exists(abs_path):
         current_app.logger.error(f"Tried to view path: {abs_path}")
         return abort(404)
 
+    current_app.logger.info(f"Executing: {files_path}")
     return render_template(
         'execute.html', dir=files_path)
 
