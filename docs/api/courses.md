@@ -108,7 +108,7 @@ Returns the newly created object.
 
 ## Incorrect Response
 
-If the course id exsists, given the wrong data, unatherized or a server error appears.
+If the course id exists, given the wrong data, unatherized or a server error appears.
 
 **Code**: `[400, 401, 500]`
 

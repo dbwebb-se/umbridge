@@ -1,11 +1,11 @@
 """
 Contains routes for main purpose of app
 """
-
+from flask import request
 from flask import current_app, abort
 from app.wall_e import bp
 from app import db, auth
-from app.models import Submission, Course
+from app.models import Submission, Course, format_dict
 from app.wall_e.models.canvas_api import Canvas, Grader
 import app.globals as g
 
@@ -52,6 +52,59 @@ def fetch():
             stud_attempts = Submission.query.filter_by(
                 assignment_id=assignment_id, user_id=user_id)
             exists = [a for a in stud_attempts if a.workflow_state in ['new', 'tested']]
+
+            if exists:
+                continue
+            try:
+                user_acronym = students[user_id]
+            except KeyError:
+                current_app.logger.info(
+                    f"User id {user_id} from submission {sub['id']} is not among students fetched from Canvas."
+                )
+                continue
+            assignment_name = canvas.get_assignment_name_by_id(assignment_id=assignment_id)
+
+            s = Submission(
+                assignment_id=assignment_id, assignment_name=assignment_name, user_id=user_id,
+                user_acronym=user_acronym, course_id=c.id, attempt_nr=sub["attempt"])
+            current_app.logger.info(f"Found submission for {user_acronym} in assignment {assignment_name}.")
+
+
+            db.session.add(s)
+            db.session.commit()
+
+    return { "message": "Successfully fetched new assignments from canvas" }, 201
+
+
+@bp.route('/wall-e/re-fetch-graded-submissions', methods=['POST'])
+@auth.requires_authorization_header
+def re_fetch():
+    """
+    Route for re-fetching submissions that has already been graded.
+    Used when need to re run tests on all submissions
+    """
+    data = format_dict(request.form)
+    current_app.logger.debug(data)
+    active_courses = Course.query.filter_by(active=1, name=data["course"])
+
+    for c in active_courses:
+        canvas = Canvas(
+            base_url=current_app.config['URL_CANVAS_API'],
+            api_token=current_app.config['TOKEN_CANVAS_API'],
+            course_id=c.id,
+            course_name=c.name)
+
+        students = canvas.users_and_acronyms()
+        subs = canvas.get_graded_submissions(data["assignment"])
+
+        for sub in subs:
+            assignment_id = sub["assignment_id"]
+            user_id = sub["user_id"]
+
+            # Ignores the submission if it exists
+            stud_attempts = Submission.query.filter_by(
+                assignment_id=assignment_id, user_id=user_id)
+            exists = [a for a in stud_attempts if a.workflow_state in ['new']]
 
             if exists:
                 continue

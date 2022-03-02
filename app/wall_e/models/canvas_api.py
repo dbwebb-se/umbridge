@@ -134,6 +134,36 @@ class Canvas(Requester):
 
         return submissions
 
+
+
+    def get_graded_submissions(self, assignment):
+        """
+        Return already graded submissions
+        based on assignment name
+        """
+        submissions = self.request_get_paging(
+            f"/api/v1/courses/{self.course_id}/students/submissions?page={{page}}&per_page=100", payload={
+                "student_ids": ["all"],
+                "workflow_state": ["graded"],
+                "assignment_ids": self.get_assignment_by_name(assignment)["id"],
+            }
+        )
+
+        current_app.logger.info(f"Course {self._course_name} has {len(submissions)} already graded submissions")
+        current_app.logger.debug(f"Course {self._course_name} has the following already graded submissions: {submissions}")
+
+        try:
+            ignore = self._config[self._course_name]['ignore_assignments']
+        except KeyError:
+            ignore = self._config['default']['ignore_assignments']
+
+        if ignore:
+            submissions = [
+                s for s in submissions if assignment not in ignore
+            ]
+
+        return submissions
+
 class Grader(Requester):
     """
     Model class for wall_e.grade
