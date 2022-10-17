@@ -36,7 +36,8 @@
             "kmom06": ["me/kmom06"],
             "kmom07/10": ["me/kmom10", "me/redovisa"],
             "exclude": ["__pycache__"]
-        }
+        },
+        "canvas_name_to_assignment": {}
     },
     "oopython": {
         "canvas_name_to_assignment": {},
