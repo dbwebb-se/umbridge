@@ -25,10 +25,7 @@
     },
     "python": {
         "ignore_assignments": [
-            "Individuell examination utförande (inte inlämning!)",
-            "Individuell examination Redovisning inlämning",
-            "Individuell examination try2 Redovisning inlämning",
-            "Individuell examination try3 Redovisning inlämning"
+            "kmom07/10"
         ],
         "assignment_folders": {
             "kmom01": ["me/kmom01", "me/redovisa"],
@@ -39,9 +36,6 @@
             "kmom06": ["me/kmom06"],
             "kmom10": ["me/kmom10", "me/redovisa"],
             "exclude": ["__pycache__"]
-        },
-        "canvas_name_to_assignment": {
-            "Individuell examination try1 Redovisning inlämning": "kmom10"
         }
     },
     "oopython": {
