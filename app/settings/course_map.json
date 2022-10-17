@@ -34,7 +34,7 @@
             "kmom04": ["me/kmom04"],
             "kmom05": ["me/kmom05"],
             "kmom06": ["me/kmom06"],
-            "kmom10": ["me/kmom10", "me/redovisa"],
+            "kmom07/10": ["me/kmom10", "me/redovisa"],
             "exclude": ["__pycache__"]
         }
     },
