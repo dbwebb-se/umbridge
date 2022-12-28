@@ -1,9 +1,12 @@
 # from app.exceptions.exceptions import MissingGroupError
 # from flask import current_app
 
-from app.settings import Config
+from flask import current_app
+from app.settings.settings import Config
 
 def course(canvas, course_id, course_name,):
+    current_app.logger.debug(f"Course {course_id}, name {course_name}")
+
     course = canvas.get_course(course_id)
     groups = course.get_groups(include=["users"])
     users = course.get_users()
@@ -13,6 +16,8 @@ def course(canvas, course_id, course_name,):
         workflow_state="submitted",
         include=["assignment"]
     )
+    current_app.logger.debug(f"submissions {submissions}")
+
     config = Config(course_name)
 
 
@@ -21,7 +26,8 @@ def course(canvas, course_id, course_name,):
         assignment = get_assignment(assignments, sub.assignment_id)
         if should_grade(sub, users_to_skip, assignment, config):
             # grade
-            add_users_to_skip_from_group(sub.user_id, groups, assignment, users_to_skip)
+            if assignment.group_category_id is not None and not assignment.grade_group_students_individually:
+                add_users_to_skip_from_group(sub.user_id, groups, assignment, users_to_skip)
             print("graded", sub)
         else:
             print("Skipped", sub)
@@ -34,7 +40,8 @@ def should_grade(sub, users_to_skip, assignment, config):
     and if setting says it should skip assignment
     """
     skip = (
-        not assignment.grade_group_students_individually 
+        assignment.group_category_id is not None
+        and not assignment.grade_group_students_individually
         and sub.user_id in users_to_skip.get(assignment.id, [])
     ) or assignment.name in config["ignore_assignments"]
 
@@ -79,6 +86,8 @@ def get_users_group_partners(group, user_id):
     """
     Return a list with a groups users without a user
     """
+    current_app.logger.debug(f"group {group} for user: {user_id}")
+
     return [user["id"] for user in group.users if user["id"] != user_id]
 
 

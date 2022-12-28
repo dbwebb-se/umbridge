@@ -2,7 +2,7 @@
 Contains routes for main purpose of app
 """
 from flask import current_app, abort
-from app.wall_e import bp
+from app.new import bp
 from app import db, auth
 from app.models import Submission, Course, format_dict
 import app.globals as g
@@ -13,7 +13,7 @@ from app.correct import course as correct_course
 
 @bp.route('/new/grade', methods=['GET'])
 @auth.requires_authorization_header
-def fetch():
+def grade():
     """
     Route grading submissions
     """
@@ -37,29 +37,29 @@ def fetch():
 
 
 # blueprints does not recognize "un-imported" names .. look for better fix.
-g.is_fetching_or_grading = False
+# g.is_fetching_or_grading = False
 
-@bp.before_request
-def before_request():
-    """
-    update last_seen for User before handling request
-    """
-    if g.is_fetching_or_grading:
-        abort(423, { "message": "New is busy, try again in a few minutes" })
+# @bp.before_request
+# def before_request():
+#     """
+#     update last_seen for User before handling request
+#     """
+#     if g.is_fetching_or_grading:
+#         abort(423, { "message": "New is busy, try again in a few minutes" })
 
-    g.is_fetching_or_grading = True
+#     g.is_fetching_or_grading = True
 
-    # här kan vi logga saker
-    # current_app.logger.info("Testar logging")
+#     # här kan vi logga saker
+#     # current_app.logger.info("Testar logging")
 
 
 
-@bp.teardown_request
-def teardown_request(error=None):
-    """
-    Executes after all requests, regardless if error or not.
-    """
-    if error:
-        current_app.logger.info(str(error))
+# @bp.teardown_request
+# def teardown_request(error=None):
+#     """
+#     Executes after all requests, regardless if error or not.
+#     """
+#     if error:
+#         current_app.logger.info(str(error))
 
-    g.is_fetching_or_grading = False
+#     g.is_fetching_or_grading = False
