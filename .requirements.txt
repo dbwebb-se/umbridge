@@ -2,7 +2,7 @@ requests >= 2.25
 Flask >= 2.0.1
 python-dotenv >= 0.19
 sqlalchemy < 1.4.0
-flask-sqlalchemy == 2.4.4
+flask-sqlalchemy == 2.5.1
 flask-migrate == 2.5.3
 canvasapi == 3.0.0
 ansi2html >= 1.6.0
