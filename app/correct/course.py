@@ -3,6 +3,7 @@
 
 from flask import current_app
 from app.settings.settings import Config
+from app.correct.course_manager import CourseManager
 
 def course(canvas, course_id, course_name,):
     current_app.logger.debug(f"Course {course_id}, name {course_name}")
@@ -14,18 +15,23 @@ def course(canvas, course_id, course_name,):
     submissions = course.get_multiple_submissions(
         student_ids="all",
         workflow_state="submitted",
-        include=["assignment"]
+        include=["assignment", "user"]
     )
     current_app.logger.debug(f"submissions {submissions}")
 
     config = Config(course_name)
 
-
     users_to_skip = {}
     for sub in submissions:
         assignment = get_assignment(assignments, sub.assignment_id)
         if should_grade(sub, users_to_skip, assignment, config):
+            # test
+            CM = CourseManager(course_name, assignment, sub, config)
+            print(CM.test())
+
             # grade
+            
+            # handle group submissions
             if assignment.group_category_id is not None and not assignment.grade_group_students_individually:
                 add_users_to_skip_from_group(sub.user_id, groups, assignment, users_to_skip)
             print("graded", sub)
