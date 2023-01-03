@@ -31,8 +31,8 @@ class CourseManager:
     def __init__(self, course_name, assignment, submission, config):
         """ Initiate the class """
         self._course_name = course_name
-        self._assignment_name = assignment.name
-        self._assignment_id = assignment.id
+        self._assignment_name = assignment["name"]
+        self._assignment_id = assignment["id"]
         self._user_id = submission.user_id
         self._acr = self.get_user_acronym(submission)
         self._config = config
@@ -162,7 +162,7 @@ class CourseManager:
 
         current_app.logger.debug(f"Testing code")
         test_command = self.get_config_from_course_by_key('test_command')
-        result = self.run_shell_command_in_course_repo(test_command, print_output=True)
+        result = self.run_shell_command_in_course_repo(test_command, print_output=False)
         current_app.logger.info(f"Got exit code {result} from test command!")
 
         if result == 0:

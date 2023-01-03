@@ -4,7 +4,7 @@ Contains routes for main purpose of app
 from flask import current_app, abort
 from app.new import bp
 from app import db, auth
-from app.models import Submission, Course, format_dict
+from app.models import Submission, Course, User
 import app.globals as g
 
 from canvasapi import Canvas
@@ -37,18 +37,19 @@ def grade():
 
 
 
-# @bp.route('/eve/reset', methods=['GET', 'POST'])
+# @bp.route('/new/reset', methods=['GET', 'POST'])
 # def reset():
 #     """
 #     Temporary route to reset database and load a test assignment.
 #     """
 #     course_id, course_name = 2508, 'python'
+#     # course_id, course_name = 3996, 'oopython'
 
 #     Course.query.filter(Course.id > 0).delete()
 #     c1 = Course(id=course_id, name=course_name, active=1)
-#     c2 = Course(id=123, name='ike-aktiv', active=0)
+#     # c2 = Course(id=123, name='ike-aktiv', active=0)
 #     db.session.add(c1)
-#     db.session.add(c2)
+#     # db.session.add(c2)
 #     db.session.commit()
 
 #     Submission.query.filter(Submission.id > 0).delete()
@@ -63,30 +64,31 @@ def grade():
 #     return {"message": "Submission and Course table has been reset with dummy data"}
 
 
+
 # blueprints does not recognize "un-imported" names .. look for better fix.
-# g.is_fetching_or_grading = False
+g.is_fetching_or_grading = False
 
-# @bp.before_request
-# def before_request():
-#     """
-#     update last_seen for User before handling request
-#     """
-#     if g.is_fetching_or_grading:
-#         abort(423, { "message": "New is busy, try again in a few minutes" })
+@bp.before_request
+def before_request():
+    """
+    update last_seen for User before handling request
+    """
+    if g.is_fetching_or_grading:
+        abort(423, { "message": "New is busy, try again in a few minutes" })
 
-#     g.is_fetching_or_grading = True
+    g.is_fetching_or_grading = True
 
-#     # här kan vi logga saker
-#     # current_app.logger.info("Testar logging")
+    # här kan vi logga saker
+    # current_app.logger.info("Testar logging")
 
 
 
-# @bp.teardown_request
-# def teardown_request(error=None):
-#     """
-#     Executes after all requests, regardless if error or not.
-#     """
-#     if error:
-#         current_app.logger.info(str(error))
+@bp.teardown_request
+def teardown_request(error=None):
+    """
+    Executes after all requests, regardless if error or not.
+    """
+    if error:
+        current_app.logger.info(str(error))
 
-#     g.is_fetching_or_grading = False
+    g.is_fetching_or_grading = False

@@ -31,9 +31,6 @@ eve
 results
     - change log code to work as browse
 
-settings
-    - create config manager that automatically use default values if course value is missing
-      - i have done it in a previous repo check which one. I use config package i think
 templates
     - ones again check if can add line numbers to browse files
 

@@ -25,8 +25,7 @@
     },
     "python": {
         "ignore_assignments": [
-            "kmom07/10",
-            "kmom03"
+            "kmom07/10"
         ],
         "assignment_folders": {
             "kmom01": ["me/kmom01", "me/redovisa"],
