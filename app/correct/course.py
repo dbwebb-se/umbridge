@@ -1,18 +1,18 @@
 
-from app.exceptions.exceptions import MissingGroupError
+from app.errors.custom.exceptions import MissingGroupError
 from app.settings.settings import Config
-from app.correct.course_manager import CourseManager
+from app.correct.dbwebb_manager import DbwebbManager
 from app.correct import grader
 from flask import current_app
 
-def course(canvas, course_id, course_name,):
+def course(canvas, course_id, course_name, workflow_state="submitted"):
     current_app.logger.debug(f"Course {course_id}, name {course_name}")
 
     course = canvas.get_course(course_id)
     groups = course.get_groups(include=["users"])
     submissions = course.get_multiple_submissions(
         student_ids="all",
-        workflow_state="submitted",
+        workflow_state=workflow_state,
         include=["assignment", "user"]
     )
     current_app.logger.debug(f"submissions {submissions}")
@@ -24,7 +24,7 @@ def course(canvas, course_id, course_name,):
         assignment = sub.assignment
         if should_grade(sub, sub.assignment, users_to_skip, config):
             # test
-            CM = CourseManager(course_name, assignment, sub, config)
+            CM = DbwebbManager(course_name, assignment, sub, config)
             result = CM.test()
 
             # grade
@@ -83,5 +83,3 @@ def get_group_using_category_and_user(groups, group_category_id, user_id):
             if user_id in [user["id"] for user in group.users]:
                 return group
     raise MissingGroupError("No group for group_category_id {group_category_id} and user_id {user_id} found")
-
-

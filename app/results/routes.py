@@ -2,14 +2,12 @@
 Contains routes for main purpose of app
 """
 
-import logging
 import os
 import shutil
 import requests
 from ansi2html import Ansi2HTMLConverter
 from flask import render_template, abort, request, current_app, redirect, send_from_directory
 from app.results import bp
-from app.models import Submission
 from app.settings.settings import APP_BASE_PATH
 
 @bp.route('/results/feedback/<log_id>', methods=['GET', 'POST'])
@@ -24,7 +22,8 @@ def get_log(log_id):
     submission_uuid = log_id[:seperator_index]
     submission_id = log_id[seperator_index+1:]
 
-    sub = Submission.query.filter_by(id=submission_id, uuid=submission_uuid).first()
+    # sub = Submission.query.filter_by(id=submission_id, uuid=submission_uuid).first()
+    sub = "ERSÄTT"
 
     if not sub:
         return { "message": f"{log_id} not found" }, 400
@@ -49,7 +48,7 @@ def download_zip(id_, uuid_):
     """
     DL_URL = f"https://bth.instructure.com/files/{id_}/download?download_frd=1&verifier={uuid_}"
     current_app.logger.debug(f"Downloading {DL_URL}")
-    TEMP_DIR = APP_BASE_PATH + "/wall_e/temp"
+    TEMP_DIR = APP_BASE_PATH + "/correct/temp"
 
     r = requests.get(DL_URL)
     current_app.logger.debug(f"Response headers {r.headers}")
@@ -79,7 +78,7 @@ def browse_files(req_path):
     """
     Displays a file tree
     """
-    TEMP_DIR = APP_BASE_PATH + "/wall_e/temp"
+    TEMP_DIR = APP_BASE_PATH + "/correct/temp"
     file_content = None
 
     # Finds the previous folder
@@ -122,7 +121,7 @@ def execute_files(files_path):
     """
     Execute students code
     """
-    TEMP_DIR = APP_BASE_PATH + "/wall_e/temp"
+    TEMP_DIR = APP_BASE_PATH + "/correct/temp"
     abs_path = os.path.join(TEMP_DIR, files_path)
 
     # Return 404 if path doesn't exist
@@ -139,7 +138,7 @@ def execute_files(files_path):
 @bp.route('/results/import/<path:path>')
 def import_code(path):
     """ Route for returning python files that brython looks for when import is done in interpreter """
-    TEMP_DIR = f"{APP_BASE_PATH}/wall_e/temp"
+    TEMP_DIR = f"{APP_BASE_PATH}/correct/temp"
     abs_path = os.path.join(TEMP_DIR, path)
 
     # Return 404 if path doesn't exist

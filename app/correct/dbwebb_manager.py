@@ -1,7 +1,3 @@
-"""
-Model class for eve.index
-"""
-
 import os
 import subprocess
 import shutil
@@ -9,9 +5,10 @@ from flask import current_app
 from app.settings import settings
 
 
-class CourseManager:
+class DbwebbManager:
     """ Manges test command and courses """
-    _COURSES_BASE_FOLDER = f"{settings.APP_BASE_PATH}/eve/courses"
+    _COURSES_BASE_FOLDER = f"{settings.APP_BASE_PATH}/correct/courses"
+    _TEMP_PATH = f"{settings.APP_BASE_PATH}/correct/temp"
 
     KNOWN_ERRORS = {
         7: {
@@ -96,7 +93,7 @@ class CourseManager:
 
     def get_course_repo_dir(self):
         """ Gets the full path for the active course repo """
-        return f"{CourseManager._COURSES_BASE_FOLDER}/{self._course_name}"
+        return f"{self._COURSES_BASE_FOLDER}/{self._course_name}"
 
 
 
@@ -192,7 +189,7 @@ class CourseManager:
         Then remove original folder
         """
         dest_dir_name = f"{self._assignment_id}{self._user_id}{self._attempt}"
-        dest_parent_path = f"{settings.APP_BASE_PATH}/wall_e/temp"
+        dest_parent_path = self._TEMP_PATH
         dest = f"{dest_parent_path}/{dest_dir_name}"
         src_folders = self.get_config_from_course_by_key("assignment_folders")[self._assignment_name]
         exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
