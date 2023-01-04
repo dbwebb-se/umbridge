@@ -91,9 +91,6 @@ def re_grade():
 #     # db.session.add(c2)
 #     db.session.commit()
 
-#     Submission.query.filter(Submission.id > 0).delete()
-#     db.session.commit()
-
 #     User.query.filter(User.id > 0).delete()
 #     user = User(username='dbwebb')
 #     user.password = 'super-secret'

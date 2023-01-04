@@ -80,6 +80,7 @@ def browse_files(req_path):
     """
     TEMP_DIR = APP_BASE_PATH + "/correct/temp"
     file_content = None
+    is_log_file=False
 
     # Finds the previous folder
     previous_directory = "/".join(req_path.split('/')[:-1])
@@ -102,10 +103,15 @@ def browse_files(req_path):
             file_content = "Can only display text files!"
             file_extention = "txt"
 
+        if file_extention == "txt":
+                conv = Ansi2HTMLConverter(inline=True, linkify=True)
+                file_content = conv.convert(file_content, full=False)
+                is_log_file = True
+
         return render_template(
             'browse.html', previous_directory=previous_directory,
             file_type=file_extention, file_content=file_content,
-            link_content=link_content)
+            link_content=link_content, is_log_file=is_log_file)
 
 
     # Show directory contents
