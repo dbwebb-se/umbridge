@@ -37,6 +37,39 @@ def get_uuid4():
     return str(uid.uuid4())
 
 
+class Submission(db.Model):
+    """
+    Represents an submission
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(45), default=get_uuid4)
+
+    user_id = db.Column(db.Integer, nullable=False, index=True)
+    user_acronym = db.Column(db.String(6), nullable=False)
+
+    assignment_name = db.Column(db.String(9), nullable=False)
+    assignment_id = db.Column(db.Integer, nullable=False)
+
+    course_id = db.Column(db.Integer, db.ForeignKey('course.id'), nullable=False)
+    course = db.relationship(
+        'Course',
+        primaryjoin="Course.id == Submission.course_id",
+        backref=db.backref('courses', uselist=False))
+
+    attempt_nr = db.Column(db.Integer, nullable=False)
+
+
+    grade = db.Column(db.String(2), default=None)
+    feedback = db.Column(db.Text, default=None)
+    workflow_state = db.Column(db.String(15), default='new') # new/tested/graded/
+    zip_file_path = db.Column(db.String(255), default=None)
+
+
+    def __repr__(self):
+        return '<Assignment {}, {}, {}>'.format(
+            self.user_acronym, self.assignment_name, self.course.name)
+
+
 
 class Course(db.Model):
     """

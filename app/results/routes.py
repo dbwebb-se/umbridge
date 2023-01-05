@@ -8,6 +8,7 @@ import requests
 from ansi2html import Ansi2HTMLConverter
 from flask import render_template, abort, request, current_app, redirect, send_from_directory
 from app.results import bp
+from app.models import Submission
 from app.settings.settings import APP_BASE_PATH
 
 @bp.route('/results/feedback/<log_id>', methods=['GET', 'POST'])
@@ -22,8 +23,7 @@ def get_log(log_id):
     submission_uuid = log_id[:seperator_index]
     submission_id = log_id[seperator_index+1:]
 
-    # sub = Submission.query.filter_by(id=submission_id, uuid=submission_uuid).first()
-    sub = "ERSÄTT"
+    sub = Submission.query.filter_by(id=submission_id, uuid=submission_uuid).first()
 
     if not sub:
         return { "message": f"{log_id} not found" }, 400
@@ -38,6 +38,7 @@ def get_log(log_id):
         sub=sub,
         colored_feedback=html
     )
+
 
 
 
