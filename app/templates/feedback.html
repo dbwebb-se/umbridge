@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Feedback | {{ sub.assignment_name }} </title>
+
+    <style>
+        body {
+            background-color: white;
+            width: 800px;
+            margin: auto;
+            color: black;
+        }
+
+        .wrapper {
+            margin-top: 2em;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feedback-wrapper {
+            margin-top: -8em !important;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="wrapper">
+        <div>
+            <h2 style="border-bottom: 2px solid white;">Logfile - {{ sub.user_acronym | capitalize }}, {{
+                sub.assignment_name | capitalize }}</h2>
+            <h3 style="text-decoration: underline;">Grade: {{ sub.grade }}</h3>
+        </div>
+        <pre class="feedback-wrapper"><code>{% autoescape false %}{{ colored_feedback }}{% endautoescape %}</code></pre>
+    </div>
+</body>
