@@ -27,15 +27,15 @@ def grade_submission(submission, test_result):
         feedback_text = (
             "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
             f"{feedback}\n\n"
-            f"Loggfilen för alla tester kan du se via följande länk: {current_app.config['HOST']}/results/feedback/UPPDATERA\n\n"
-            f"Du kan inspektera filerna som användes vid rättning via följande länk: {current_app.config['HOST']}/results/inspect/{id_}/{uuid}\n\n"
+            f"Du kan inspektera loggfilen och koden som användes vid rättning via följande länk: {current_app.config['HOST']}/results/inspect/{id_}/{uuid}\n\n"
             "Kontakta en av de kursansvariga om resultatet är felaktigt."
         )
     else:
         feedback_text = (
             "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
             f"Umbridge kunde inte hitta filerna efter rättningen, försök göra en ny inlämning. Om det inte hjälper, kontakta kursansvarig.\n\n"
-            f"Loggfilen för alla tester kan du se via följande länk: {current_app.config['HOST']}/results/feedback/UPPDATERA\n\n"
+            f"Du kan inspektera loggfilen och koden som användes vid rättning via följande länk: {current_app.config['HOST']}/results/inspect/{id_}/{uuid}\n\n"
+
         )
 
     payload = {
