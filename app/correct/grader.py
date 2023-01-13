@@ -3,44 +3,74 @@ from flask import current_app
 
 
 
+def create_comment_text(grade, file_link="", first_attempt=False, error_send_zip=False):
+    """
+    Create comment text
+    """
+    passed_comment = "Testerna har passerat. En rättare kommer läsa din redovisningstext, kolla på koden och sätta betyg."
+    error_comment = "Något gick fel i umbridge, kontakta kursansvarig."
+    error_send_zip_comment = f"Umbridge kunde inte hitta filerna efter rättningen, försök göra en ny inlämning. Om det inte hjälper, kontakta kursansvarig."
+
+    if first_attempt:
+        texts = {
+            "intro": "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.",
+            "link_text": f"Du kan inspektera loggfilen och koden som användes vid rättning via följande länk: {file_link}",
+            "ending": "Kontakta en av de kursansvariga om resultatet är felaktigt.",
+            "failed_comment": "Tyvärr gick något fel i testerna. Läs igenom loggfilen för att se vad som gick fel. Lös felet och gör en ny inlämning.",
+        }
+    else:
+        texts = {
+            "intro": "Umbridge har gått igenom din inlämning.",
+            "link_text": f"Länk till filerna {file_link}",
+            "ending": "",
+            "failed_comment": "Något gick fel i testerna.",
+        }
+
+    if error_send_zip:
+        result = error_send_zip_comment
+    elif grade == "pg":
+        result = passed_comment
+    elif grade == "ux":
+        result = texts["failed_comment"]
+    else:
+        result = error_comment
+
+    comment = (
+        f"{texts['intro']}\n\n"
+        f"{result}\n\n"
+        f"{texts['link_text']}\n\n"
+        f"{texts['ending']}"
+    )
+
+    return comment
+
+
 def grade_submission(submission, test_result):
     """
     Grade submission
     """
-    passed_comment = "Testerna har passerat. En rättare kommer läsa din redovisningstext, kolla på koden och sätta betyg."
-    failed_comment = "Tyvärr gick något fel i testerna. Läs igenom loggfilen för att se vad som gick fel. Lös felet och gör en ny inlämning."
-    error_comment = "Något gick fel i umbridge, kontakta kursansvarig."
-
     respons = send_zip_archive(submission, test_result)
+    first_attempt = True if submission.attempt == 1 else False
 
     if respons is not None:
-        if test_result["grade"].lower() == "pg":
-            feedback = passed_comment
-        elif test_result["grade"].lower() == "ux":
-            feedback = failed_comment
-        else:
-            feedback = error_comment
-
         id_ = respons["id"]
         uuid = respons["uuid"]
 
-        feedback_text = (
-            "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
-            f"{feedback}\n\n"
-            f"Du kan inspektera loggfilen och koden som användes vid rättning via följande länk: {current_app.config['HOST']}/results/inspect/{id_}/{uuid}\n\n"
-            "Kontakta en av de kursansvariga om resultatet är felaktigt."
+        comment = create_comment_text(
+            test_result["grade"].lower(),
+            f"{current_app.config['HOST']}/results/inspect/{id_}/{uuid}",
+            first_attempt,
         )
     else:
-        feedback_text = (
-            "Automatiska rättningssystemet 'Umbridge' har gått igenom din inlämning.\n\n"
-            f"Umbridge kunde inte hitta filerna efter rättningen, försök göra en ny inlämning. Om det inte hjälper, kontakta kursansvarig.\n\n"
-            f"Du kan inspektera loggfilen och koden som användes vid rättning via följande länk: {current_app.config['HOST']}/results/inspect/{id_}/{uuid}\n\n"
-
+        comment = create_comment_text(
+            test_result["grade"].lower(),
+            first_attempt,
+            True,
         )
 
     payload = {
         "comment": {
-            "text_comment": feedback_text,
+            "text_comment": comment,
             "group_comment": not submission.assignment["grade_group_students_individually"]
         },
         "submission": {
@@ -48,7 +78,7 @@ def grade_submission(submission, test_result):
         }
     }
 
-    current_app.logger.debug(f"Set grade {test_result['grade']} for {submission.user['login_id']} in assignment {submission.assignment['name']}")
+    current_app.logger.info(f"Set grade {test_result['grade']} for {submission.user['login_id']} in assignment {submission.assignment['name']}")
 
     submission.edit(**payload)
 
