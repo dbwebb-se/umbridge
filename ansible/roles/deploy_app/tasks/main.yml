@@ -99,7 +99,7 @@
 -   name: Add credential var to crontab
     community.general.cronvar:
         name: "UMBRIDGE_CREDENTIAL"
-        value: ="ZGJ3ZWJiOnN1cGVyLXNlY3JldA=="
+        value: "{{ umbridge_credential }}"
 
 -   name: Add grade cron job
     cron:
@@ -113,7 +113,7 @@
         name: "Clean temp"
         user: "{{ server_user }}"
         minute: "*/5"
-        job: "find /home/deploy/umbridge/app/wall_e/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1"
+        job: "find /home/deploy/umbridge/app/correct/temp/* -maxdepth 0 -type d -mmin +5  | xargs rm -rf >/dev/null 2>&1"
 
 -   name: Add backup db cron job
     cron:

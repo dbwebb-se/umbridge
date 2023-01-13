@@ -1,5 +1,8 @@
+<!DOCTYPE html>
+<meta content="text/html; charset=utf-8">
 <head>
-    <!-- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+    <title>Feedback</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
 
@@ -31,12 +34,22 @@
         .sidenav a:hover {
             color: #064579;
         }
-
+        
         .main {
             z-index: 99;
             margin-left: 140px;
             font-size: 20px;
             padding: 0px 10px;
+        }
+
+        .wrapper {
+                    display: flex;
+        flex-direction: column;
+        }
+
+        .feedback-wrapper {
+            background-color: black;
+            color: #abb2bf;
         }
 
     </style>
@@ -56,17 +69,10 @@
 
 
     <div class="main">
-
-    {% if file_content %}
-        <div class="row">
-        <div class="col-md-8">
-            <pre><code id="sourcecode" class="{{file_type}}">{{file_content}}</code></pre>
-        </div>
-        </div>
-    
-        <script>
-        hljs.highlightAll();
-        </script>
-  {% endif %}
+        {% if is_log_file %}
+            {% include 'log_file.html' %}
+        {% else %}
+            {% include 'code.html' %}
+        {% endif %}
 </div>
 </body>

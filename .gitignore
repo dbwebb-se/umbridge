@@ -2,6 +2,7 @@
 app.db
 migrations/
 tests/coverage_html/
+.env
 
 # ansible
 *.retry

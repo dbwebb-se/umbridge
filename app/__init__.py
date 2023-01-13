@@ -31,17 +31,14 @@ def create_app(config_class=ProdConfig):
     from app.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
 
-    from app.wall_e import bp as wall_e_bp
-    app.register_blueprint(wall_e_bp)
-
-    from app.eve import bp as eve_bp
-    app.register_blueprint(eve_bp)
-
     from app.courses import bp as courses_bp
     app.register_blueprint(courses_bp)
 
     from app.results import bp as results_bp
     app.register_blueprint(results_bp)
+
+    from app.correct import bp as new_bp
+    app.register_blueprint(new_bp)
     #pylint: enable=wrong-import-position, cyclic-import, import-outside-toplevel
 
 
@@ -67,9 +64,7 @@ def create_app(config_class=ProdConfig):
         curl = f'curl -i -H "Authorization: Basic {token}"'
         host = os.environ.get('HOST') or 'http://localhost:5000'
 
-        os.system(f"{curl} -k {host}/wall-e/fetch-submissions")
-        os.system(f"{curl} -k {host}/eve/test")
-        os.system(f"{curl} -k {host}/wall-e/grade")
+        os.system(f"{curl} -k {host}/correct")
 
 
     return app

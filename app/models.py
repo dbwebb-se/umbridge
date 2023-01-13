@@ -70,6 +70,7 @@ class Submission(db.Model):
             self.user_acronym, self.assignment_name, self.course.name)
 
 
+
 class Course(db.Model):
     """
     Represents a course
