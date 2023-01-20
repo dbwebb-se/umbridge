@@ -21,20 +21,25 @@ def course(canvas, course_id, course_name, workflow_state="submitted"):
 
     users_to_skip = {}
     for sub in submissions[:10]:
-        assignment = sub.assignment
-        if should_grade(sub, sub.assignment, users_to_skip, config):
-            # test
-            CM = DbwebbManager(course_name, assignment, sub, config)
-            result = CM.test()
+        current_app.logger.info(f"Starting correcting {sub.user['login_id']} {assignment['name']}")
+        try:
+            assignment = sub.assignment
+            if should_grade(sub, sub.assignment, users_to_skip, config):
+                # test
+                CM = DbwebbManager(course_name, assignment, sub, config)
+                result = CM.test()
 
-            # grade
-            grader.grade_submission(sub, result)
-            
-            # handle group submissions
-            if assignment["group_category_id"] is not None and not assignment["grade_group_students_individually"]:
-                add_users_to_skip_from_group(sub.user_id, groups, assignment, users_to_skip)
-        else:
-            current_app.logger.debug(f"Skipped correcting {sub.user['login_id']} {assignment['name']}")
+                # grade
+                grader.grade_submission(sub, result)
+
+                # handle group submissions
+                if assignment["group_category_id"] is not None and not assignment["grade_group_students_individually"]:
+                    add_users_to_skip_from_group(sub.user_id, groups, assignment, users_to_skip)
+            else:
+                current_app.logger.logger(f"Skipped correcting {sub.user['login_id']} {assignment['name']}")
+        except MissingGroupError:
+            current_app.logger.error(f"Skipped correcting {sub.user['login_id']} {assignment['name']} because no group for group_category_id {group_category_id} and user_id {user_id} found")
+
 
 
 
