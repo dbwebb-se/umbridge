@@ -21,7 +21,7 @@ def course(canvas, course_id, course_name, workflow_state="submitted"):
 
     users_to_skip = {}
     for sub in submissions[:10]:
-        current_app.logger.info(f"Starting correcting {sub.user['login_id']} {assignment['name']}")
+        current_app.logger.info(f"Starting correcting {sub.user['login_id']} {sub.assignment['name']}")
         try:
             assignment = sub.assignment
             if should_grade(sub, sub.assignment, users_to_skip, config):
