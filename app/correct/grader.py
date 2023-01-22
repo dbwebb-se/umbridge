@@ -79,7 +79,6 @@ def grade_submission(submission, test_result):
     }
 
     current_app.logger.info(f"Set grade {test_result['grade']} for {submission.user['login_id']} in assignment {submission.assignment['name']}")
-
     submission.edit(**payload)
 
 

@@ -9,6 +9,7 @@ class DbwebbManager:
     """ Manges test command and courses """
     _COURSES_BASE_FOLDER = f"{settings.APP_BASE_PATH}/correct/courses"
     _TEMP_PATH = f"{settings.APP_BASE_PATH}/correct/temp"
+    _TEMP_TEST_PATH = f"{_TEMP_PATH}/current_test"
 
     KNOWN_ERRORS = {
         7: {
@@ -67,7 +68,7 @@ class DbwebbManager:
         feedback = self.get_content_from_test_log()
 
         current_app.logger.debug(f"Copying and zipping code for {self._acr} in assignment {self._assignment_name}")
-        zip_path = self.copy_and_zip_student_code(feedback, grade)
+        zip_path = self.copy_and_zip_student_code(feedback)
 
         self.clean_up_students_code()
 
@@ -79,12 +80,13 @@ class DbwebbManager:
         }
 
 
-    def get_config_from_course_by_key(self, key):
+    def get_config_from_course_by_key(self, key, dir=""):
         """ Gets the configuration value from [course][key] """
         formatter = {
             'kmom': self._assignment_name,
             'acr': self._acr,
-            'course': self._course_name
+            'course': self._course_name,
+            'dir': dir
         }
 
         return self._config.get_with_format_values(key, formatter)
@@ -141,6 +143,7 @@ class DbwebbManager:
         """
         Run prepare command in course repo to prepare for testing student
         """
+        self.clean_up_students_code()
         prepare_command = self.get_config_from_course_by_key('prepare_student')
         self.run_shell_command_in_course_repo(prepare_command)
 
@@ -183,36 +186,36 @@ class DbwebbManager:
 
 
 
-    def copy_and_zip_student_code(self, feedback, grade):
+    def copy_and_zip_student_code(self, feedback):
         """
         Copy students code and log file to temp and create zip folder.
         Then remove original folder
         """
         dest_dir_name = f"{self._assignment_id}{self._user_id}{self._attempt}"
-        dest_parent_path = self._TEMP_PATH
-        dest = f"{dest_parent_path}/{dest_dir_name}"
+        dest_pre_zip = f"{self._TEMP_TEST_PATH}/{dest_dir_name}"
+        dest_after_zip = f"{self._TEMP_PATH}/{dest_dir_name}z"
         src_folders = self.get_config_from_course_by_key("assignment_folders")[self._assignment_name]
         exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
 
-        current_app.logger.debug(f"config for copy/zip - dest:{dest}, srcs:{src_folders}, exclude:{exclude}")
+        current_app.logger.debug(f"config for copy/zip - dest:{dest_pre_zip}, srcs:{src_folders}, exclude:{exclude}")
 
         try:
-            os.makedirs(dest)
+            os.makedirs(dest_pre_zip)
         except FileExistsError:
-            shutil.rmtree(dest)
+            shutil.rmtree(dest_pre_zip)
 
         for src in src_folders:
             self.run_shell_command_in_course_repo(
-                ["rsync", "-avq", f"{src}", f"{dest}/", "--exclude", f"{','.join(exclude)}"]
+                ["rsync", "-avq", f"{src}", f"{dest_pre_zip}/", "--exclude", f"{','.join(exclude)}"]
             )
 
-        with open(f"{dest}/log.txt", "w") as fd:
+        with open(f"{dest_pre_zip}/log.txt", "w") as fd:
             fd.write(feedback)
 
-        shutil.make_archive(dest+"z", 'zip', dest) # has to distinguise archive name (z), otherwise it didn't create
-        shutil.rmtree(dest)
+        shutil.make_archive(dest_after_zip, 'zip', dest_pre_zip) # has to distinguise archive name (z), otherwise it didn't create
+        shutil.rmtree(dest_pre_zip)
 
-        return dest+"z.zip"
+        return dest_after_zip+".zip"
 
 
 
@@ -220,5 +223,9 @@ class DbwebbManager:
         """
         Run clean up command in course repo to remove students code
         """
-        clean_up_command = self.get_config_from_course_by_key('clean_up_student')
-        self.run_shell_command_in_course_repo(clean_up_command)
+        clean_up_command = self.get_config_from_course_by_key('clean_up_student', f"{self._TEMP_TEST_PATH}/*")
+        if isinstance(clean_up_command, list) and isinstance(clean_up_command[0], list):
+            for command in clean_up_command:
+                self.run_shell_command_in_course_repo(command)
+        else:
+            self.run_shell_command_in_course_repo(clean_up_command)

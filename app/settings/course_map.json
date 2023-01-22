@@ -19,7 +19,10 @@
             "exclude": [""]
         },
         "prepare_student": ["dbwebb", "init-me"],
-        "clean_up_student": ["rm", "-rf", "me"],
+        "clean_up_student": [
+            ["rm", "-rf", "me"],
+            ["rm", "-rf", "{dir}"]
+        ],
         "canvas_name_to_assignment": {
         }
     },
