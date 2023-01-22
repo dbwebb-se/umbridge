@@ -5,12 +5,13 @@ from app.correct.dbwebb_manager import DbwebbManager
 from app.correct import grader
 from flask import current_app
 
-def course(canvas, course_id, course_name, workflow_state="submitted"):
+def course(canvas, course_id, course_name, assignment_to_correct=None, workflow_state="submitted"):
     current_app.logger.debug(f"Course {course_id}, name {course_name}")
 
     course = canvas.get_course(course_id)
     groups = course.get_groups(include=["users"])
     submissions = course.get_multiple_submissions(
+        assignment_ids=[] if assignment_to_correct is None else [assignment_to_correct],
         student_ids="all",
         workflow_state=workflow_state,
         include=["assignment", "user"]

@@ -1,10 +1,10 @@
 """
 Contains routes for main purpose of app
 """
-from flask import current_app, abort
+from flask import current_app, abort, request
 from app.correct import bp
 from app import db, auth
-from app.models import Course, User
+from app.models import Course, format_dict
 import app.globals as g
 
 from canvasapi import Canvas
@@ -59,15 +59,18 @@ def re_grade():
     """
     Route grading already graded submissions
     """
+    data = format_dict(request.form)
+    current_app.logger.debug(data)
+
     canvas = Canvas(
         current_app.config['URL_CANVAS_API'],
         current_app.config['TOKEN_CANVAS_API']
     )
-    active_courses = Course.query.filter_by(active=1)
+    active_courses = Course.query.filter_by(active=1, id=data["id"])
 
     for c in active_courses:
         try:
-            correct_course.course(canvas, c.id, c.name, "graded")
+            correct_course.course(canvas, c.id, c.name, data["assignment"], "graded")
         except ResourceDoesNotExist as e:
             # do something here to notify me that course is missing
             raise e
