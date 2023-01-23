@@ -33,6 +33,7 @@ def course(canvas, course_id, course_name, assignment_to_correct=None, workflow_
                 # grade
                 grader.grade_submission(sub, result)
 
+                CM.clean_up_students_code()
                 # handle group submissions
                 if assignment["group_category_id"] is not None and not assignment["grade_group_students_individually"]:
                     add_users_to_skip_from_group(sub.user_id, groups, assignment, users_to_skip)
@@ -40,9 +41,8 @@ def course(canvas, course_id, course_name, assignment_to_correct=None, workflow_
                 current_app.logger.info(f"Skipped correcting {sub.user['login_id']} {assignment['name']}")
         except MissingGroupError:
             current_app.logger.error(f"Skipped correcting {sub.user['login_id']} {assignment['name']} because no group for group_category_id {assignment['group_category_id']} and user_id {sub.user['login_id']} found")
-        CM.clean_up_students_code()
-        del CM
-        del result
+        CM = ""
+        result = ""
 
 
 
