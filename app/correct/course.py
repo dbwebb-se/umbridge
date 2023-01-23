@@ -39,9 +39,11 @@ def course(canvas, course_id, course_name, assignment_to_correct=None, workflow_
             else:
                 current_app.logger.info(f"Skipped correcting {sub.user['login_id']} {assignment['name']}")
         except MissingGroupError:
-            CM.clean_up_students_code()
             current_app.logger.error(f"Skipped correcting {sub.user['login_id']} {assignment['name']} because no group for group_category_id {assignment['group_category_id']} and user_id {sub.user['login_id']} found")
-    
+        CM.clean_up_students_code()
+        del CM
+        del result
+
 
 
 

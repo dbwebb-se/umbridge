@@ -196,6 +196,7 @@ class DbwebbManager:
         dest_after_zip = f"{self._TEMP_PATH}/{dest_dir_name}z"
         src_folders = self.get_config_from_course_by_key("assignment_folders")[self._assignment_name]
         exclude = self.get_config_from_course_by_key("assignment_folders")["exclude"]
+        dest_dir_name = ""
 
         current_app.logger.debug(f"config for copy/zip - dest:{dest_pre_zip}, srcs:{src_folders}, exclude:{exclude}")
 
