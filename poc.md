@@ -1,42 +1,27 @@
-# hur kan vi skilja på submissions som är grupp eller inte?
+# kommentarer i koden
 
-1. Hämta submissions
-2. Hämta assignment och kolla om den är grupp
-3. Sortera ut den andra studenten
-4. Rätta ena
-5. rapportera
-6. Hur hantera den andra studenten i databasen?
-    - bygg ut databas med ny kolumn som refererar till den andra studenten?
-    - Skippa det
-
-
-Frågor:
- - kan båda komma åt filen i kommentaren?
-
-Bygga om utan databasen:
- - skippa uppdelningen mellan getch, test och grade. Gör allt för en submission direkt. for each sub test and grade.
- - lägg till loggfilen som en filkommentar och gör samma lösning som med kod visaren.
+- klicka på länk till kod vy
+- skriv kommentar på kod.
+- spara kodkommentar i fil
+- zipa fil med kod och kodkommentarer.
+- ladda upp fil !!! referens till ny fil
+- radera förra filen !!! referens till förra filen, kunna radera fil
+- länka till nya filen i filkommentaren !!! referens till filkommentaren, kunna uppdatera kommentar. (kan vi få till länk som det är nu?)
+- uppdatera umbridge länk i textkommentaren !!! referens till textkommentar
 
 
-changes:
-eve
-    - routes
-        - move fetch code to wall-e
-    - courses
-        - move to wall-e
-    - models
-        - move
-    - delete
+Hur ska vi få referens till filkommentar och textkommentar i umbridge?
+- Alltid ta senaste
+  - Känns som det lätt kan bli fel och begränsande
+- Inkludera en meta fil i zip arkivet
+  - Kommer ändå behöva en fil för kommentarer så varför inte.
+  - Blir dock svårt att få referenserna innan kommentarerna är gjorda. Så hur ska vi kunna lägga till referenserna i efterhand?
+- Använd base64 för att inkludera mer info i umbridge länken i textkommentaren
+  - blir dock problem igen med hur vi ska veta referenserna innan vi har skapat kommentarerna.
 
-results
-    - change log code to work as browse
+Jag har länk till zip fil i umbridge länk. Kan jag använda det för att hitta rätt textkommentar i listan med kommentarer?
 
-templates
-    - ones again check if can add line numbers to browse files
+### vid kompletering
 
-wall-e
-    - models
-      - rewrite to use canvasapi module
-
-models
-    - remove submissions model
+Hur vet vi vad studenten skulle uppdatera?
+- Rättare måste sammanfatta vad som ska kompletteras i textkommentaren.
