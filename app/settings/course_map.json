@@ -2,50 +2,25 @@
     "default": {
         "git_url": "https://github.com/dbwebb-se/{course}.git",
         "installation_commands": [
-            ["make", "docker-install"]
+            [
+                "make",
+                "docker-install"
+            ]
         ],
-        "test_command": ["dbwebb", "test", "--docker", "{kmom}", "{acr}", "--download"],
-        "update_command": ["dbwebb", "update"],
+        "test_command": [
+            "dbwebb",
+            "test",
+            "--docker",
+            "{kmom}",
+            "{acr}",
+            "--download"
+        ],
+        "update_command": [
+            "dbwebb",
+            "update"
+        ],
         "log_file": ".log/test/docker/main.ansi",
-        "ignore_assignments": [],
-        "assignment_folders": {
-            "kmom01": ["me/kmom01"],
-            "kmom02": ["me/kmom02"],
-            "kmom03": ["me/kmom03"],
-            "kmom04": ["me/kmom04"],
-            "kmom05": ["me/kmom05"],
-            "kmom06": ["me/kmom06"],
-            "kmom10": ["me/kmom10"],
-            "exclude": [""]
-        },
-        "prepare_student": ["dbwebb", "init-me"],
-        "clean_up_student": [
-            ["rm", "-rf", "me"],
-            ["rm", "-rf", "{dir}"]
-        ],
-        "canvas_name_to_assignment": {
-        }
-    },
-    "python": {
         "ignore_assignments": [
-            "kmom07/10"
-        ],
-        "assignment_folders": {
-            "kmom01": ["me/kmom01", "me/redovisa"],
-            "kmom02": ["me/kmom02"],
-            "kmom03": ["me/kmom03"],
-            "kmom04": ["me/kmom04"],
-            "kmom05": ["me/kmom05"],
-            "kmom06": ["me/kmom06"],
-            "kmom07/10": ["me/kmom10", "me/redovisa"],
-            "exclude": ["__pycache__"]
-        },
-        "canvas_name_to_assignment": {}
-    },
-    "oopython": {
-        "canvas_name_to_assignment": {},
-        "ignore_assignments": [
-            "kmom10 - klassdiagram",
             "kmom01 quiz",
             "kmom02 quiz",
             "kmom03 quiz",
@@ -74,6 +49,46 @@
             "kmom06": [
                 "me/kmom06"
             ],
+            "kmom07/10": [
+                "me/kmom10"
+            ],
+            "exclude": []
+        },
+        "prepare_student": [
+            "dbwebb",
+            "init-me"
+        ],
+        "clean_up_student": [
+            [
+                "rm",
+                "-rf",
+                "me"
+            ],
+            [
+                "rm",
+                "-rf",
+                "{dir}"
+            ]
+        ],
+        "canvas_name_to_assignment": {}
+    },
+    "python": {
+        "ignore_assignments": [
+            "kmom07/10"
+        ],
+        "assignment_folders": {
+            "exclude": [
+                "__pycache__"
+            ]
+        },
+        "canvas_name_to_assignment": {}
+    },
+    "oopython": {
+        "canvas_name_to_assignment": {},
+        "ignore_assignments": [
+            "kmom10 - klassdiagram"
+        ],
+        "assignment_folders": {
             "kmom07": [
                 "me/kmom07"
             ],
