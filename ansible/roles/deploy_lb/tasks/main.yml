@@ -38,3 +38,11 @@
 
 -   name: Start services after cert has been generated.
     command: service nginx restart
+
+
+# Lägg till att renew domain, https://stackoverflow.com/a/62922373
+# /etc/systemd/system/certbot.service
+# [Unit]
+# Description=Certbot Renewal
+# [Service]
+# ExecStart=/usr/bin/certbot -q renew --pre-hook "sudo systemctl stop nginx" --post-hook "sudo systemctl start nginx"
