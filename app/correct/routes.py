@@ -37,7 +37,7 @@ def correct():
     """
     canvas = Canvas(
         current_app.config['URL_CANVAS_API'],
-        current_app.config['TOKEN_CANVAS_API']
+        "12133~bOL9ymnmZbOsq9YuHb0QqJ9DKxdwyeZSKcanKTJ6gwXhI0wGEPWacak1ia2g0KEI"
     )
     active_courses = Course.query.filter_by(active=1)
 
@@ -85,6 +85,8 @@ def re_grade():
 #     """
 #     Temporary route to reset database and load a test assignment.
 #     """
+#     from app.models import User
+
 #     course_id, course_name = 2508, 'python'
 
 #     Course.query.filter(Course.id > 0).delete()
