@@ -71,7 +71,8 @@ def grade_submission(submission, test_result):
     payload = {
         "comment": {
             "text_comment": comment,
-            "group_comment": not submission.assignment["grade_group_students_individually"]
+            "group_comment": not submission.assignment["grade_group_students_individually"],
+            "attempt": submission.attempt,
         },
         "submission": {
             "posted_grade": test_result['grade']
