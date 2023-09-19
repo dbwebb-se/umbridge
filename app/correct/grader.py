@@ -7,7 +7,7 @@ def create_comment_text(grade, file_link="", first_attempt=False, error_send_zip
     """
     Create comment text
     """
-    passed_comment = "Testerna har passerat. En rättare kommer läsa din redovisningstext, kolla på koden och sätta betyg."
+    passed_comment = "Testerna har passerat. En rättare kommer kolla på din inlämning och sätta betyg."
     error_comment = "Något gick fel i umbridge, kontakta kursansvarig."
     error_send_zip_comment = f"Umbridge kunde inte hitta filerna efter rättningen, försök göra en ny inlämning. Om det inte hjälper, kontakta kursansvarig."
 
