@@ -10,17 +10,14 @@
         .larger { width: 1500px !important; }
         .sidenav {
             width: 140px;
-            position: fixed;
-            top: 20px;
-            left: 10px;
             background: #eee;
-            overflow-x: hidden;
             padding: 8px 0;
             font-size: 8px;
         }
 
         #sourcecode {
             z-index: 99;
+            padding: 0px 0px 0px 5px;
         }
         
         .sidenav a {
@@ -36,27 +33,56 @@
         }
         
         .main {
-            z-index: 99;
-            margin-left: 140px;
+            flex-grow: 1;
+            display: flex;
             font-size: 20px;
-            padding: 0px 10px;
+            line-height: 1.20em;
+            margin: 0;
+            overflow-x: scroll;
+            padding: 0 2px;
+        }
+
+        .line-numbers {
+            counter-reset: line;
+            display: block;
+        }
+
+        .line {
+            display: block;
+            color: #252525;
+            text-align: end;
+            font-size: 20px;
+            line-height: 1.20em;
+            margin-right: 3px;
+            width: 2.5em;
         }
 
         .wrapper {
-                    display: flex;
-        flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
 
-        .feedback-wrapper {
+        .code {
+            margin: 0;
+        }
+
+        .log {
             background-color: black;
             color: #abb2bf;
+            margin: 0;
+            padding: 0px 0px 0px 5px;
         }
 
+        main {
+            display: flex;
+            flex-direction: row;
+        }
     </style>
 </head>
 
 
 <body>
+    <main>
     <div class="sidenav {{ ('larger' if not file_content else '') }}">
         <a href="{{ url_for('results.browse_files', req_path=previous_directory) }}">../</a>
         {% for file in files %}
@@ -66,7 +92,13 @@
         {% endfor %}
     </div>
 
-
+    {% if file_content %}
+    <div class="line-numbers">
+        {% for line in range(nr_of_lines) %}
+        <span class="line">{{ line }} |</span>
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="main">
         {% if is_log_file %}
@@ -74,5 +106,6 @@
         {% else %}
             {% include 'code.html' %}
         {% endif %}
-</div>
+    </div>
+    </main>
 </body>

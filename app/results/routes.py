@@ -105,14 +105,15 @@ def browse_files(req_path):
             file_extention = "txt"
 
         if file_extention == "txt":
-                conv = Ansi2HTMLConverter(inline=True, linkify=True)
-                file_content = conv.convert(file_content, full=False)
-                is_log_file = True
+            conv = Ansi2HTMLConverter(inline=True, linkify=True)
+            file_content = conv.convert(file_content, full=False)
+            is_log_file = True
 
+        nr_of_lines = file_content.count("\n")
         return render_template(
             'browse.html', previous_directory=previous_directory,
             file_type=file_extention, file_content=file_content,
-            link_content=link_content, is_log_file=is_log_file)
+            link_content=link_content, is_log_file=is_log_file, nr_of_lines=nr_of_lines)
 
 
     # Show directory contents
