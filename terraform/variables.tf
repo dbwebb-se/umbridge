@@ -3,7 +3,7 @@ variable "location" {
   default     = "North Europe"
   description = "default resources location"
 }
- 
+
 variable "terraform_resource_group_name" {
   type        = string
   default     = "umbridgeTerraform"
@@ -15,6 +15,13 @@ variable "manual_resource_group_name" {
   type        = string
   default     = "umbridge"
   description = "resource group name for resource managed manuall"
+}
+
+
+variable "dns_records" {
+  type        = list(string)
+  default     = ["@", "sentry", "www", "www.sentry"]
+  description = "records for dns"
 }
 
 variable "dns_name" {
