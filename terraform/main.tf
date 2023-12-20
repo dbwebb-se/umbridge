@@ -145,7 +145,7 @@ resource "azurerm_linux_virtual_machine" "umbridgeVM" {
     location              = var.location
     resource_group_name   = azurerm_resource_group.umbridge.name
     network_interface_ids = [azurerm_network_interface.umbridgeNic.id]
-    size                  = "Standard_B2s"
+    size                  = "Standard_B4ms"
 
     os_disk {
         name              = "umbridgeDisk"
