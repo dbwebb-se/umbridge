@@ -1,0 +1,5 @@
+---
+-   hosts: server
+    remote_user: "{{ server_user }}"
+    roles:
+        -   deploy_sentry

@@ -1,0 +1,51 @@
+---
+- name: Clone the Git repository
+  git:
+    repo: https://github.com/getsentry/self-hosted.git
+    dest: "/home/{{ server_user }}/sentry"
+    version: "{{sentry_version}}"
+
+- name: Copy .env.custom
+  template:
+    src:  .env.custom.j2
+    dest: "/home/{{ server_user }}/sentry/.env.custom"
+    owner: "{{ server_user }}"
+    mode: 0755
+
+- name: Run install script, takes a long time to run
+  expect:
+    command: ./install.sh --report-self-hosted-issues
+    chdir: /home/{{ server_user }}/sentry
+    timeout: 900
+    responses:
+      Question:
+      - "Y"
+      - "{{ admin_email }}"
+      - "{{ server_user_pass }}"
+      - "{{ server_user_pass }}"
+#   # you don't want to show passwords in your logs
+  # no_log: true
+
+
+-   name: Update config.yml
+    lineinfile:
+        path: /home/{{ server_user }}/sentry/sentry/config.yml
+        regexp: "{{ item.key}}"
+        line: "{{ item.value }}"
+        state: present
+    with_items:
+      "{{ config_yml | dict2items }}"
+
+-   name: Update sentry.conf.py
+    lineinfile:
+        path: /home/{{ server_user }}/sentry/sentry/sentry.conf.py
+        regexp: "{{ item.key}}"
+        line: "{{ item.value }}"
+        state: present
+    with_items:
+      "{{ sentry_conf_py | dict2items }}"
+
+- name: Run container. Takes som time to run # using shell command instead of module because compose module currently only supports compose v1.
+  shell:
+    cmd: "docker-compose up -d"
+    chdir: "/home/{{ server_user }}/sentry"

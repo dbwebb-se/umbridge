@@ -1,0 +1,12 @@
+sentry_version: "23.11.2"
+wal2json_version: "0.0.2"
+
+config_yml:
+  "# system.url-prefix:": "system.url-prefix: 'https://{{ sentry_domain_name }}'"
+
+sentry_conf_py:
+  "# SECURE_PROXY_SSL_HEADER =": "SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')"
+  "# USE_X_FORWARDED_HOST =": "USE_X_FORWARDED_HOST = True"
+  "# SESSION_COOKIE_SECURE =": "SESSION_COOKIE_SECURE = True"
+  "# CSRF_COOKIE_SECURE =": "CSRF_COOKIE_SECURE = True"
+  "# SOCIAL_AUTH_REDIRECT_IS_HTTPS =": "SOCIAL_AUTH_REDIRECT_IS_HTTPS = True"

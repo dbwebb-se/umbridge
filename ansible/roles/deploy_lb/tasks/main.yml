@@ -1,40 +1,80 @@
---- 
+---
 -   name: Install packages
     apt:
         name: "{{ packages }}"
         state: present
 
+
+
 -   name: Check if certificate already exists.
     stat:
-        path: /etc/letsencrypt/live/{{ domain_name }}/cert.pem
+        path: /etc/letsencrypt/live/{{ item }}/cert.pem
+    with_items:
+        - "{{ domain_name }}"
+        - "{{ sentry_domain_name }}"
     register: letsencrypt_cert
 
--   debug: msg="{{ letsencrypt_cert.stat.exists }}"
+
+
+-   debug: msg="{{ letsencrypt_cert }}"
+
+-   name: Create list with if certs exist
+    set_fact:
+        missing_certs: "{{ letsencrypt_cert.results | selectattr('stat.exists', '==', false) | map(attribute='item') | list }}"
+
+-   debug: msg="{{ missing_certs }}"
+
 
 -   name: Stop services to allow certbot to generate a cert.
     command: service nginx stop
-    when: not letsencrypt_cert.stat.exists
+    when: missing_certs | length > 0
 
+
+-   name: Generate new certificate if one doesn't exist. DRY RUN
+    shell: "certbot certonly --dry-run --standalone --noninteractive --expand --agree-tos --email {{ admin_email }} -d {{ item }} -d www.{{ item }}"
+    when: missing_certs | length > 0
+    with_items: "{{ missing_certs }}"
+    register: dry_run
+
+-   debug: msg="{{ dry_run }}"
+
+-   name: Create a string from the list
+    set_fact:
+        dry_run_ok: "{{ dry_run.results | selectattr('rc', '==', 0) | list }}"
+
+
+Har inte testat denna. Körde det manuellt och efter det skippades den.
 -   name: Generate new certificate if one doesn't exist.
-    shell: "certbot certonly --standalone --noninteractive --expand --agree-tos --email {{ admin_email }} -d {{ domain_name }} -d www.{{ domain_name }}"
-    when: not letsencrypt_cert.stat.exists
+    shell: "certbot certonly --standalone --noninteractive --expand --agree-tos --email {{ admin_email }} -d {{ item }} -d www.{{ item }}"
+    when: missing_certs | length > 0 and dry_run_ok | length == missing_certs | length 
+    with_items: "{{ missing_certs }}"
+
+
 
 -   name: Remove default conf
     file:
         state: absent
         path: /etc/nginx/sites-enabled/default
 
+
+
 -   name: Template nginx site config to server
     template:
-        src: umbridge.conf.j2
-        dest: /etc/nginx/sites-available/umbridge.conf
+        src: "{{ item }}.j2"
+        dest: "/etc/nginx/sites-available/{{ item }}"
+    with_items: "{{ configurations }}"
+
+
 
 -   name: Link site to enabled
     file:
         state: link
         force: yes
-        src: /etc/nginx/sites-available/umbridge.conf
-        path: /etc/nginx/sites-enabled/umbridge.conf
+        src: "/etc/nginx/sites-available/{{ item }}"
+        path: "/etc/nginx/sites-enabled/{{ item }}"
+    with_items: "{{ configurations }}"
+
+
 
 -   name: Start services after cert has been generated.
     command: service nginx restart

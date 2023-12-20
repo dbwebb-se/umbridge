@@ -3,4 +3,4 @@ boto3 >= 1.9.203
 PyMySQL >= 0.9.3
 docker >= 4.1.0
 ansible >= 2.9.18
-#ansible[azure] # Does not work from file. Need to be installed manually
+pexpect >= 3.3

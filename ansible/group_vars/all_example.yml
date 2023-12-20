@@ -6,6 +6,8 @@ acronym: "umbridge"
 stud_password: ""
 
 domain_name: ""
+sentry_domain_name: ""
+
 canvas_api_token: ""
 umbridge_credential: ""
 

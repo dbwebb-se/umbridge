@@ -1,3 +1,7 @@
 packages:
     -   nginx
     -   python-certbot-nginx
+
+configurations:
+    - "sentry.conf"
+    - "umbridge.conf"
