@@ -7,7 +7,7 @@ stud_password: ""
 
 domain_name: ""
 canvas_api_token: ""
-credential: ""
+umbridge_credential: ""
 
 admin_email: ""
 
