@@ -3,6 +3,8 @@ wal2json_version: "0.0.2"
 
 config_yml:
   "# system.url-prefix:": "system.url-prefix: 'https://{{ sentry_domain_name }}'"
+  "# mail.host:": "mail.host: 'smtp'"
+  "# mail.from: ": "mail.from: 'sentry@{{ sentry_domain_name }}'"
 
 sentry_conf_py:
   "# SECURE_PROXY_SSL_HEADER =": "SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')"
