@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <meta content="text/html; charset=utf-8">
+
 <head>
     <title>Feedback</title>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/atom-one-dark.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
 
     <style>
-        .larger { width: 1500px !important; }
+        .larger {
+            width: 1500px !important;
+        }
+
         .sidenav {
             width: 140px;
             background: #eee;
@@ -19,7 +24,7 @@
             z-index: 99;
             padding: 0px 0px 0px 5px;
         }
-        
+
         .sidenav a {
             padding: 6px 8px 6px 16px;
             text-decoration: none;
@@ -27,11 +32,11 @@
             color: #2196F3;
             display: block;
         }
-        
+
         .sidenav a:hover {
             color: #064579;
         }
-        
+
         .main {
             flex-grow: 1;
             display: flex;
@@ -54,7 +59,7 @@
             font-size: 20px;
             line-height: 1.20em;
             margin-right: 3px;
-            width: 2.5em;
+            width: 3em;
         }
 
         .wrapper {
@@ -83,29 +88,31 @@
 
 <body>
     <main>
-    <div class="sidenav {{ ('larger' if not file_content else '') }}">
-        <a href="{{ url_for('results.browse_files', req_path=previous_directory) }}">../</a>
-        {% for file in files %}
-            <a href="{{ (request.path + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}">
-                {{ (link_content + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}
+        <div class="sidenav {{ ('larger' if not file_content else '') }}">
+            <a href="{{ url_for('results.browse_files', req_path=previous_directory) }}">../</a>
+            {% for file in files %}
+            <a
+                href="{{ (request.path + '/' if not request.path.endswith('/') else '') + (file if not file_content else '') }}">
+                {{ (link_content + '/' if not request.path.endswith('/') else '') + (file if not file_content else '')
+                }}
             </a>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
 
-    {% if file_content %}
-    <div class="line-numbers">
-        {% for line in range(nr_of_lines) %}
-        <span class="line">{{ line }} |</span>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <div class="main">
-        {% if is_log_file %}
-            {% include 'log_file.html' %}
-        {% else %}
-            {% include 'code.html' %}
+        {% if file_content %}
+        <div class="line-numbers">
+            {% for line in range(nr_of_lines) %}
+            <span class="line">{{ line }} |</span>
+            {% endfor %}
+        </div>
         {% endif %}
-    </div>
+
+        <div class="main">
+            {% if is_log_file %}
+            {% include 'log_file.html' %}
+            {% else %}
+            {% include 'code.html' %}
+            {% endif %}
+        </div>
     </main>
 </body>
