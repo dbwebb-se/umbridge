@@ -36,9 +36,9 @@ def create_comment_text(grade, file_link="", first_attempt=False, error_send_zip
         result = error_comment
 
     comment = (
-        f"{texts['intro']}\n\n"
-        f"{result}\n\n"
-        f"{texts['link_text']}\n\n"
+        f"{texts['intro']}<br><br>"
+        f"{result}<br><br>"
+        f"{texts['link_text']}<br><br>"
         f"{texts['ending']}"
     )
 
